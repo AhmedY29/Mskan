@@ -17,14 +17,12 @@ const userSchema = new mongoose.Schema({
     },
     phoneNumber:{
         type: String,
-        unique: true
     },
     avatar:{
         type: String
     },
     license:{
         type: String,
-        unique: true
 
     },
     address:{
