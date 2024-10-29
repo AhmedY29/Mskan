@@ -32,7 +32,7 @@ export const register = async (req, res) => {
 
     await newUser.save();
     generateTokenAndCookie(res , newUser._id);
-    // await sendVerificationEmail(newUser.email , verificationToken)
+    await sendVerificationEmail(newUser.email , verificationToken)
 
     res.status(201).json({
         success: true,
