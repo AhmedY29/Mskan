@@ -1,0 +1,126 @@
+@font-face {
+    font-family: Rubik;
+    src: url(/frontend/src/assets/fonts/Rubik-Regular.ttf);
+  }
+@font-face {
+    font-family: Rubik;
+    src: url(/frontend/src/assets/fonts/Rubik-Bold.ttf);
+    font-weight: bold;
+  }
+
+  *{
+    font-family: Rubik;
+  }
+.hero-img{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+    url("https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    
+}
+.text-hero h1{
+    color: white;
+    max-width: 30% !important;
+    font-size: 45px !important;
+    margin-bottom: 5px !important;
+    font-weight: normal !important;
+
+}
+
+
+@media (max-width: 900px) {
+  .text-hero h1{
+    max-width: 60% !important;
+    margin-bottom: 30px !important;
+}
+.split-content{
+  flex-direction: column !important;
+  padding: 0;
+  margin: 0;
+}
+
+.right-side{
+  margin-right: 10px !important;
+}
+.img-property{
+  width: 100% !important;
+}
+}
+@media (max-width:600px) {
+  .cards-properties{
+    width: 47% !important;
+  }
+}
+@media (max-width:475px) {
+  .cards-properties{
+    width: 100% !important;
+  }
+}
+@media (max-width: 530px) {
+  .text-hero h1{
+    max-width: 100% !important;
+    margin-bottom: 30px !important;
+}
+.container{
+  padding: 9px !important;
+}
+}
+@media (max-width: 400px) {
+  .text-hero h1{
+    max-width: 100% !important;
+    margin-bottom: 30px !important;
+  
+}
+  .text-field{
+    max-width: 150px;
+  }
+}
+
+.btn-type{
+  font-size: "20px" !important;
+  padding-bottom: "12px" !important;
+  height: "30px" !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  
+}
+.btn-type:nth-child(2){
+  border-top-right-radius: 0;
+  border-top-left-radius: 3px !important;
+}
+
+.Icons{
+  display: flex;
+  align-items: center;
+  border: 1px black solid;
+  border-radius: 5px;
+  margin-top: 5px !important;
+  justify-content: center;
+  width: 95%;
+}
+.icon-number{
+  display: flex;
+  align-items: center;
+  margin: 3px !important;
+}
+
+.arrows{
+  display: flex;
+  position: absolute;
+  height: 100%;
+  font-size: 216px;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+}
+.list-photo{
+  overflow-y: hidden !important;
+}
+
+#map-container {
+  font-family: 'Rubik', sans-serif; /* اختر خط يدعم العربية */
+  font-size: 14px; /* حجم الخط */
+}
