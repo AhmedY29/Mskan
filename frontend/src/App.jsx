@@ -33,9 +33,11 @@ const ProtectedRoute =  ({children})=>{
       if(!user.isVerified){
         return <Navigate to="/verifyEmail" replace />
       }
-    }, 2000);
 
   return children
+      
+    }, 2000);
+
 }
      
 
