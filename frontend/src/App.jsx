@@ -25,22 +25,29 @@ const theme = createTheme({
 })
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, user, isLoading } = useAuthStore(); // تأكد من وجود isLoading في المتجر
+  const { isAuthenticated, user } = useAuthStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // الانتظار حتى يتم تحميل البيانات
-    if (!isLoading) {
-      setLoading(false);
+    if (!isAuthenticated || !user.isVerified) {
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 2000); // الانتظار لمدة ثانيتين
+
+      return () => clearTimeout(timer); // تنظيف المؤقت عند إلغاء التركيب
+    } else {
+      setLoading(false); // إذا كان المستخدم مصدقًا وموثقًا، لا تحتاج إلى الانتظار
     }
-  }, [isLoading]);
+  }, [isAuthenticated, user]);
 
   if (loading) {
-    return <div>Loading...</div>; // يمكنك عرض مؤشر تحميل هنا
+    return <div>Loading...</div>; // يمكنك عرض شيء أثناء الانتظار
   }
 
-
-
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+  
   if (!user.isVerified) {
     return <Navigate to="/verifyEmail" replace />;
   }
