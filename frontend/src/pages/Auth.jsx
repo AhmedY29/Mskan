@@ -39,11 +39,8 @@ export default function Auth() {
 
   async function handleLogin(e){
     e.preventDefault();
-    if(!user.isVerified){
-      navigate("/verifyEmail");
-    }else{
+
       await login(email, password)
-    }
     // login(email, password);
   }
   return (
