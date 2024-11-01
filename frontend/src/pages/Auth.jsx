@@ -23,7 +23,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { register, error, isLoading , login , isVerifieds } = useAuthStore();
+  const { register, error, isLoading , login , user } = useAuthStore();
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -40,7 +40,7 @@ export default function Auth() {
   async function handleLogin(e){
     e.preventDefault();
 
-    if(isVerifieds === false) {
+    if(!user.isVerified === false) {
       navigate("/verifyEmail");
     }else(
 
