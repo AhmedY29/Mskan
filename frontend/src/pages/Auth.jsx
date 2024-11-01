@@ -23,7 +23,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { register, error, isLoading , login } = useAuthStore();
+  const { register, error, isLoading , login , user } = useAuthStore();
 
   async function handleRegister(e) {
     e.preventDefault();
@@ -39,7 +39,11 @@ export default function Auth() {
 
   async function handleLogin(e){
     e.preventDefault();
-    await login(email, password)
+    if(!user.isVerified){
+      navigate("/verifyEmail");
+    }else{
+      await login(email, password)
+    }
     // login(email, password);
   }
   return (
