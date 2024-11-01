@@ -24,21 +24,19 @@ const theme = createTheme({
   }
 })
 // protect routes that require authentication
-const ProtectedRoute = ({children})=>{
-  
-  const {isAuthenticated, user} = useAuthStore();
-     if(!isAuthenticated){
-      return <Navigate to="/auth" replace />
-    }
-    if(!user.isVerified){
-      return <Navigate to="/verifyEmail" replace />
-    }
-   setTimeout(()=>{
-      console.log("loading...");
-    return children
-  },2000)
-
+const ProtectedRoute = async ({children})=>{
+  const await {isAuthenticated , user} = useAuthStore();
+    
+  if(!isAuthenticated){
+    return <Navigate to="/auth" replace />
+  }
+  if(!user.isVerified){
+    return <Navigate to="/verifyEmail" replace />
+  }
+  return children
 }
+
+     
 
 // Redirect authenticated users to home page
 const RedirectAuth = ({children})=>{
