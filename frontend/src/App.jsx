@@ -55,7 +55,10 @@ function App() {
       <Route path="/properties" element={<Properties />} />
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
 
-      <Route path="/profile" element={<Profile/>} />
+      <Route path="/profile" element={
+      <ProtectedRoute>
+      <Profile/>
+        </ProtectedRoute>} />
 
       <Route path="/auth" element={
         <RedirectAuth>
