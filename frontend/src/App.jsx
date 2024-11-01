@@ -15,7 +15,7 @@ import Auth from './pages/Auth.jsx';
 import VerifyEmail from './pages/VerifyEmail.jsx';
 import {Toaster} from 'react-hot-toast';
 import { useAuthStore } from './store/authStore.js';
-import { useEffect } from 'react';
+import { useEffect , useEffect } from 'react';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
 const theme = createTheme({
@@ -24,21 +24,31 @@ const theme = createTheme({
   }
 })
 // protect routes that require authentication
-const ProtectedRoute =  ({children})=>{
-  const  {isAuthenticated , user} = useAuthStore();
-    setTimeout(() => {
-      if(!isAuthenticated){
-        return <Navigate to="/auth" replace />
-      }
-      if(!user.isVerified){
-        return <Navigate to="/verifyEmail" replace />
-      }
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, user, isLoading } = useAuthStore(); // تأكد من وجود isLoading في المتجر
+  const [loading, setLoading] = useState(true);
 
-  return children
-      
-    }, 2000);
+  useEffect(() => {
+    // الانتظار حتى يتم تحميل البيانات
+    if (!isLoading) {
+      setLoading(false);
+    }
+  }, [isLoading]);
 
-}
+  if (loading) {
+    return <div>Loading...</div>; // يمكنك عرض مؤشر تحميل هنا
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (!user || !user.isVerified) {
+    return <Navigate to="/verifyEmail" replace />;
+  }
+
+  return children;
+};
      
 
 // Redirect authenticated users to home page
