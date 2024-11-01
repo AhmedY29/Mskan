@@ -50,6 +50,7 @@ function App() {
     checkAuth()
   },[checkAuth])
   console.log("user",user)
+   console.log("is?",isAuthenticated)
   return (
     <div>
       <ThemeProvider theme={theme}>
