@@ -24,8 +24,8 @@ const theme = createTheme({
   }
 })
 // protect routes that require authentication
-const ProtectedRoute = async ({children})=>{
-  const await {isAuthenticated , user} = useAuthStore();
+const ProtectedRoute =  ({children})=>{
+  const  {isAuthenticated , user} = useAuthStore();
     setTimeout(() => {
       if(!isAuthenticated){
         return <Navigate to="/auth" replace />
