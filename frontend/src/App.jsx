@@ -26,11 +26,12 @@ const theme = createTheme({
 // protect routes that require authentication
 const ProtectedRoute = ({children})=>{
   const {isAuthenticated, user} = useAuthStore();
-    if(isAuthenticated === false){
-    return <Navigate to="/auth" replace />
-  }
+    
    if(!user.isVerified){
     return <Navigate to="/verifyEmail" replace />
+  }
+  if(isAuthenticated === false){
+    return <Navigate to="/auth" replace />
   }
   return children
 }
