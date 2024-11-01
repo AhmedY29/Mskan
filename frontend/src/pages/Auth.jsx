@@ -41,6 +41,7 @@ export default function Auth() {
     e.preventDefault();
 
     if(!user.isVerified === false) {
+      await login(email, password)
       navigate("/verifyEmail");
     }else(
 
