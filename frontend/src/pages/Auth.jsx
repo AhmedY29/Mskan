@@ -39,14 +39,10 @@ export default function Auth() {
 
   async function handleLogin(e){
     e.preventDefault();
-
+      await login(email, password)
     if(!user.isVerified === false) {
-      await login(email, password)
       navigate("/verifyEmail");
-    }else(
-
-      await login(email, password)
-    )
+    }
     // login(email, password);
   }
   return (
