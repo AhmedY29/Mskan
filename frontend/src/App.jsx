@@ -24,16 +24,16 @@ const theme = createTheme({
   }
 })
 // protect routes that require authentication
-const ProtectedRoute = ({children})=>{
-  const {isAuthenticated , isVerifieds} = useAuthStore();
-    if(isAuthenticated === false){
-    return <Navigate to="/auth" replace />
-  }
-  if(isVerifieds === false){
-    return <Navigate to="/verifyEmail" replace />
-  }
-  return children
-}
+// const ProtectedRoute = ({children})=>{
+//   const {isAuthenticated , isVerifieds} = useAuthStore();
+//     if(isAuthenticated === false){
+//     return <Navigate to="/auth" replace />
+//   }
+//   if(isVerifieds === false){
+//     return <Navigate to="/verifyEmail" replace />
+//   }
+//   return children
+// }
 
 // Redirect authenticated users to home page
 const RedirectAuth = ({children})=>{
@@ -58,10 +58,7 @@ function App() {
       <Route path="/properties" element={<Properties />} />
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
 
-      <Route path="/profile" element={
-        <ProtectedRoute>
-        <Profile/>
-        </ProtectedRoute>} />
+      <Route path="/profile" element={<Profile/>} />
 
       <Route path="/auth" element={
         <RedirectAuth>
