@@ -34,6 +34,7 @@ const ProtectedRoute = ({children})=>{
   }
   return children
 }
+console.log(user.isVerified)
 
 // Redirect authenticated users to home page
 const RedirectAuth = ({children})=>{
