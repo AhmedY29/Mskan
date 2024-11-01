@@ -27,6 +27,7 @@ const theme = createTheme({
 const ProtectedRoute = ({children})=>{
   const {isAuthenticated , user} = useAuthStore();
   if(!isAuthenticated){
+    console.log(user.isVerified)
     return <Navigate to="/auth" replace />
   }
   if(!user.isVerified){
@@ -34,7 +35,6 @@ const ProtectedRoute = ({children})=>{
   }
   return children
 }
-console.log(user.isVerified)
 
 // Redirect authenticated users to home page
 const RedirectAuth = ({children})=>{
