@@ -32,7 +32,7 @@ const ProtectedRoute = ({ children }) => {
     if (!isAuthenticated || !user.isVerified) {
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 800); // الانتظار لمدة ثانيتين
+      }, 1000); // الانتظار لمدة ثانيتين
 
       return () => clearTimeout(timer); // تنظيف المؤقت عند إلغاء التركيب
     } else {
