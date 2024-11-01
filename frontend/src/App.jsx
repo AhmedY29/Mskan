@@ -15,7 +15,7 @@ import Auth from './pages/Auth.jsx';
 import VerifyEmail from './pages/VerifyEmail.jsx';
 import {Toaster} from 'react-hot-toast';
 import { useAuthStore } from './store/authStore.js';
-import { useEffect , useEffect } from 'react';
+import { useEffect } from 'react';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
 const theme = createTheme({
