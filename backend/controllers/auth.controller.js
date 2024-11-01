@@ -9,20 +9,20 @@ export const register = async (req, res) => {
 
   try {
     if (!email || !name || !password) {
-      throw new Error("All fields are required");
+      throw new Error("يجب عليك ملئ جميه الحقول");
     }
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res
         .status(400)
-        .json({ success: false, message: "Email already exists" });
+        .json({ success: false, message: "البريد الالكتروني موجود بالفعل" });
     }
 
     const hashPassword = await bcryptjs.hash(password, 10);
     const verificationToken = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
-    const newUser = new User({
+    const user = new User({
       name,
       email,
       password: hashPassword,
@@ -30,18 +30,17 @@ export const register = async (req, res) => {
       verificationTokenExpired: Date.now() + 24 * 60 * 60 * 1000 //24 hours
     });
 
-    await newUser.save();
-    generateTokenAndCookie(res , newUser._id);
-    await sendVerificationEmail(newUser.email , verificationToken)
+    await user.save();
+    generateTokenAndCookie(res , user._id);
+    await sendVerificationEmail(user.email , verificationToken)
 
     res.status(201).json({
         success: true,
         message: "User registered successfully",
-        newUser:{
-            ...newUser._doc,
+        user:{
+            ...user._doc,
             password:undefined,
         }
-        
     })
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
