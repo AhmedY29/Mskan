@@ -41,11 +41,12 @@ const RedirectAuth = ({children})=>{
   return children
 }
 function App() {
-  const {checkAuth  , isCheckingAuth} = useAuthStore();
+  const {checkAuth  , isCheckingAuth , user} = useAuthStore();
 
   useEffect(()=>{
     checkAuth()
   },[checkAuth])
+  console.log("user",user)
   return (
     <div>
       <ThemeProvider theme={theme}>
