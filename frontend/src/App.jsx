@@ -39,11 +39,9 @@ const ProtectedRoute = ({ children }) => {
     return <div>Loading...</div>; // يمكنك عرض مؤشر تحميل هنا
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
 
-  if (!user || !user.isVerified) {
+
+  if (!user.isVerified) {
     return <Navigate to="/verifyEmail" replace />;
   }
 
