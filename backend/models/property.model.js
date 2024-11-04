@@ -4,41 +4,47 @@ const propertySchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
-        minlength: 5,
-        maxlength: 100
+        // minlength: 5,
+        // maxlength: 100
     },
     description: {
         type: String,
         required: true,
-        minlength: 20,
-        maxlength: 500
+        // minlength: 20,
+        // maxlength: 500
     },
     price: {
         type: Number,
-        // required: true,
-        min: 100,
-        max: 10000
+        required: true,
+        // min: 100,
+        // max: 10000
+    },
+    mainPhoto: {
+        type: String,
     },
     location: {
-        type: {
-            type: String,
+        type: String,
             // enum: ["Point"],
             // required: true
-        },
-        // coordinates: {
-        //     type: [Number],
-        //     required: true
-        // }
+       
+    },
+    longitude: {
+        type: Number,
+        // required: true
+    },
+    latitude: {
+        type: Number,
+        // required: true
     },
     images: [{
         type: String,
         // required: true
     }],
-    // author: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //     // required: true
-    // },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        // required: true
+    },
     type:{
         type: String,
         // required: true,
@@ -60,12 +66,6 @@ const propertySchema = new mongoose.Schema({
     garages:{
         type: Number,
     },
-    water:{
-        type: Boolean,
-    },
-    electricity:{
-        type: Boolean,
-    },
     internet:{
         type: Boolean,
     },
@@ -79,9 +79,6 @@ const propertySchema = new mongoose.Schema({
     floor:{
         type: Number,
         // required: true,
-    },
-    kitchen:{
-        type: Boolean,
     },
     facade:{
         type: String
@@ -101,8 +98,6 @@ const propertySchema = new mongoose.Schema({
     ageforbuild:{
         type: Number,
         // required: true,
-        min: 1900,
-        max: new Date().getFullYear() + 1
     }
 
 },{

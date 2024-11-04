@@ -50,7 +50,7 @@
 }
 @media (max-width:600px) {
   .cards-properties{
-    width: 47% !important;
+    width: 95% !important;
   }
 }
 @media (max-width:475px) {

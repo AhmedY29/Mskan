@@ -8,7 +8,7 @@ import '../style.css';
 
 const accessToken = "pk.eyJ1IjoiYWhtZWQyOTc3IiwiYSI6ImNtMmc0dmQyOTBlbmEycHBmbnFxcjRtbzcifQ.y97cAeETJnH9x2kpXDaAzA";
 
-function Maps2() {
+function Mapbox({items}) {
   const mapContainerRef = useRef();
   const mapInstanceRef = useRef();
   const [, setMapLoaded] = useState(false);
@@ -18,7 +18,15 @@ function Maps2() {
   useEffect(() => {
     mapboxgl.accessToken = accessToken;
 
-
+    // تحقق مما إذا كان قد تم تهيئة الـ RTL
+    if (!rtlPluginInitialized.current) {
+      mapboxgl.setRTLTextPlugin(
+        'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.3.0/mapbox-gl-rtl-text.js',
+        null,
+        true
+      );
+      rtlPluginInitialized.current = true; // تحديث الحالة بعد التهيئة
+    }
 
     mapInstanceRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -28,15 +36,26 @@ function Maps2() {
       language:'ar'
 
     });
-    new mapboxgl.Marker({
-      color:'red',
-      scale:1
-    })
-    .setLngLat([43.973052, 26.32851])
-    .addTo(mapInstanceRef.current);
-    mapInstanceRef.current.on("load", () => {
-      setMapLoaded(true);
-    });
+    {
+        items.map(item => {
+          new mapboxgl.Marker({
+            color:'red',
+            scale:1
+          })
+         .setLngLat([item.latitude, item.longitude])
+         .addTo(mapInstanceRef.current);
+        })
+  
+    }
+    // new mapboxgl.Marker({
+    //   color:'red',
+    //   scale:1
+    // })
+    // .setLngLat([43.973052, 26.32851])
+    // .addTo(mapInstanceRef.current);
+    // mapInstanceRef.current.on("load", () => {
+    //   setMapLoaded(true);
+    // });
 
     return () => {
       mapInstanceRef.current.remove();
@@ -61,4 +80,4 @@ function Maps2() {
   );
 }
 
-export default Maps2;
+export default Mapbox;
