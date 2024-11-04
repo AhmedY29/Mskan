@@ -11,6 +11,8 @@ import Maps from "../components/Map.jsx";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
+import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+
 import PhotoDialog from "./PhotoDialog";
 import Maps2 from "./Map copy.jsx";
 import { Dialog, DialogTitle } from "@mui/material";
@@ -105,10 +107,8 @@ export default function PropertyDetailsPhotos() {
             variant="outlined"
             color="primary"
             onClick={() => handleClick3d()}
-            startIcon={<IosShareOutlinedIcon />}
-          >
-            3D
-          </Button>
+            startIcon={<ThreeDRotationIcon />}
+          />
         </div>
         <Card sx={{ minWidth: 275 }}>
           <CardContent style={{ display: "flex" }}>
