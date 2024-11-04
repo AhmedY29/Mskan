@@ -18,6 +18,7 @@ import { useAuthStore } from './store/authStore.js';
 import { useEffect } from 'react';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
+import { CircularProgress } from '@mui/material';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -41,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
   }, [isAuthenticated, user]);
 
   if (loading) {
-    return <div>Loading...</div>; // يمكنك عرض شيء أثناء الانتظار
+    return <div style={{display:'flex', justifyContent:"center"}}><CircularProgress /></div>; // يمكنك عرض شيء أثناء الانتظار
   }
 
   if (!isAuthenticated) {

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  CircularProgress,
   Divider,
   InputAdornment,
   TextField,
@@ -117,7 +118,7 @@ export default function Auth() {
                       size="large"
                       sx={{ marginTop: "20px" }}
                     >
-                      تسجيل الدخول
+                      {isLoading ? <CircularProgress/> : 'تسجيل الدخول'}
                     </Button>
                 </div>
               </form>
@@ -209,7 +210,8 @@ export default function Auth() {
                     size="large"
                     sx={{ marginTop: "20px" }}
                   >
-                    التسجيل
+                    {isLoading ? <CircularProgress/> : 'التسجيل'}
+
                   </Button>
                 </div>
               </form>
