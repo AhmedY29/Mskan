@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { usePropertiesStore } from "../store/propertiesStore.js";
 import L from 'leaflet';
 const customIcon = new L.Icon({
-  iconUrl: 'https://www.svgrepo.com/show/127575/location-sign.svg', // استبدل هذا بالرابط الصحيح للأيقونة
+  iconUrl: 'https://www.svgrepo.com/show/312483/location-indicator-red.svg', // استبدل هذا بالرابط الصحيح للأيقونة
   iconSize: [28, 44], // حجم الأيقونة
   iconAnchor: [12, 41], // نقطة الربط في الأيقونة
   popupAnchor: [1, -34], // نقطة الربط للنافذة المنبثقة
