@@ -3,8 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 
  const API_URL =import.meta.mode === 'development' ? 'http://localhost:5000/api/property': '/api/property';
- 
-// production
+ // production
  axios.defaults.withCredentials = true; 
 export const usePropertiesStore= create((set)=>({
     properties:[],
