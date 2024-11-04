@@ -52,6 +52,9 @@
   .cards-properties{
     width: 95% !important;
   }
+  .imgs{
+    width: 385px !important;
+  }
 }
 @media (max-width:475px) {
   .cards-properties{
@@ -75,6 +78,10 @@
 }
   .text-field{
     max-width: 150px;
+  }
+  .imgs{
+    height: 424px !important;
+    top: 173px!important;
   }
 }
 

@@ -21,7 +21,7 @@ export default function NavBar() {
     setOpen(false);
   }
   const handleClickOpen = () => {
-    if (!isAuthenticated){
+    if (!isAuthenticated && !user.isVerified) {
       toast.error('يجب ان تسجل الدخول او تفعل حسابك.')
       setOpen(false)
   }else{

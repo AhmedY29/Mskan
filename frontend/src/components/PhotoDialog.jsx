@@ -15,6 +15,8 @@ import '../style.css';
 // icon
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CloseIcon from '@mui/icons-material/Close';
+import { AppBar, Chip, IconButton, Toolbar } from "@mui/material";
 export default function PhotoDialog({open , handleCloseClick}){
 
     const [displays, setDisplays] = useState('images');
@@ -85,23 +87,56 @@ export default function PhotoDialog({open , handleCloseClick}){
       <Dialog
         open={open}
         onClose={handleClose}
-        maxWidth='md'
-        sx={{height:'900px'}}
+        fullScreen
+        sx={{}}  
+      >
+          <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+            
+
+          </Toolbar>
+        </AppBar>
+        <div className="arrows" style={{display: currentImage == itemData.length -1  ? 'none' : 'flex' , paddingLeft:'200px'}} onClick={()=> setCurrentImage(currentImage+1)} >
+            <ArrowForwardIosIcon sx={{fontSize:'100px',  color:"black",zIndex:'1'}}/>
+        </div>
+        <div style={{display:'flex', justifyContent:'center'}}>
+          <img className="imgs"
+          style={{position:'absolute', top:'125px' , width:'640px', height:'500px', objectFit:'contain'}}
+            src={itemData[currentImage].img}
+          />
+          <Chip label={`${itemData.length}/${currentImage+1} `} sx={{marginTop:'5px', position:'absolute' , bottom:'30px'}}/>
+          </div>
+                  <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight:'200px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
+                  <ArrowBackIosNewIcon sx={{fontSize:'100px' , color:"black" ,zIndex:'1' }}/>
+        </div>
+        
+      </Dialog>
+      
+      {/* <Container fixed 
+        open={open}
+        onClose={handleClose}
+        style={{height:'100vh', width:'100vw', display: open ? 'flex' : 'none' , position:'absolute' , justifyContent: 'center' ,backgroundColor:'#eee', overflow:'hidden'}}
       >
 
-        <div className="arrows" style={{display: currentImage == itemData.length -1  ? 'none' : 'flex' , paddingLeft:'200px'}} onClick={()=> setCurrentImage(currentImage+1)} >
+        <div className="arrows" style={{display: currentImage == itemData.length -1  ? 'none' : 'flex' , paddingLeft:'200px' , right:'0px'}} onClick={()=> setCurrentImage(currentImage+1)} >
             <ArrowForwardIosIcon sx={{fontSize:'100px'}}/>
         </div>
           <img
-          style={{objectFit:'cover'}}
+          style={{margin:"80px"}}
             src={itemData[currentImage].img}
           />
-                  <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight:'200px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
+                  <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight:'200px', left:'30px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
                   <ArrowBackIosNewIcon sx={{fontSize:'100px'}}/>
         </div>
-        {/* ddd */}
-      </Dialog>
-      
+      </Container> */}
         </>
     )
 }
