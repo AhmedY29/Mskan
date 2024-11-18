@@ -112,7 +112,6 @@ console.log('ssssssss',property)
 
       </Dialog> */}
       {/* ddddd */}
-      {!imagesLoaded && <div>جارٍ تحميل الصور...</div>}
       <Dialog
         open={open}
         onClose={handleClose}
