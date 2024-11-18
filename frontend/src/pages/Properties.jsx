@@ -26,6 +26,10 @@ export default function Properties() {
     getProperties();
   }, [getProperties]);
 
+  if(isLoading) {
+    return <Loading />
+  }
+
   console.log("properties:", properties);
   return (
     <>

@@ -2,9 +2,9 @@ import {create} from 'zustand';
 import axios from 'axios';
 import { useState } from 'react';
 
- const API_URL = import.meta.mode === 'development' ?'http://localhost:5000/api/property' : '/api/property';
- //
- //
+ const API_URL ='http://localhost:5000/api/property' 
+ // import.meta.mode === 'development' ?
+ // : '/api/property';
  // production
  axios.defaults.withCredentials = true; 
 export const usePropertiesStore= create((set)=>({
@@ -15,9 +15,10 @@ export const usePropertiesStore= create((set)=>({
     setProperty:(property) => set({property}),
     
     createProperty: async (newProperty) => {
+        set({isLoading:true})
         try {
             const response = await axios.post(API_URL, newProperty);
-            set((state) => ({properties:[...state.properties, response.data]}));
+            set((state) => ({properties:[...state.properties, response.data.data] , isLoading:false}));
         } catch (error) {
             console.error('Error in create property', error.message)
         }

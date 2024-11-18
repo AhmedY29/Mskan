@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Dialog, DialogContent, DialogTitle, FormControl, InputAdornment, InputLabel, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, Dialog, DialogContent, DialogTitle, FormControl, InputAdornment, InputLabel, ListItemButton, ListItemIcon, ListItemText, MenuItem, Select, Step, StepLabel, Stepper, TextField, Typography } from "@mui/material";
 import * as React from 'react';
 import { usePropertiesStore } from "../store/propertiesStore.js";
 import toast from "react-hot-toast";
@@ -33,6 +33,7 @@ import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { useNavigate } from "react-router-dom";
+import Loading from "./Loading.jsx";
 
 
 
@@ -87,11 +88,11 @@ export default function AddProperty({open , handleClose1} ){
         owner: user._id,
 
     })
-    const {createProperty} = usePropertiesStore();
+    const {createProperty , isLoading} = usePropertiesStore();
     const navigate = useNavigate()
     async function handelAddProperty(){
         await createProperty(property)
-        navigate(`/propertyDetails/${property._id}`)
+        // navigate(`/propertyDetails/${property._id}`)
         toast.success('تم اضافة العقار بنجاح')
         handleClose()
     }
@@ -220,7 +221,7 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handelAddProperty}>  إضافة العقار</Button>
+            <Button onClick={handelAddProperty}> {isLoading ? <CircularProgress /> : ' إضافة العقار'}</Button>
           </Box>
         </React.Fragment>
       ) : activeStep === 0 ? (

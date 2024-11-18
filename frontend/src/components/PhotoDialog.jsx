@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -17,7 +17,9 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 import { AppBar, Chip, IconButton, Toolbar } from "@mui/material";
-export default function PhotoDialog({open , handleCloseClick}){
+import Loading from "./Loading";
+import { usePropertiesStore } from "../store/propertiesStore";
+export default function PhotoDialog({open , handleCloseClick , property}){
 
     const [displays, setDisplays] = useState('images');
   
@@ -26,6 +28,7 @@ export default function PhotoDialog({open , handleCloseClick}){
         setDisplays(newDisplays);
       }
     };
+console.log('ssssssss',property)
 
     function handleClose(){
         handleCloseClick()
@@ -35,6 +38,32 @@ export default function PhotoDialog({open , handleCloseClick}){
     const [currentImage, setCurrentImage] = useState(0);
     const [displayChange, setDisplayChange] = useState('Photos');
 
+    const [imagesLoaded, setImagesLoaded] = useState(false);  // حالة لمعرفة ما إذا تم تحميل الصور
+    const [loadedImagesCount, setLoadedImagesCount] = useState(0);  // عدد الصور المحملة
+  
+    // التحقق من أن property.images موجودة
+    if (!property || !property.images || property.images.length === 0) {
+      return <div>لا توجد صور لعرضها.</div>;
+    }
+  
+    // وظيفة لتحديث حالة التحميل
+    const handleImageLoad = () => {
+      setLoadedImagesCount(prevCount => prevCount + 1); // زيادة العداد عند تحميل صورة
+    };
+  
+    // التأكد من تحميل جميع الصور
+    useEffect(() => {
+      if (loadedImagesCount === property.images.length) {
+        setImagesLoaded(true);  // إذا تم تحميل جميع الصور
+      }
+    }, [loadedImagesCount, property.images.length]);  // إعادة الحساب عندما يتغير العداد أو عدد الصور
+    
+    const mergedImages = property?.mainPhoto 
+    ? [  property.mainPhoto , ...property.images ] // دمج الصورة الرئيسية مع باقي الصور
+    : property.images || [];
+
+    console.log(mergedImages)
+    
     function handleImageClick(id){
         setOpenPhoto(true);
         setCurrentImage(id);
@@ -83,7 +112,7 @@ export default function PhotoDialog({open , handleCloseClick}){
 
       </Dialog> */}
       {/* ddddd */}
-      
+      {!imagesLoaded && <div>جارٍ تحميل الصور...</div>}
       <Dialog
         open={open}
         onClose={handleClose}
@@ -104,15 +133,15 @@ export default function PhotoDialog({open , handleCloseClick}){
 
           </Toolbar>
         </AppBar>
-        <div className="arrows" style={{display: currentImage == itemData.length -1  ? 'none' : 'flex' , paddingLeft:'200px'}} onClick={()=> setCurrentImage(currentImage+1)} >
+        <div className="arrows" style={{display: currentImage == mergedImages.length -1  ? 'none' : 'flex' , paddingLeft:'200px'}} onClick={()=> setCurrentImage(currentImage+1)} >
             <ArrowForwardIosIcon sx={{fontSize:'100px',  color:"black",zIndex:'1'}}/>
         </div>
         <div style={{display:'flex', justifyContent:'center'}}>
           <img className="imgs"
           style={{position:'absolute', top:'125px' , width:'640px', height:'500px', objectFit:'contain'}}
-            src={itemData[currentImage].img}
+            src={mergedImages[currentImage]}
           />
-          <Chip label={`${itemData.length}/${currentImage+1} `} sx={{marginTop:'5px', position:'absolute' , bottom:'30px'}}/>
+          <Chip label={`${mergedImages.length}/${currentImage+1} `} sx={{marginTop:'5px', position:'absolute' , bottom:'30px'}}/>
           </div>
                   <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight:'200px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
                   <ArrowBackIosNewIcon sx={{fontSize:'100px' , color:"black" ,zIndex:'1' }}/>

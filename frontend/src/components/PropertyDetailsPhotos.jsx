@@ -11,34 +11,38 @@ import Maps from "../components/Map.jsx";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
-import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import ThreeDRotationIcon from "@mui/icons-material/ThreeDRotation";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 
 import PhotoDialog from "./PhotoDialog";
 import MapDetails from "./MapDetails.jsx";
-import { Avatar, CircularProgress, Dialog, DialogTitle, IconButton } from "@mui/material";
+import {
+  Avatar,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import { usePropertiesStore } from "../store/propertiesStore.js";
 import { useAuthStore } from "../store/authStore.js";
 import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-export default function PropertyDetailsPhotos({property}) {
+export default function PropertyDetailsPhotos({ property }) {
   const { id } = useParams();
-  const{isLoading , deleteProperty }=usePropertiesStore()
-  const{user} = useAuthStore()
+  const { isLoading, deleteProperty } = usePropertiesStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
-  
+
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isAuther, setIsAuther] = useState(false);
   useEffect(() => {
-    setTimeout(() =>{
+    setTimeout(() => {
+      setIsAuther(user._id == property.owner._id);
+    }, 1500);
+  }, [user, property]);
 
-      setIsAuther( user._id == property.owner._id )
-    },1500)
-
-  }, [user, property])
-  
   function marks(isBookmarked) {
     if (isBookmarked) {
       return <BookmarkAddedIcon />;
@@ -62,42 +66,39 @@ export default function PropertyDetailsPhotos({property}) {
     setOpen(false);
   };
 
-  function handleClick3d(){
+  function handleClick3d() {
     setOpen3d(true);
   }
 
-  function handleClose3d(){
+  function handleClose3d() {
     setOpen3d(false);
   }
-  
-
-
 
   return (
     <>
-      <div style={{ flex: "2" }} >
-        <div style={{ cursor:'pointer'}} onClick={handleClickOpen}>
-        <img
-          className="img-property"
-          src= {property.mainPhoto}
-          alt="Property Photo"
-          width={477}
-          height={483}
-          style={{ borderRadius: "16px" , objectFit:'cover' }}
-        />
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {property.images?.map((img) => {
-            return(
-              <img
-            src={img}
+      <div style={{ flex: "2" }}>
+        <div style={{ cursor: "pointer" }} onClick={handleClickOpen}>
+          <img
+            className="img-property"
+            src={property.mainPhoto}
             alt="Property Photo"
-            width={150}
-            height={90}
-            style={{ borderRadius: "16px" , objectFit:'cover' }}
+            width={477}
+            height={483}
+            style={{ borderRadius: "16px", objectFit: "cover" }}
           />
-            )
-          })}
-          {/* <img
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {property.images?.map((img) => {
+              return (
+                <img
+                  src={img}
+                  alt="Property Photo"
+                  width={150}
+                  height={90}
+                  style={{ borderRadius: "16px", objectFit: "cover" }}
+                />
+              );
+            })}
+            {/* <img
             src={"https://images.bayut.sa/thumbnails/4092407-800x600.webp"}
             alt="Property Photo"
             width={150}
@@ -143,36 +144,39 @@ export default function PropertyDetailsPhotos({property}) {
             onClick={() => handleClick3d()}
             startIcon={<ThreeDRotationIcon />}
           />
-          {
-              isAuther ?
+          {isAuther ? (
             // <Button
             // variant="outlined"
             // color="error"
             // onClick={() => handleClick3d()}
             // startIcon={<DeleteOutlineIcon />}
             <IconButton size="large" color="error">
-  <DeleteOutlineIcon fontSize="inherit" onClick={()=> {
-    deleteProperty(id)
-    return navigate('/'), toast.success("تم حذف العقار بنجاح")
-    }} />
-</IconButton>
-          :''
-          }
-          {
-              isAuther ?
-              <IconButton size="large" color="primary">
-                <Link to={`/updateProperty/${id}`} >
-  <ModeEditOutlineOutlinedIcon fontSize="inherit"/>
-  </Link>
-</IconButton>
-          //   <Button
-          //   variant="outlined"
-          //   color="primary"
-          //   onClick={() => handleClick3d()}
-          //   startIcon={<ModeEditOutlineOutlinedIcon />}
-          // />
-          :''
-          }
+              <DeleteOutlineIcon
+                fontSize="inherit"
+                onClick={() => {
+                  deleteProperty(id);
+                  return navigate("/"), toast.success("تم حذف العقار بنجاح");
+                }}
+              />
+            </IconButton>
+          ) : (
+            ""
+          )}
+          {isAuther ? (
+            <IconButton size="large" color="primary">
+              <Link to={`/updateProperty/${id}`}>
+                <ModeEditOutlineOutlinedIcon fontSize="inherit" />
+              </Link>
+            </IconButton>
+          ) : (
+            //   <Button
+            //   variant="outlined"
+            //   color="primary"
+            //   onClick={() => handleClick3d()}
+            //   startIcon={<ModeEditOutlineOutlinedIcon />}
+            // />
+            ""
+          )}
         </div>
         <Card sx={{ minWidth: 275 }}>
           <CardContent style={{ display: "flex" }}>
@@ -181,11 +185,11 @@ export default function PropertyDetailsPhotos({property}) {
                 gutterBottom
                 sx={{ color: "text.secondary", fontSize: 14 }}
               >
-                          <Avatar
-            sx={{ width: 70, height: 70 }}
-            alt={property.owner?.name}
-            src={property.owner?.avatar}
-          />
+                <Avatar
+                  sx={{ width: 70, height: 70 }}
+                  alt={property.owner?.name}
+                  src={property.owner?.avatar}
+                />
                 {/* <img
                   src={property.owner.avatar}
                   alt=""
@@ -215,30 +219,32 @@ export default function PropertyDetailsPhotos({property}) {
             <Button variant="outlined">مراسلة</Button>
           </CardActions>
         </Card>
-        <div style={{height:'400px'  , marginTop:'25px' , marginBottom:'60px'}}>
-          <Typography variant="h6">
-            الخريطة
-          </Typography>
+        <div
+          style={{ height: "400px", marginTop: "25px", marginBottom: "60px" }}
+        >
+          <Typography variant="h6">الخريطة</Typography>
 
-                {
-                  !isLoading ?
-                    <MapDetails log={property.longitude || 0} lat={property.latitude|| 0}/> : ''
-                  
-                }
-          
+          {!isLoading ? (
+            <MapDetails
+              log={property.longitude || 0}
+              lat={property.latitude || 0}
+            />
+          ) : (
+            ""
+          )}
         </div>
-        
       </div>
-      <PhotoDialog open={open} handleCloseClick={handleClose}/>
-      <Dialog
-        open={open3d}
-        onClose={handleClose3d}
-        maxWidth="md"
-      >
-       <iframe style={{padding:'12px'}} src="https://www.zillow.com/view-3d-home/833510a2-abe4-441a-9e55-0971e16c098b?setAttribution=mls&wl=true&utm_source=dashboard" height="650" width="700" frameborder="0" allowfullscreen></iframe>
-
+      <PhotoDialog open={open} handleCloseClick={handleClose} property={property}  />
+      <Dialog open={open3d} onClose={handleClose3d} maxWidth="md">
+        <iframe
+          style={{ padding: "12px" }}
+          src="https://www.zillow.com/view-3d-home/833510a2-abe4-441a-9e55-0971e16c098b?setAttribution=mls&wl=true&utm_source=dashboard"
+          height="650"
+          width="700"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
       </Dialog>
-
     </>
   );
 }

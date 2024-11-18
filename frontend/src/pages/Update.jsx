@@ -700,11 +700,13 @@ export default function Update() {
           const reader = new FileReader();
           reader.onload = () => {
             previewImages.push(reader.result);
+
+            // بعد الانتهاء من قراءة جميع الصور الجديدة
             if (previewImages.length === files.length) {
-              setUpdatedProperty({
-                ...updatedProperty,
-                images: previewImages,
-              });
+              setUpdatedProperty((prev) => ({
+                ...prev,
+                images: [...(prev.images || []), ...previewImages], // دمج الصور الجديدة مع الصور القديمة
+              }));
             }
           };
           reader.readAsDataURL(file);
@@ -712,6 +714,8 @@ export default function Update() {
       }}
     />
   </Button>
+
+  {/* عرض الصور */}
   <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
     {updatedProperty.images?.map((image, index) => (
       <Box key={index} sx={{ position: "relative" }}>
@@ -745,6 +749,7 @@ export default function Update() {
     ))}
   </Box>
 </Box>
+
 
 {/* الفيديو */}
 <Box>

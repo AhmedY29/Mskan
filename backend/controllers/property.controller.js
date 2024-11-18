@@ -125,10 +125,13 @@ export const deleteProperty = async (req, res) => {
 //     }
 // };
 
+
+
 export const updateProperty = async (req, res) => {
     const { propertyId } = req.params;
     const updatedData = req.body;  
-    const newImages = req.files;   
+    const newImagesBase64 = req.body.images;   
+    const newMainPhotoBase64 = req.body.mainPhoto; 
     const imagesToDelete = req.body.imagesToDelete || [];  
 
     try {
@@ -143,31 +146,81 @@ export const updateProperty = async (req, res) => {
 
         if (imagesToDelete.length > 0) {
             try {
-                await cloudinary.api.delete_resources(imagesToDelete, { invalidate: true });
-                console.log('Deleted images from Cloudinary:', imagesToDelete);
+                const publicIdsToDelete = imagesToDelete.map((image) => {
+                    const publicId = image.split('/').pop().split('.')[0];  // استخراج public_id من الرابط
+                    return `${folderName}/${publicId}`; // إضافة اسم المجلد
+                });
 
-                updatedImages = updatedImages.filter(image => !imagesToDelete.includes(image));
+                // حذف الصور من Cloudinary
+                const deleteResult = await cloudinary.api.delete_resources(publicIdsToDelete, { invalidate: true });
+
+
+                // تحديث قائمة الصور في قاعدة البيانات بعد الحذف
+                updatedImages = updatedImages.filter((image) => {
+                    const publicId = image.split('/').pop().split('.')[0];
+                    return !publicIdsToDelete.includes(`${folderName}/${publicId}`);
+                });
+
             } catch (cloudError) {
                 console.error('Error deleting images from Cloudinary:', cloudError);
-                return res.status(500).json({ success: false, msg: "Error deleting images from Cloudinary", error: cloudError.message });
+                return res.status(500).json({
+                    success: false,
+                    msg: "Error deleting images from Cloudinary",
+                    error: cloudError.message,
+                });
             }
         }
 
-        if (newImages && newImages.length > 0) {
+        // **رفع الصور الجديدة (Base64) إلى Cloudinary**
+        if (newImagesBase64 && newImagesBase64.length > 0) {
             try {
-                for (let image of newImages) {
-                    const uploadResult = await cloudinary.uploader.upload(image.path, {
+                for (let base64Image of newImagesBase64) {
+                    const uploadResult = await cloudinary.uploader.upload(base64Image, {
+                        folder: folderName,  // تحديد المجلد في Cloudinary
+                        use_filename: true,
+                        unique_filename: false,
+                    });
+                    const imageExists = updatedImages.some((imageUrl) => imageUrl === uploadResult.secure_url);
+                    if (imageExists) {
+                        continue;  // تجاهل هذه الصورة إذا كانت موجودة بالفعل
+                    }
+                    updatedImages.push(uploadResult.secure_url);  // إضافة رابط الصورة الجديدة إلى قائمة الصور
+                }
+            } catch (cloudError) {
+                console.error('Error handling images in Cloudinary:', cloudError);
+                return res.status(500).json({
+                    success: false,
+                    msg: "Error handling images in Cloudinary",
+                    error: cloudError.message,
+                });
+            }
+        
+        
+            // رفع الصورة الرئيسية الجديدة إلى Cloudinary
+            try {
+                if (newMainPhotoBase64) {
+                    const uploadResult = await cloudinary.uploader.upload(newMainPhotoBase64, {
                         folder: folderName,
                         use_filename: true,
                         unique_filename: false,
                     });
-                    console.log('Image uploaded to Cloudinary:', uploadResult.secure_url);
-                    
-                    updatedImages.push(uploadResult.secure_url);
+        
+                    // تحديث الصورة الرئيسية في قاعدة البيانات
+                    updatedData.mainPhoto = uploadResult.secure_url;
+                } else {
+                    console.error('No valid path for new main photo');
+                    return res.status(400).json({
+                        success: false,
+                        msg: "Invalid path for new main photo",
+                    });
                 }
-            } catch (cloudError) {
-                console.error('Error handling images in Cloudinary:', cloudError);
-                return res.status(500).json({ success: false, msg: "Error handling images in Cloudinary", error: cloudError.message });
+            } catch (uploadError) {
+                console.error('Error uploading new main photo to Cloudinary:', uploadError);
+                return res.status(500).json({ 
+                    success: false, 
+                    msg: "Error uploading new main photo to Cloudinary", 
+                    error: uploadError.message 
+                });
             }
         }
 
