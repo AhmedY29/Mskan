@@ -2,12 +2,17 @@ import {create} from 'zustand';
 import axios from 'axios';
 import { useState } from 'react';
 
- const API_URL =import.meta.mode === 'development' ? 'http://localhost:5000/api/property': '/api/property';
+ const API_URL = 'http://localhost:5000/api/property';
+ //: '/api/property'
+ //import.meta.mode === 'development' ?
  // production
  axios.defaults.withCredentials = true; 
 export const usePropertiesStore= create((set)=>({
     properties:[],
+    property:[],
+    isLoading:false,
     setProperties:(properties) => set({properties}),
+    setProperty:(property) => set({property}),
     
     createProperty: async (newProperty) => {
         try {
@@ -18,11 +23,39 @@ export const usePropertiesStore= create((set)=>({
         }
     },
     getProperties: async () => {
+        set({isLoading:true})
         try {
             const response = await axios.get(API_URL);
-            set(({properties:response.data.data}));
+            set(({properties:response.data.data , isLoading:false}));
         } catch (error) {
             console.error('Error in gets properties', error.message)
         }
-    }
+    },
+    getProperty: async (id) => {
+        set({isLoading:true})
+        try {
+            const response = await axios.get(`${API_URL}/${id}`);
+            set(({property:response.data.data , isLoading:false,}));
+        } catch (error) {
+            console.error('Error in get property', error.message)
+        }
+    },
+    deleteProperty: async (id) => {
+        set({isLoading:true})
+        try {
+            const response = await axios.delete(`${API_URL}/${id}`);
+            set(({isLoading:false,}));
+        } catch (error) {
+            console.error('Error in delete property', error.message)
+        }
+    },
+    updateProperty: async (propertyId, updatedData) => {
+        set({ isLoading: true });
+        try {
+            const response = await axios.put(`${API_URL}/${propertyId}`, updatedData);
+            set({ property: response.data, isLoading: false });
+        } catch (error) {
+            set({ error: error.message, isLoading: false });
+        }
+    },
 }));

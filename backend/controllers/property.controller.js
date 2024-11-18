@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
 import Property from "../models/property.model.js";
-
+import cloudinary from "../config/cloudinary.js"
 
 
 
 export const getProperties = async (req, res) => {
     try {
-        const properties = await Property.find({});
+        const properties = await Property.find({})
+        .populate('owner')
         res.status(200).json({success: true, data: properties});
     } catch (error) {
-        console.error('Error in get properties', error.msg)
+        console.error('Error in get properties', error.message || error);
         res.status(500).json({ success: false, msg: "Server Error" });
         
     }
@@ -17,45 +18,276 @@ export const getProperties = async (req, res) => {
 
 export const createProperty = async (req, res) => {
     const property = req.body // user will be passed
+    // if(!property.title || !property.description || !property.price || !property.location){
+    //     return res.status(400).json({ success:false, msg: "Please provide all required fields" });
+    // }
+    // let cloudinaryResponse = null
+    // if(images){
+    //     cloudinaryResponse = await cloudinary.uploader.upload(images , {folder: "properties"})
+    // }
+    // const newProperty = new Property({...property , images: cloudinaryResponse?.secure_url ? cloudinaryResponse.secure_url: ''});
 
-    if(!property.title || !property.description || !property.price || !property.location){
-        return res.status(400).json({ success:false, msg: "Please provide all required fields" });
+    let uploadedImages = [];
+    let mainPhotoUrl = "";
+
+    if (property.mainPhoto) {
+        const mainPhotoResult = await cloudinary.uploader.upload(property.mainPhoto, {
+          folder: property.title,
+        });
+        mainPhotoUrl = mainPhotoResult.secure_url;
+      }
+
+    if (property.images && Array.isArray(property.images)) {
+      for (const imageBase64 of property.images) {
+        const result = await cloudinary.uploader.upload(imageBase64, {
+          folder: property.title,
+        });
+        uploadedImages.push(result.secure_url);
+      }
     }
 
-    const newProperty = new Property(property);
+    const newProperty = new Property({
+      ...property,
+      mainPhoto: mainPhotoUrl,
+      images: uploadedImages,
+    });
 
     try {
         await newProperty.save();
         res.status(201).json({ success: true, msg: "Property created successfully", data: newProperty });
     } catch (error) {
-        console.error('Error in create property', error.msg)
+        console.error('Error in create property', error.message)
         res.status(500).json({ success: false, msg: "Server Error" });
     }
 };
+
+// export const deleteProperty = async (req, res) => {
+//     const {propertyId} = req.params
+//     try {
+//         const property = await Property.findById(propertyId);
+//         const folderName = property.title;
+//         await cloudinary.api.delete_folder(folderName, { invalidate: true });
+//         await Property.findByIdAndDelete(propertyId)
+
+//         res.status(200).json({ success: true, msg: "Property deleted successfully" });
+//     } catch (error) {
+//         res.status(404).json({ success: false, msg: "Error Property not found" });
+//     }
+// };
 
 export const deleteProperty = async (req, res) => {
-    const {propertyId} = req.params
+    const { propertyId } = req.params;
+  
     try {
-        await Property.findByIdAndDelete(propertyId)
-        res.status(200).json({ success: true, msg: "Property deleted successfully" });
+        // العثور على العقار في قاعدة البيانات
+        const property = await Property.findById(propertyId);
+        
+        // إذا لم يتم العثور على العقار
+        if (!property) {
+            return res.status(404).json({ success: false, msg: "Property not found" });
+        }
+
+        // اسم المجلد الذي يحتوي على الصور
+        const folderName = property.title;
+
+
+        await cloudinary.api.delete_resources_by_prefix(folderName, { invalidate: true });
+        
+        // حذف المجلد من Cloudinary
+        await cloudinary.api.delete_folder(folderName, { invalidate: true });
+
+        // حذف العقار من قاعدة البيانات
+        await Property.findByIdAndDelete(propertyId);
+
+        // إرسال استجابة بنجاح الحذف
+        res.status(200).json({ success: true, msg: "Property and folder deleted successfully" });
+
     } catch (error) {
-        res.status(404).json({ success: false, msg: "Error Property not found" });
+        // إرسال رسالة خطأ مفصلة
+        console.error('Error in deleting property:', error);
+        res.status(500).json({ success: false, msg: "Server Error" });
     }
 };
 
+// export const updateProperties = async (req, res) => {
+//     const {propertyId} = req.params
+//     const property = req.body
 
-export const updateProperties = async (req, res) => {
-    const {propertyId} = req.params
-    const property = req.body
+//     if(!mongoose.Types.ObjectId.isValid(propertyId)){
+//         return res.status(404).json({ success: false, msg: "Invalid Id" });
+//     }
 
-    if(!mongoose.Types.ObjectId.isValid(propertyId)){
-        return res.status(404).json({ success: false, msg: "Invalid Id" });
-    }
+//     try {
+//        const updatedProperty = await Property.findByIdAndUpdate(propertyId , property ,{new: true})
+//         res.status(200).json({ success: true, data: updatedProperty });
+//     } catch (error) {
+//         res.status(500).json({ success: false, msg: "Server Error" });
+//     }
+// };
+
+export const updateProperty = async (req, res) => {
+    const { propertyId } = req.params;
+    const updatedData = req.body;  
+    const newImages = req.files;   
+    const imagesToDelete = req.body.imagesToDelete || [];  
 
     try {
-       const updatedProperty = await Property.findByIdAndUpdate(propertyId , property ,{new: true})
-        res.status(200).json({ success: true, data: updatedProperty });
+        const property = await Property.findById(propertyId);
+
+        if (!property) {
+            return res.status(404).json({ success: false, msg: "Property not found" });
+        }
+
+        const folderName = property.title;
+        let updatedImages = property.images || []; 
+
+        if (imagesToDelete.length > 0) {
+            try {
+                await cloudinary.api.delete_resources(imagesToDelete, { invalidate: true });
+                console.log('Deleted images from Cloudinary:', imagesToDelete);
+
+                updatedImages = updatedImages.filter(image => !imagesToDelete.includes(image));
+            } catch (cloudError) {
+                console.error('Error deleting images from Cloudinary:', cloudError);
+                return res.status(500).json({ success: false, msg: "Error deleting images from Cloudinary", error: cloudError.message });
+            }
+        }
+
+        if (newImages && newImages.length > 0) {
+            try {
+                for (let image of newImages) {
+                    const uploadResult = await cloudinary.uploader.upload(image.path, {
+                        folder: folderName,
+                        use_filename: true,
+                        unique_filename: false,
+                    });
+                    console.log('Image uploaded to Cloudinary:', uploadResult.secure_url);
+                    
+                    updatedImages.push(uploadResult.secure_url);
+                }
+            } catch (cloudError) {
+                console.error('Error handling images in Cloudinary:', cloudError);
+                return res.status(500).json({ success: false, msg: "Error handling images in Cloudinary", error: cloudError.message });
+            }
+        }
+
+        const updatedProperty = await Property.findByIdAndUpdate(propertyId, {
+            ...updatedData,
+            images: updatedImages, 
+        }, { new: true });
+
+        res.status(200).json({ success: true, data: updatedProperty, msg: "Property updated successfully" });
+
     } catch (error) {
-        res.status(500).json({ success: false, msg: "Server Error" });
+        console.error('Error in updating property:', error);
+        res.status(500).json({ success: false, msg: "Server Error", error: error.message });
+    }
+};
+
+// export const updateProperty = async (req, res) => {
+//     const { propertyId } = req.params;
+//     const updatedData = req.body;  
+//     const newImages = req.files;  // صور جديدة تم رفعها
+//     const imagesToDelete = req.body.imagesToDelete || [];  // صور سيتم حذفها
+
+//     // إذا كانت الصورة الرئيسية موجودة ضمن الـ request
+//     const mainPhoto = req.body.mainPhoto || null;
+
+//     try {
+//         // العثور على العقار في قاعدة البيانات
+//         const property = await Property.findById(propertyId);
+
+//         if (!property) {
+//             return res.status(404).json({ success: false, msg: "Property not found" });
+//         }
+
+//         const folderName = property.title;
+//         let updatedImages = property.images || [];  // صور العقار الحالية
+
+//         // حذف الصور التي سيتم حذفها
+//         if (imagesToDelete.length > 0) {
+//             try {
+//                 await cloudinary.api.delete_resources(imagesToDelete, { invalidate: true });
+//                 console.log('Deleted images from Cloudinary:', imagesToDelete);
+
+//                 // إزالة الصور المحذوفة من القائمة
+//                 updatedImages = updatedImages.filter(image => !imagesToDelete.includes(image));
+//             } catch (cloudError) {
+//                 console.error('Error deleting images from Cloudinary:', cloudError);
+//                 return res.status(500).json({ success: false, msg: "Error deleting images from Cloudinary", error: cloudError.message });
+//             }
+//         }
+
+//         // إضافة الصور الجديدة إلى القائمة
+//         if (newImages && newImages.length > 0) {
+//             try {
+//                 for (let image of newImages) {
+//                     const uploadResult = await cloudinary.uploader.upload(image.path, {
+//                         folder: folderName,
+//                         use_filename: true,
+//                         unique_filename: false,
+//                     });
+//                     console.log('Image uploaded to Cloudinary:', uploadResult.secure_url);
+                    
+//                     updatedImages.push(uploadResult.secure_url);
+//                 }
+//             } catch (cloudError) {
+//                 console.error('Error handling images in Cloudinary:', cloudError);
+//                 return res.status(500).json({ success: false, msg: "Error handling images in Cloudinary", error: cloudError.message });
+//             }
+//         }
+
+//         let oldMainPhoto = property.mainPhoto;
+//         if (mainPhoto) {
+//             // إذا كان هناك صورة رئيسية قديمة، يتم حذفها من Cloudinary
+//             if (oldMainPhoto) {
+//                 try {
+//                     const publicId = oldMainPhoto.split('/').pop().split('.')[0];  // استخراج الـ public_id من رابط الصورة
+//                     await cloudinary.uploader.destroy(publicId);
+//                     console.log('Deleted old main photo from Cloudinary:', oldMainPhoto);
+//                 } catch (cloudError) {
+//                     console.error('Error deleting old main photo from Cloudinary:', cloudError);
+//                     return res.status(500).json({ success: false, msg: "Error deleting old main photo from Cloudinary", error: cloudError.message });
+//                 }
+//             }
+
+//             // رفع الصورة الرئيسية الجديدة إلى Cloudinary
+//             try {
+//                 const uploadResult = await cloudinary.uploader.upload(mainPhoto.path, {
+//                     folder: folderName,
+//                     use_filename: true,
+//                     unique_filename: false,
+//                 });
+//                 console.log('Uploaded new main photo to Cloudinary:', uploadResult.secure_url);
+//                 updatedData.mainPhoto = uploadResult.secure_url;  // تحديث الـ mainPhoto في الـ database
+//             } catch (cloudError) {
+//                 console.error('Error uploading new main photo to Cloudinary:', cloudError);
+//                 return res.status(500).json({ success: false, msg: "Error uploading new main photo to Cloudinary", error: cloudError.message });
+//             }
+//         }
+
+//         // تحديث العقار في قاعدة البيانات
+//         const updatedProperty = await Property.findByIdAndUpdate(propertyId, {
+//             ...updatedData,
+//             images: updatedImages,  // تضمين الصور المحدثة
+//         }, { new: true });
+
+//         res.status(200).json({ success: true, data: updatedProperty, msg: "Property updated successfully" });
+
+//     } catch (error) {
+//         console.error('Error in updating property:', error);
+//         res.status(500).json({ success: false, msg: "Server Error", error: error.message });
+//     }
+// };
+
+
+export const getProperty = async (req, res) => {
+    const {propertyId} = req.params
+    try {
+        const property = await Property.findById(propertyId)
+        .populate("owner")
+        res.status(200).json({ success: true, data: property});
+    } catch (error) {
+        res.status(404).json({ success: false, msg: "Error Property not found" });
     }
 };

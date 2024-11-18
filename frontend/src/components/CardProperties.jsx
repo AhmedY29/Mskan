@@ -90,7 +90,7 @@ export default function CardProperties({ title, image , displaySwitch , price , 
               </Typography>
               <img
                 style={{ marginTop: "5px" }}
-                srcSet={agentphoto}
+                srcSet={agentphoto || 'a.com'}
                 alt=""
                 width={60}
                 height={60}

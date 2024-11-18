@@ -7,10 +7,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Properties from './pages/Properties.jsx';
 import PropertyDetails from './pages/PropertyDetails.jsx';
 import Profile from './pages/Profile.jsx';
-import UserProfile from './components/UserProfile.jsx';
-import UserSave from './components/UserSave.jsx';
-import UserProperties from './components/UserProperties.jsx';
-import UserChat from './components/UserChat.jsx';
 import Auth from './pages/Auth.jsx';
 import VerifyEmail from './pages/VerifyEmail.jsx';
 import {Toaster} from 'react-hot-toast';
@@ -18,7 +14,8 @@ import { useAuthStore } from './store/authStore.js';
 import { useEffect } from 'react';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
-import { CircularProgress } from '@mui/material';
+import Loading from './components/Loading.jsx';
+import Update from './pages/Update.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -42,7 +39,7 @@ const ProtectedRoute = ({ children }) => {
   }, [isAuthenticated, user]);
 
   if (loading) {
-    return <div style={{display:'flex', justifyContent:"center"}}><CircularProgress /></div>; // يمكنك عرض شيء أثناء الانتظار
+    return <Loading/>
   }
 
   if (!isAuthenticated) {
@@ -81,6 +78,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/properties" element={<Properties />} />
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
+      <Route path="/updateProperty/:propertyId" element={<Update/>} />
 
       <Route path="/profile" element={
       <ProtectedRoute>

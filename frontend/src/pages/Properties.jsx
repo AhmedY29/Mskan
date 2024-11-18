@@ -10,6 +10,7 @@ import { useState } from "react";
 import Maps from "../components/Map.jsx";
 import { useEffect } from "react";
 import { usePropertiesStore } from "../store/propertiesStore.js";
+import Loading from "../components/Loading.jsx";
 
 export default function Properties() {
   const [displaySwitch, setDisplaySwitch] = useState("map");
@@ -20,7 +21,7 @@ export default function Properties() {
     }
   };
 
-  const { properties, getProperties } = usePropertiesStore();
+  const { properties, getProperties ,isLoading } = usePropertiesStore();
   useEffect(() => {
     getProperties();
   }, [getProperties]);
@@ -76,7 +77,10 @@ export default function Properties() {
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
-                {properties?.map((property) => (
+
+                {
+                isLoading ? <Loading/> : 
+                properties?.map((property) => (
                   // <Link key={property.id} to={'/propertyDetails/'} style={{width:'47%' , display:'flex'}}>
                   <CardProperties
                     key={property._id}

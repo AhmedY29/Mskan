@@ -17,7 +17,7 @@ import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
 import GarageOutlinedIcon from '@mui/icons-material/GarageOutlined';
 import BorderAllOutlinedIcon from '@mui/icons-material/BorderAllOutlined';
 
-export default function PropertyDetailsText() {
+export default function PropertyDetailsText({property}) {
   return (
     <>
       <div className="right-side" style={{ flex: "3", marginRight: "45px" }}>
@@ -26,9 +26,11 @@ export default function PropertyDetailsText() {
           <CardContent style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h6" component="div">
               فيلا للبيع في الرياض
+              {property.title}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
               الوادي، شمال الرياض، الرياض
+              {property.location}
             </Typography>
             <Typography
               sx={{ marginBottom: "10px" }}
@@ -36,6 +38,7 @@ export default function PropertyDetailsText() {
               component="div"
             >
               5,000,000 ريال
+              {property.price}
             </Typography>
             <Divider />
             <div
@@ -56,6 +59,7 @@ export default function PropertyDetailsText() {
               >
                 <BedOutlinedIcon />
                 11 غرف نوم
+                {property.rooms}
               </Typography>
               <Typography
                 sx={{
@@ -67,6 +71,7 @@ export default function PropertyDetailsText() {
                 component="div"
               >
                 <BathtubOutlinedIcon />6 دورات مياة
+                {property.bathrooms}
               </Typography>
               <Typography
                 sx={{
@@ -79,6 +84,7 @@ export default function PropertyDetailsText() {
               >
                 <GarageOutlinedIcon />
                 مدخل سيارة
+                {property.garage}
               </Typography>
               <Typography
                 sx={{
@@ -90,7 +96,8 @@ export default function PropertyDetailsText() {
                 component="div"
               >
                 <BorderAllOutlinedIcon />
-                445م2
+                445(م²)
+                {property.size}
               </Typography>
             </div>
           </CardContent>
@@ -110,6 +117,7 @@ export default function PropertyDetailsText() {
             <Typography sx={{ color: "text.secondary", mb: 1.5, mr: 1.5 }}>
               فيلا دور أرضي تتكون من: 3 غرف نوم ماستر مع شقتين في كل شقة مجلس
               وصالة ومطبخ وغرفتين نوم بدورتين مياه المساحة: 445 متر مربع
+              {property.description}
             </Typography>
           </CardContent>
         </Card>

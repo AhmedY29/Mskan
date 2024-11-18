@@ -12,12 +12,33 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 
 import PhotoDialog from "./PhotoDialog";
-import Maps2 from "./Map copy.jsx";
-import { Dialog, DialogTitle } from "@mui/material";
-export default function PropertyDetailsPhotos() {
+import MapDetails from "./MapDetails.jsx";
+import { Avatar, CircularProgress, Dialog, DialogTitle, IconButton } from "@mui/material";
+import { usePropertiesStore } from "../store/propertiesStore.js";
+import { useAuthStore } from "../store/authStore.js";
+import { useEffect } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+export default function PropertyDetailsPhotos({property}) {
+  const { id } = useParams();
+  const{isLoading , deleteProperty }=usePropertiesStore()
+  const{user} = useAuthStore()
+  const navigate = useNavigate();
+  
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isAuther, setIsAuther] = useState(false);
+  useEffect(() => {
+    setTimeout(() =>{
+
+      setIsAuther( user._id == property.owner._id )
+    },1500)
+
+  }, [user, property])
+  
   function marks(isBookmarked) {
     if (isBookmarked) {
       return <BookmarkAddedIcon />;
@@ -48,6 +69,8 @@ export default function PropertyDetailsPhotos() {
   function handleClose3d(){
     setOpen3d(false);
   }
+  
+
 
 
   return (
@@ -56,34 +79,45 @@ export default function PropertyDetailsPhotos() {
         <div style={{ cursor:'pointer'}} onClick={handleClickOpen}>
         <img
           className="img-property"
-          src="https://images.bayut.sa/thumbnails/4092406-800x600.webp"
+          src= {property.mainPhoto}
           alt="Property Photo"
           width={477}
           height={483}
           style={{ borderRadius: "16px" , objectFit:'cover' }}
         />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <img
-            src="https://images.bayut.sa/thumbnails/4092407-800x600.webp"
+          {property.images?.map((img) => {
+            return(
+              <img
+            src={img}
+            alt="Property Photo"
+            width={150}
+            height={90}
+            style={{ borderRadius: "16px" , objectFit:'cover' }}
+          />
+            )
+          })}
+          {/* <img
+            src={"https://images.bayut.sa/thumbnails/4092407-800x600.webp"}
             alt="Property Photo"
             width={150}
             height={90}
             style={{ borderRadius: "16px" , objectFit:'cover' }}
           />
           <img
-            src="https://images.bayut.sa/thumbnails/4092408-800x600.webp"
+            src={"https://images.bayut.sa/thumbnails/4092408-800x600.webp"}
             alt="Property Photo"
             width={150}
             height={90}
             style={{ borderRadius: "16px" , objectFit:'cover' }}
           />
           <img
-            src="https://images.bayut.sa/thumbnails/4092409-800x600.webp"
+            src={"https://images.bayut.sa/thumbnails/4092409-800x600.webp"}
             alt="Property Photo"
             width={150}
             height={90}
             style={{ borderRadius: "16px", objectFit:'cover' }}
-          />
+          /> */}
           </div>
         </div>
         <div style={{ marginTop: "20px" }}>
@@ -109,6 +143,36 @@ export default function PropertyDetailsPhotos() {
             onClick={() => handleClick3d()}
             startIcon={<ThreeDRotationIcon />}
           />
+          {
+              isAuther ?
+            // <Button
+            // variant="outlined"
+            // color="error"
+            // onClick={() => handleClick3d()}
+            // startIcon={<DeleteOutlineIcon />}
+            <IconButton size="large" color="error">
+  <DeleteOutlineIcon fontSize="inherit" onClick={()=> {
+    deleteProperty(id)
+    return navigate('/'), toast.success("تم حذف العقار بنجاح")
+    }} />
+</IconButton>
+          :''
+          }
+          {
+              isAuther ?
+              <IconButton size="large" color="primary">
+                <Link to={`/updateProperty/${id}`} >
+  <ModeEditOutlineOutlinedIcon fontSize="inherit"/>
+  </Link>
+</IconButton>
+          //   <Button
+          //   variant="outlined"
+          //   color="primary"
+          //   onClick={() => handleClick3d()}
+          //   startIcon={<ModeEditOutlineOutlinedIcon />}
+          // />
+          :''
+          }
         </div>
         <Card sx={{ minWidth: 275 }}>
           <CardContent style={{ display: "flex" }}>
@@ -117,10 +181,17 @@ export default function PropertyDetailsPhotos() {
                 gutterBottom
                 sx={{ color: "text.secondary", fontSize: 14 }}
               >
-                <img
-                  src="https://images.bayut.sa/thumbnails/4032031-240x180.webp"
+                          <Avatar
+            sx={{ width: 70, height: 70 }}
+            alt={property.owner?.name}
+            src={property.owner?.avatar}
+          />
+                {/* <img
+                  src={property.owner.avatar}
                   alt=""
-                />
+                  width={60}
+                  height={60}
+                /> */}
               </Typography>
             </div>
             <div style={{ flex: "3" }}>
@@ -128,7 +199,7 @@ export default function PropertyDetailsPhotos() {
                 مكتب مسكنكم للخدمات العقارية
               </Typography>
               <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-                المعلن : احمد يعقوب الصالح
+                المعلن : {property.owner?.name}
               </Typography>
               {/* <Typography variant="body2">
             well meaning and kindly.
@@ -144,12 +215,19 @@ export default function PropertyDetailsPhotos() {
             <Button variant="outlined">مراسلة</Button>
           </CardActions>
         </Card>
-        <div style={{height:'400px'  , marginTop:'25px'}}>
+        <div style={{height:'400px'  , marginTop:'25px' , marginBottom:'60px'}}>
           <Typography variant="h6">
             الخريطة
           </Typography>
-          <Maps2/>
+
+                {
+                  !isLoading ?
+                    <MapDetails log={property.longitude || 0} lat={property.latitude|| 0}/> : ''
+                  
+                }
+          
         </div>
+        
       </div>
       <PhotoDialog open={open} handleCloseClick={handleClose}/>
       <Dialog
