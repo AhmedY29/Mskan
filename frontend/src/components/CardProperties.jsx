@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
 import Grid from "@mui/material/Grid2";
+import Avatar from "@mui/material"
 
 
 
@@ -88,6 +89,11 @@ export default function CardProperties({ title, image , displaySwitch , price , 
               <Typography variant="h6" sx={{ color: "text.secondary" }}>
                 {price} ريال/شهري
               </Typography>
+                 <Avatar
+                  sx={{ width: 70, height: 70 }}
+                  alt={"agent"}
+                  src={agentphoto}
+                />
               <img
                 style={{ marginTop: "5px" }}
                 srcSet={agentphoto || 'a.com'}
