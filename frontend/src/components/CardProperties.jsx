@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
 import Grid from "@mui/material/Grid2";
-import Avatar from "@mui/material"
 
 
 
@@ -19,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import { Link } from "react-router-dom";
+import { Avatar } from "@mui/material";
 export default function CardProperties({ displaySwitch , property }) {
     const [isBookmarked, setIsBookmarked] = useState(false);
     function marks(isBookmarked) {
