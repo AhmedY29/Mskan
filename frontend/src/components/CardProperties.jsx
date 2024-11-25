@@ -18,7 +18,8 @@ import IconButton from "@mui/material/IconButton";
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import { Link } from "react-router-dom";
-export default function CardProperties({ title, image , displaySwitch , price , agentphoto , livingrooms , bathrooms , bedrooms, location , id  }) {
+import { Avatar } from "@mui/material";
+export default function CardProperties({ displaySwitch , property }) {
     const [isBookmarked, setIsBookmarked] = useState(false);
     function marks(isBookmarked) {
         if (isBookmarked) {
@@ -38,23 +39,23 @@ export default function CardProperties({ title, image , displaySwitch , price , 
           sx={{ width: displaySwitch == 'map' ? "47% !important" : '' }}
                 >
       <Card sx={{ maxWidth: 310, width: "100%" }}>
-      <Link to={'/propertyDetails/' + id}>
-        <CardMedia sx={{ height: 150 }} image={image} title={title} />
+      <Link to={'/propertyDetails/' + property._id}>
+        <CardMedia sx={{ height: 150 }} image={property.mainPhoto} title={property.title} />
         </Link>
         <IconButton aria-label="delete" sx={{position:'relative' , bottom:'150px'}} onClick={()=>setIsBookmark(isBookmarked)}>
           {/* <BookmarkBorderOutlinedIcon sx={{border:'1px white solid' , borderRadius:'50%'}}/> */}
           {marks(isBookmarked)}
         </IconButton>
-        <Link to={'/propertyDetails/' + id} style={{textDecoration:'none' , color:'black'}}>
+        <Link to={'/propertyDetails/' + property._id} style={{textDecoration:'none' , color:'black'}}>
         <CardContent sx={{paddingTop:0}}>
           <div style={{ display: "flex" }}>
             <div style={{ flex: "2" }}>
               <Typography gutterBottom variant="h5" component="div">
-                {title}
+                {property.title}
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 <LocationOnOutlinedIcon fontSize="small" />
-                {location}
+                {property.location}
               </Typography>
               <div className="Icons">
                 <Typography
@@ -62,7 +63,7 @@ export default function CardProperties({ title, image , displaySwitch , price , 
                   variant="body2"
                   sx={{ color: "text.secondary" }}
                 >
-                  <BedOutlinedIcon /> {bedrooms}
+                  <BedOutlinedIcon /> {property.rooms}
                 </Typography>
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Typography
@@ -70,7 +71,7 @@ export default function CardProperties({ title, image , displaySwitch , price , 
                   variant="body2"
                   sx={{ color: "text.secondary" }}
                 >
-                  <BathtubOutlinedIcon /> {bathrooms}
+                  <BathtubOutlinedIcon /> {property.bathrooms}
                 </Typography>
                 <Divider orientation="vertical" variant="middle" flexItem />
                 <Typography
@@ -78,7 +79,7 @@ export default function CardProperties({ title, image , displaySwitch , price , 
                   variant="body2"
                   sx={{ color: "text.secondary" }}
                 >
-                  <ChairOutlinedIcon /> {livingrooms}
+                  <ChairOutlinedIcon /> {property.livingrooms}
                 </Typography>
               </div>
             </div>
@@ -86,15 +87,20 @@ export default function CardProperties({ title, image , displaySwitch , price , 
               style={{ flex: "2", alignContent: "center", textAlign: "left" }}
             >
               <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                {price} ريال/شهري
+                {property.price} ريال {property.type == 'ايجار' ? '/شهري' : ''}
               </Typography>
-              <img
+              {/* <img
                 style={{ marginTop: "5px" }}
                 srcSet={agentphoto || 'a.com'}
                 alt=""
                 width={60}
                 height={60}
-              />
+              /> */}
+                <Avatar
+                  sx={{ width: 60, height: 60 }}
+                  alt={property.owner?.name}
+                  src={property.owner?.avatar}
+                />
             </div>
           </div>
         </CardContent>

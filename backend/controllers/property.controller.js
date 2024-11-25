@@ -32,7 +32,7 @@ export const createProperty = async (req, res) => {
 
     if (property.mainPhoto) {
         const mainPhotoResult = await cloudinary.uploader.upload(property.mainPhoto, {
-          folder: property.title,
+          folder: property.title + property.type + property.price + property.location,
         });
         mainPhotoUrl = mainPhotoResult.secure_url;
       }
@@ -40,7 +40,7 @@ export const createProperty = async (req, res) => {
     if (property.images && Array.isArray(property.images)) {
       for (const imageBase64 of property.images) {
         const result = await cloudinary.uploader.upload(imageBase64, {
-          folder: property.title,
+          folder: property.title + property.type + property.price + property.location,
         });
         uploadedImages.push(result.secure_url);
       }
@@ -88,7 +88,7 @@ export const deleteProperty = async (req, res) => {
         }
 
         // اسم المجلد الذي يحتوي على الصور
-        const folderName = property.title;
+        const folderName = property.title + property.type + property.price + property.location;
 
 
         await cloudinary.api.delete_resources_by_prefix(folderName, { invalidate: true });
@@ -141,7 +141,7 @@ export const updateProperty = async (req, res) => {
             return res.status(404).json({ success: false, msg: "Property not found" });
         }
 
-        const folderName = property.title;
+        const folderName = property.title + property._id;
         let updatedImages = property.images || []; 
 
         if (imagesToDelete.length > 0) {

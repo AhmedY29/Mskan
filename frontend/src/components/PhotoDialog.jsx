@@ -43,7 +43,7 @@ console.log('ssssssss',property)
   
     // التحقق من أن property.images موجودة
     if (!property || !property.images || property.images.length === 0) {
-      return <div>لا توجد صور لعرضها.</div>;
+      return "";
     }
   
     // وظيفة لتحديث حالة التحميل
@@ -74,44 +74,7 @@ console.log('ssssssss',property)
 
     return(
         <>
-        {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="md"
-      >
-        <DialogTitle id="alert-dialog-title">
-        <ToggleButtonGroup
-        color="primary"
-        value={displays}
-        exclusive
-        onChange={handleDisplays}
-        aria-label="text alignment"
-        sx={{direction:'ltr' , display:'flex'}}
-      >
-        <ToggleButton onClick={()=> setDisplayChange('3D')} sx={{width:'100%'}} value="map" aria-label="centered">
-          3D صور
-        </ToggleButton>
-        <ToggleButton onClick={()=> setDisplayChange('Photos')} sx={{width:'100%'}} value="images" aria-label="left aligned">
-          الصور
-        </ToggleButton>
-      </ToggleButtonGroup>
-        </DialogTitle>
-      {
-        displayChange ==  'Photos' ?  <ImageList sx={{ width: 700, height: 650 , margin:'15px' }} cols={2} >
-        {itemData.map((item) => (
-          <ImageListItem key={item.id} sx={{cursor:'pointer' , overflow:'none' }} onClick={()=>handleImageClick(item.id)}>
-            <img
-              srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-              src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-              loading="lazy"
-            />
-          </ImageListItem>
-        ))}
-      </ImageList> : displayChange == '3D' ? <iframe style={{padding:'12px'}} src="https://www.zillow.com/view-3d-home/833510a2-abe4-441a-9e55-0971e16c098b?setAttribution=mls&wl=true&utm_source=dashboard" height="650" width="700" frameborder="0" allowfullscreen></iframe> : ''
-      }
-
-      </Dialog> */}
-      {/* ddddd */}
+        
       <Dialog
         open={open}
         onClose={handleClose}

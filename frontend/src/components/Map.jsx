@@ -1,6 +1,5 @@
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import Pins from "./Pins.jsx";
 import { Link } from "react-router-dom";
 import { usePropertiesStore } from "../store/propertiesStore.js";
 import L from 'leaflet';
@@ -18,7 +17,7 @@ function Maps() {
       style={{ height: "100%", borderRadius: "20px", width: "100%" }}
       center={[23.638890100395102, 45.41319855857876]}
       zoom={5}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
     >
       <TileLayer
         attribution="&copy; Maskn"
@@ -39,7 +38,7 @@ function Maps() {
                 src={item.mainPhoto}
                 alt={item.title}
               />
-              <Link to={`/${item._id}`}>{item.title}</Link>
+              <Link to={`/propertyDetails/${item._id}`}>{item.title}</Link>
               <div
                 style={{
                   display: "flex",
@@ -47,7 +46,7 @@ function Maps() {
                   justifyContent: "space-between",
                 }}
               >
-                <span>{item.rooms} room</span>
+                <span>{item.rooms}غرفة</span>
                 <b>{item.price} ريال</b>
               </div>
             </div>

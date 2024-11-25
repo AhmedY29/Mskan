@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Container,
   FormControl,
   InputAdornment,
@@ -49,6 +50,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Update() {
   const services = [
@@ -173,6 +175,44 @@ export default function Update() {
 
   // const { createProperty } = usePropertiesStore();
 
+      // for url coordinates
+      const [url, setUrl] = useState("");
+      const [error, setError] = useState("");
+      const [loading, setLoading] = useState(false);
+    
+      const handleExtract = async () => {
+        setError("");
+        setLoading(true);
+    
+        if (!url) {
+          setError("يجب إدخال رابط Google Maps");
+          setLoading(false);
+          return;
+        }
+    
+        try {
+          const response = await axios.get("http://localhost:5000/api/urltst", {
+            params: { url },
+          });
+    
+          const { lat, lng } = response.data;
+          setUpdatedProperty({
+            ...updatedProperty,
+            latitude: lat,
+            longitude: lng,
+          })
+        } catch (err) {
+          if (err.response && err.response.status === 404) {
+            setError("لم يتم العثور على إحداثيات في الرابط المُدخل.");
+          } else {
+            console.log(err.message);
+            setError("حدث خطأ أثناء استخراج الإحداثيات.");
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -187,6 +227,9 @@ export default function Update() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+            <Typography>
+             رخصة فال للإعلان
+          </Typography>
               <TextField
                 type="number"
                 required
@@ -201,6 +244,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+            رخصة فال للمعلن 
+          </Typography>
               <TextField
                 type="number"
                 required
@@ -222,6 +268,9 @@ export default function Update() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+            <Typography>
+             الاسم
+          </Typography>
               <TextField
                 value={updatedProperty.title}
                 onChange={(e) =>
@@ -243,6 +292,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+             الوصف
+          </Typography>
               <TextField
                 value={updatedProperty.description}
                 onChange={(e) =>
@@ -264,6 +316,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+             نوع العرض
+          </Typography>
               <FormControl sx={{ width: 100 }}>
                 <InputLabel id="demo-simple-select-label">نوع العرض</InputLabel>
                 <Select
@@ -282,6 +337,9 @@ export default function Update() {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             السعر
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.price}
@@ -311,6 +369,9 @@ export default function Update() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             الغرف
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.rooms}
@@ -333,6 +394,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             عدد الكراجات
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.garages}
@@ -355,6 +419,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             دورات المياه
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.bathrooms}
@@ -377,6 +444,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             عدد الصالات
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.livingrooms}
@@ -399,6 +469,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            المساحة (م²)
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.size}
@@ -418,6 +491,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            عمر العقار (سنوات)
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.ageforbuild}
@@ -445,8 +521,32 @@ export default function Update() {
           <Typography variant="h6" sx={{ mt: 2 }}>
             الإحداثيات والموقع
           </Typography>
+          <Box component="form" noValidate autoComplete="off" marginTop={3}>
+        <TextField
+          label="رابط Google Maps"
+          variant="outlined"
+          fullWidth
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          error={!!error}
+          helperText={error}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: "20px" }}
+          onClick={handleExtract}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : "استخراج الإحداثيات"}
+        </Button>
+      </Box>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            خط العرض
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.latitude}
@@ -469,6 +569,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            خط الطول
+          </Typography>
               <TextField
                 type="number"
                 value={updatedProperty.longitude}
@@ -491,6 +594,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+           الموقع
+          </Typography>
               <TextField
                 value={updatedProperty.location}
                 onChange={(e) =>
@@ -519,6 +625,9 @@ export default function Update() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             تغطية الانترنت
+          </Typography>
               <TextField
                 value={updatedProperty.wifi}
                 onChange={(e) =>
@@ -537,6 +646,9 @@ export default function Update() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+             يوجد انترنت؟
+          </Typography>
               <FormControl
                 sx={{ width: 150, direction: "rtl", textAlign: "center" }}
               >
@@ -563,6 +675,9 @@ export default function Update() {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+              الواجهة
+          </Typography>
               <FormControl
                 sx={{ width: 150, direction: "rtl", textAlign: "center" }}
               >
@@ -595,6 +710,9 @@ export default function Update() {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+              الدور
+          </Typography>
               <TextField
               type='number'
                 value={updatedProperty.floor}

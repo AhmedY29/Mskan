@@ -1,10 +1,9 @@
 import {create} from 'zustand';
 import axios from 'axios';
-import { useState } from 'react';
 
- const API_URL =import.meta.mode === 'development' ?'http://localhost:5000/api/property' : '/api/property';
- // 
- // 
+ const API_URL ='http://localhost:5000/api/property' 
+ // import.meta.mode === 'development' ?
+ // : '/api/property';
  // production
  axios.defaults.withCredentials = true; 
 export const usePropertiesStore= create((set)=>({

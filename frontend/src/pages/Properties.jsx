@@ -6,14 +6,90 @@ import Grid from "@mui/material/Grid2";
 import CardProperties from "../components/CardProperties";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Maps from "../components/Map.jsx";
-import { useEffect } from "react";
 import { usePropertiesStore } from "../store/propertiesStore.js";
 import Loading from "../components/Loading.jsx";
+import "../style.css";
+import { useLocation } from "react-router-dom";
 
 export default function Properties() {
   const [displaySwitch, setDisplaySwitch] = useState("map");
+  const [mobile, setMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState({});
+  const [filteredProperties, setFilteredProperties] = useState([]);
+  const { properties, getProperties, isLoading } = usePropertiesStore();
+  const location = useLocation(); // للحصول على الكويري
+  const query = location.state || {};
+
+  // دالة لتحديث حالة البحث عند الكتابة في شريط البحث
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  
+
+  // تطبيق التصفية بناءً على معايير البحث
+  useEffect(() => {
+    const filterProperties = () => {
+      return properties.filter((property) => {
+        // التصفية حسب الموقع
+        if (searchQuery.location && !property.location.includes(searchQuery.location)) {
+          return false;
+        }
+
+        // التصفية حسب السعر الأدنى
+        if (searchQuery.minPrice && property.price < searchQuery.minPrice) {
+          return false;
+        }
+
+        // التصفية حسب السعر الأعلى
+        if (searchQuery.maxPrice && property.price > searchQuery.maxPrice) {
+          return false;
+        }
+
+        // التصفية حسب عدد الغرف
+        if (searchQuery.rooms && property.rooms !== parseInt(searchQuery.rooms)) {
+          return false;
+        }
+
+        // التصفية حسب عدد الحمامات
+        if (searchQuery.bathrooms && property.bathrooms !== parseInt(searchQuery.bathrooms)) {
+          return false;
+        }
+        // التصفية حسب عدد الحمامات
+        if (searchQuery.type && searchQuery.type !== "الكل" && !property.type.includes(searchQuery.type)) {
+          return false;
+        }
+
+        return true;
+      });
+    };
+
+    setFilteredProperties(filterProperties());
+  }, [searchQuery, properties]);
+
+  // التأكد من عرض العقارات بعد الجلب
+  useEffect(() => {
+    getProperties();
+  }, [getProperties]);
+
+  useEffect(() => {
+    const checkWindowSize = () => {
+      if (window.innerWidth <= 748) {
+        setMobile(true);
+      } else {
+        setMobile(false);
+      }
+    };
+
+    // فحص الحجم عند التحميل
+    checkWindowSize();
+    window.addEventListener("resize", checkWindowSize);
+
+    // تنظيف المستمع عند إزالة المكون
+    return () => window.removeEventListener("resize", checkWindowSize);
+  }, []);
 
   const handleChange = (event, newDisplaySwitch) => {
     if (newDisplaySwitch !== null) {
@@ -21,16 +97,10 @@ export default function Properties() {
     }
   };
 
-  const { properties, getProperties ,isLoading } = usePropertiesStore();
-  useEffect(() => {
-    getProperties();
-  }, [getProperties]);
-
-  if(isLoading) {
-    return <Loading />
+  if (isLoading) {
+    return <Loading />;
   }
 
-  console.log("properties:", properties);
   return (
     <>
       <div style={{ direction: "rtl" }}>
@@ -41,9 +111,11 @@ export default function Properties() {
             gutterBottom
             sx={{ marginTop: 10, marginBottom: 10 }}
           >
-            عقارات للبيع في الرياض
+            عقارات {query.type == 'بيع' ? 'للبيع' : query.type == 'ايجار' ? 'للإيجار' : ''} في {query.location || 'السعودية'}
           </Typography>
-          <AdvanceSearchBar />
+
+          {/* شريط البحث */}
+          <AdvanceSearchBar onSearch={handleSearch} querya={query} />
         </Container>
 
         <Divider sx={{ marginBottom: "80px", marginTop: "80px" }} />
@@ -58,7 +130,7 @@ export default function Properties() {
             }}
           >
             <Typography variant="h5" component="h2" gutterBottom>
-              30 عقار
+              {filteredProperties.length} عقار
             </Typography>
 
             <ToggleButtonGroup
@@ -74,30 +146,23 @@ export default function Properties() {
             </ToggleButtonGroup>
           </div>
 
-          <div style={{ display: "flex" }}>
-            <div style={{ flex: "2" }}>
+          <div className="propertyPage" style={{ display: "flex" }}>
+            <div
+              style={{
+                flex: "2",
+                display: mobile && displaySwitch === "map" ? "none" : "block",
+              }}
+            >
               <Grid
                 container
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
-
-                {
-                isLoading ? <Loading/> : 
-                properties?.map((property) => (
-                  // <Link key={property.id} to={'/propertyDetails/'} style={{width:'47%' , display:'flex'}}>
+                {filteredProperties?.map((property) => (
                   <CardProperties
                     key={property._id}
                     displaySwitch={displaySwitch}
-                    title={property.title}
-                    image={property.mainPhoto}
-                    price={property.price}
-                    location={property.location}
-                    bedrooms={property.rooms}
-                    bathrooms={property.bathrooms}
-                    livingrooms={property.livingrooms}
-                    agentphoto={property.owner.avatar}
-                    id={property._id}
+                    property={property}
                   />
                 ))}
               </Grid>
@@ -105,7 +170,7 @@ export default function Properties() {
             <div
               style={{
                 flex: "2",
-                display: displaySwitch == "list" ? "none" : "block",
+                display: displaySwitch === "list" ? "none" : "block",
                 height: "500px",
                 position: "sticky",
                 top: "0px",

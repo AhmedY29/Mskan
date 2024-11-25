@@ -9,7 +9,6 @@ const propertySchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: true,
         // minlength: 20,
         // maxlength: 500
     },
@@ -25,7 +24,7 @@ const propertySchema = new mongoose.Schema({
     location: {
         type: String,
             // enum: ["Point"],
-            // required: true
+        required: true
        
     },
     longitude: {

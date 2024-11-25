@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
                 }}
                 src={item.mainPhoto}
               />
-              <Link to={`/${item._id}`}>{item.title}</Link>
+              <Link to={`propertyDetails/${item._id}`}>{item.title}</Link>
               <div
                 style={{
                   display: "flex",
@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
                   justifyContent: "space-between",
                 }}
               >
-                <span>{item.rooms} room</span>
+                <span>غرفة{item.rooms} </span>
                 <b>{item.price} ريال</b>
               </div>
             </div>

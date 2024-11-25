@@ -4,20 +4,67 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 import Divider from "@mui/material/Divider";
 
-import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
-import LocalParkingOutlinedIcon from '@mui/icons-material/LocalParkingOutlined';
-import Woman2Icon from '@mui/icons-material/Woman2';
-import MosqueIcon from '@mui/icons-material/Mosque';
-import BusinessIcon from '@mui/icons-material/Business';
-import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
-import SensorDoorOutlinedIcon from '@mui/icons-material/SensorDoorOutlined';
-import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import PriceCheckOutlinedIcon from "@mui/icons-material/PriceCheckOutlined";
 import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
-import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
-import GarageOutlinedIcon from '@mui/icons-material/GarageOutlined';
-import BorderAllOutlinedIcon from '@mui/icons-material/BorderAllOutlined';
+import WeekendOutlinedIcon from "@mui/icons-material/WeekendOutlined";
+import ApartmentOutlinedIcon from "@mui/icons-material/ApartmentOutlined";
+import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
+
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import SquareFootOutlinedIcon from "@mui/icons-material/SquareFootOutlined";
+import HistoryEduOutlinedIcon from "@mui/icons-material/HistoryEduOutlined";
+import LocalConvenienceStoreOutlinedIcon from "@mui/icons-material/LocalConvenienceStoreOutlined";
+import { useAuthStore } from "../store/authStore";
+import { usePropertiesStore } from "../store/propertiesStore";
+import Loading from "../components/Loading";
+
+import LocalParkingOutlinedIcon from "@mui/icons-material/LocalParkingOutlined";
+import Woman2Icon from "@mui/icons-material/Woman2";
+import MosqueIcon from "@mui/icons-material/Mosque";
+import BusinessIcon from "@mui/icons-material/Business";
+import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import SensorDoorOutlinedIcon from "@mui/icons-material/SensorDoorOutlined";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import ElevatorIcon from "@mui/icons-material/Elevator";
+import DensityMediumIcon from "@mui/icons-material/DensityMedium";
+import StoreIcon from "@mui/icons-material/Store";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import GarageOutlinedIcon from "@mui/icons-material/GarageOutlined";
+import BorderAllOutlinedIcon from "@mui/icons-material/BorderAllOutlined";
+import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
+
+  const services = [
+    { id: "mosque", label: "مسجد قريب", icon: <MosqueIcon /> },
+    { id: "park", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
+    { id: "restaurants", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
+    { id: "maidRoom", label: "غرفة خادمة", icon: <Woman2Icon /> },
+    { id: "school", label: "مدرسة قريبة", icon: <BusinessIcon /> },
+    { id: "privateEntrance", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
+    { id: "privateParking", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
+    { id: "securityCameras", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
+    { id: "elevator", label: "مصعد", icon: <ElevatorIcon /> },
+    { id: "hospital", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
+    { id: "grocery", label: "تموينات قريب", icon: <StoreIcon /> },
+    { id: "shoppingCenter", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
+    { id: "maintenance", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
+    { id: "cleaning", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
+  ];
+
 
 export default function PropertyDetailsText({property}) {
+  if (!property.nearbyServices) {
+    return (
+      <Grid container justifyContent="center" alignItems="center" style={{ minHeight: "100px" }}>
+        <Loading />
+      </Grid>
+    );
+  }
+  const price = new Intl.NumberFormat().format(property.price);
+  const matchedServices = services.filter(service => property.nearbyServices.includes(service.id));
   return (
     <>
       <div className="right-side" style={{ flex: "3", marginRight: "45px" }}>
@@ -25,11 +72,10 @@ export default function PropertyDetailsText({property}) {
         <Card sx={{ minWidth: 275, backgroundColor: "#F6F6F6" }}>
           <CardContent style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h6" component="div">
-              فيلا للبيع في الرياض
+              فيلا للبيع في {property.location} 
               {property.title}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-              الوادي، شمال الرياض، الرياض
               {property.location}
             </Typography>
             <Typography
@@ -37,8 +83,8 @@ export default function PropertyDetailsText({property}) {
               variant="h6"
               component="div"
             >
-              5,000,000 ريال
-              {property.price}
+              {price}
+               ريال
             </Typography>
             <Divider />
             <div
@@ -58,8 +104,8 @@ export default function PropertyDetailsText({property}) {
                 component="div"
               >
                 <BedOutlinedIcon />
-                11 غرف نوم
                 {property.rooms}
+                 غرف نوم
               </Typography>
               <Typography
                 sx={{
@@ -70,8 +116,9 @@ export default function PropertyDetailsText({property}) {
                 variant="p"
                 component="div"
               >
-                <BathtubOutlinedIcon />6 دورات مياة
+                <BathtubOutlinedIcon />
                 {property.bathrooms}
+                 دورات مياة
               </Typography>
               <Typography
                 sx={{
@@ -83,8 +130,8 @@ export default function PropertyDetailsText({property}) {
                 component="div"
               >
                 <GarageOutlinedIcon />
+                {property.garages}
                 مدخل سيارة
-                {property.garage}
               </Typography>
               <Typography
                 sx={{
@@ -96,8 +143,8 @@ export default function PropertyDetailsText({property}) {
                 component="div"
               >
                 <BorderAllOutlinedIcon />
-                445(م²)
                 {property.size}
+                (م²)
               </Typography>
             </div>
           </CardContent>
@@ -115,8 +162,6 @@ export default function PropertyDetailsText({property}) {
               الوصف
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5, mr: 1.5 }}>
-              فيلا دور أرضي تتكون من: 3 غرف نوم ماستر مع شقتين في كل شقة مجلس
-              وصالة ومطبخ وغرفتين نوم بدورتين مياه المساحة: 445 متر مربع
               {property.description}
             </Typography>
           </CardContent>
@@ -139,7 +184,17 @@ export default function PropertyDetailsText({property}) {
               columns={{ xs: 4, sm: 8, md: 12 }}
               sx={{ marginTop: "10px" }}
             >
-              <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
+              {matchedServices.map(service => (
+        <Grid 
+          key={service.id} 
+          size={{ xs: 2, sm: 4, md: 4 }}
+          sx={{ display: 'flex'}}
+        >
+          {service.icon}
+          <span>{service.label}</span>
+        </Grid>
+              ))}
+              {/* <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
                 <Woman2Icon />
                 غرفة خادمة
               </Grid>
@@ -162,7 +217,7 @@ export default function PropertyDetailsText({property}) {
               <Grid  sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
                 <LocalParkingOutlinedIcon />
                 مواقف سيارات 5
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardContent>
         </Card>

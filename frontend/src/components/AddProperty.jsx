@@ -34,6 +34,8 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading.jsx";
+import { useState } from "react";
+import axios from "axios";
 
 
 
@@ -119,6 +121,45 @@ export default function AddProperty({open , handleClose1} ){
     const handleBack = () => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
+
+
+    // for url coordinates
+    const [url, setUrl] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+  
+    const handleExtract = async () => {
+      setError("");
+      setLoading(true);
+  
+      if (!url) {
+        setError("يجب إدخال رابط Google Maps");
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        const response = await axios.get("http://localhost:5000/api/urltst", {
+          params: { url },
+        });
+  
+        const { lat, lng } = response.data;
+        setProperty({
+          ...property,
+          latitude: lat,
+          longitude: lng,
+        })
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          setError("لم يتم العثور على إحداثيات في الرابط المُدخل.");
+        } else {
+          console.log(err.message);
+          setError("حدث خطأ أثناء استخراج الإحداثيات.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
   
     const handleServiceToggle = (serviceId) => {
       setProperty((prev) => {
@@ -162,63 +203,119 @@ export default function AddProperty({open , handleClose1} ){
       </Stepper>
       {activeStep === steps.length ? (
         <React.Fragment>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            مراجعة المعلومات
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            الاسم : {property.title}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            السعر : {property.price}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            الوصف : {property.description}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.type}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.rooms}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.bathrooms}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.livingrooms}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.garage}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.location}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            خط العرض : {property.latitude}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            خط الطول : {property.longitude}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.wifi}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.size}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.internet}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.floor}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.facade}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.nearbyServices}
-          </Typography>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            النوع : {property.ageforbuild}
-          </Typography>
+<Typography variant="h5" sx={{ mb: 3, fontWeight: "bold" }}>
+    مراجعة المعلومات
+  </Typography>
+
+  <Grid container spacing={2}>
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الاسم:</strong> {property.title}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>السعر:</strong> {property.price} ريال
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الوصف:</strong> {property.description}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>النوع:</strong> {property.type}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>عدد الغرف:</strong> {property.rooms}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>عدد الحمامات:</strong> {property.bathrooms}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>عدد غرف المعيشة:</strong> {property.livingrooms}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الجراج:</strong> {property.garage}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الموقع:</strong> {property.location}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>خط العرض:</strong> {property.latitude}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>خط الطول:</strong> {property.longitude}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>واي فاي:</strong> {property.wifi ? "متوفر" : "غير متوفر"}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>المساحة:</strong> {property.size} م²
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>إنترنت:</strong> {property.internet ? "متوفر" : "غير متوفر"}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الدور:</strong> {property.floor}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الواجهة:</strong> {property.facade}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>الخدمات القريبة:</strong> {property.nearbyServices}
+      </Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={6} md={4}>
+      <Typography>
+        <strong>عمر البناء:</strong> {property.ageforbuild} سنة
+      </Typography>
+    </Grid>
+  </Grid>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handelAddProperty}> {isLoading ? <CircularProgress /> : ' إضافة العقار'}</Button>
@@ -232,6 +329,9 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+            <Typography>
+            رخصة فال للإعلان
+          </Typography>
               <TextField
                 type="number"
                 required
@@ -246,6 +346,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+            رخصة فال للمعلن
+          </Typography>
               <TextField
                 type="number"
                 required
@@ -272,7 +375,9 @@ export default function AddProperty({open , handleClose1} ){
               الرجوع
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleNext}>
+            <Button onClick={() => {
+              if(property.adLicense){handleNext()}else{toast.error('الرجاء ادخال الرخصة')}
+            }}>
             التالي
             </Button>
           </Box>
@@ -287,6 +392,9 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+            <Typography>
+             الاسم
+          </Typography>
               <TextField
                 value={property.title}
                 onChange={(e) =>
@@ -308,6 +416,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+            الوصف
+          </Typography>
               <TextField
                 value={property.description}
                 onChange={(e) =>
@@ -329,6 +440,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+            نوع العرض
+          </Typography>
               <FormControl sx={{ width: 100 }}>
                 <InputLabel id="demo-simple-select-label">نوع العرض</InputLabel>
                 <Select
@@ -347,6 +461,9 @@ export default function AddProperty({open , handleClose1} ){
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            السعر
+          </Typography>
               <TextField
                 type="number"
                 value={property.price}
@@ -376,6 +493,9 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            عدد الغرف
+          </Typography>
               <TextField
                 type="number"
                 value={property.rooms}
@@ -398,6 +518,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            عدد الكراجات
+          </Typography>
               <TextField
                 type="number"
                 value={property.garage}
@@ -420,6 +543,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            دورات المياه
+          </Typography>
               <TextField
                 type="number"
                 value={property.bathrooms}
@@ -442,6 +568,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            عدد الصالات
+          </Typography>
               <TextField
                 type="number"
                 value={property.livingrooms}
@@ -464,6 +593,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            المساحة (م²)
+          </Typography>
               <TextField
                 type="number"
                 value={property.size}
@@ -483,6 +615,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            عمر العقار (سنوات)
+          </Typography>
               <TextField
                 type="number"
                 value={property.ageforbuild}
@@ -511,8 +646,32 @@ export default function AddProperty({open , handleClose1} ){
       <Typography variant="h6" sx={{ mt: 2 }}>
             الإحداثيات والموقع
           </Typography>
+          <Box component="form" noValidate autoComplete="off" marginTop={3}>
+        <TextField
+          label="رابط Google Maps"
+          variant="outlined"
+          fullWidth
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          error={!!error}
+          helperText={error}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: "20px" }}
+          onClick={handleExtract}
+          disabled={loading}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : "استخراج الإحداثيات"}
+        </Button>
+      </Box>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            خط العرض
+          </Typography>
               <TextField
                 type="number"
                 value={property.latitude}
@@ -535,6 +694,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            خط الطول
+          </Typography>
               <TextField
                 type="number"
                 value={property.longitude}
@@ -557,6 +719,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12}>
+            <Typography>
+            الموقع 
+          </Typography>
               <TextField
                 value={property.location}
                 onChange={(e) =>
@@ -585,6 +750,9 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            تغطية الانترنت 
+          </Typography>
               <TextField
                 value={property.wifi}
                 onChange={(e) =>
@@ -603,6 +771,9 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+              يوجد انترنت؟
+          </Typography>
               <FormControl
                 sx={{ width: 150, direction: "rtl", textAlign: "center" }}
               >
@@ -629,6 +800,9 @@ export default function AddProperty({open , handleClose1} ){
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            الواجهة 
+          </Typography>
               <FormControl
                 sx={{ width: 150, direction: "rtl", textAlign: "center" }}
               >
@@ -661,6 +835,9 @@ export default function AddProperty({open , handleClose1} ){
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+            <Typography>
+            الدور 
+          </Typography>
               <TextField
               type='number'
                 value={property.floor}
@@ -715,7 +892,20 @@ export default function AddProperty({open , handleClose1} ){
           الرجوع
         </Button>
         <Box sx={{ flex: '1 1 auto'}} />
-        <Button onClick={handleNext}>
+        <Button onClick={() => {
+          if(!property.title){
+            toast.error('الرجاء ادخال عنوان العقار')
+            if(!property.price){
+              toast.error('الرجاء ادخال سعر العقار')
+              if(!property.location){
+                toast.error('الرجاء ادخال موقع العقار')
+              }
+              if(!property.type){
+                toast.error('الرجاء ادخال نوع العقار')
+              }
+            }
+          }else{handleNext()}
+        }}>
           التالي
         </Button>
       </Box>

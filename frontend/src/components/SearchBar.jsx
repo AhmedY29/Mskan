@@ -12,17 +12,32 @@ import TextField from "@mui/material/TextField";
 import { InputAdornment, List, ListItem, ListItemText, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { useNavigate } from "react-router-dom";
 
-const types = ["بيع", "إيجار"];
+const types = ["الكل" ,"بيع", "ايجار" ];
 
 export default function SearchBar() {
+
   const [query, setQuery] = useState({
-    type: "بيع",
+    type: "الكل",
     location: "",
+    minPrice: "",
+    maxPrice: "",
+    rooms: "",
+    bathrooms: "",
+    minArea: "",
+    maxArea: "",
   });
 
   function switchType(value) {
     setQuery((prev) => ({ ...prev, type: value }));
+    console.log(query);
+  }
+
+  const navigate = useNavigate();
+  
+  function handleSearch() {
+    navigate("/properties", { state: query }); // نقل الكويري إلى صفحة Properties
   }
   return (
     <>
@@ -58,6 +73,8 @@ export default function SearchBar() {
                 id="outlined-basic"
                 placeholder="أدخل الموقع"
                 variant="outlined"
+                value={query.location}
+                onChange={(e) => setQuery({...query , location:e.target.value})}
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -72,7 +89,6 @@ export default function SearchBar() {
               {/* <IconButton aria-label="delete" size="small">
                   <SearchOutlinedIcon/>
                 </IconButton> */}
-                <Link to={'/properties'} >
               <Button
                 variant="contained"
                 sx={{
@@ -80,10 +96,10 @@ export default function SearchBar() {
                   fontSize: "20px",
                   marginRight: "10px",
                 }}
+                onClick={handleSearch}
               >
                 بحث
               </Button>
-              </Link>
             </div>
           </CardContent>
         </Card>
