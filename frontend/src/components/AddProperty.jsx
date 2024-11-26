@@ -139,7 +139,7 @@ export default function AddProperty({open , handleClose1} ){
       }
   
       try {
-        const response = await axios.get("http://localhost:5000/api/urltst", {
+        const response = await axios.get("/api/urltst", {
           params: { url },
         });
   
