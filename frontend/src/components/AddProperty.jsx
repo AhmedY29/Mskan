@@ -43,7 +43,7 @@ const steps = ['إضافة الرخص', 'إضافة المعلومات للعق�
 
 export default function AddProperty({open , handleClose1} ){
   const services = [
-    { id: "مسجد قريب", label: "مسجد قريب", icon: <MosqueIcon /> },
+       { id: "مسجد قريب", label: "مسجد قريب", icon: <MosqueIcon /> },
     { id: "حديقة قريبة", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
     { id: "مطاعم قريبة", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
     { id: "غرفة خادمة", label: "غرفة خادمة", icon: <Woman2Icon /> },
