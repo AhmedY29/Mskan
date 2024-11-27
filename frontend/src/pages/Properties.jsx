@@ -27,7 +27,11 @@ export default function Properties() {
     setSearchQuery(query);
   };
 
-  
+  useEffect(() => {
+    if (Object.keys(query).length > 0) {
+      setSearchQuery(query); // تعيين الكويري القادم كبحث نشط
+    }
+  }, [query]);
 
   // تطبيق التصفية بناءً على معايير البحث
   useEffect(() => {
@@ -77,6 +81,9 @@ export default function Properties() {
   useEffect(() => {
     const checkWindowSize = () => {
       if (window.innerWidth <= 748) {
+        setTimeout(() => {
+          setDisplaySwitch('list')
+        }, 800);
         setMobile(true);
       } else {
         setMobile(false);

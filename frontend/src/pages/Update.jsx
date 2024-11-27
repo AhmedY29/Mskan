@@ -303,7 +303,7 @@ export default function Update() {
                     description: e.target.value,
                   })
                 }
-                required
+                
                 placeholder="الوصف"
                 fullWidth
                 InputProps={{
@@ -319,7 +319,7 @@ export default function Update() {
             <Typography>
              نوع العرض
           </Typography>
-              <FormControl sx={{ width: 100 }}>
+              <FormControl sx={{ width: 100 }} required>
                 <InputLabel id="demo-simple-select-label">نوع العرض</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -406,7 +406,7 @@ export default function Update() {
                     garages: e.target.value,
                   })
                 }
-                required
+                
                 placeholder="عدد الكراجات"
                 fullWidth
                 InputProps={{
@@ -456,7 +456,7 @@ export default function Update() {
                     livingrooms: e.target.value,
                   })
                 }
-                required
+                
                 placeholder="عدد الصالات"
                 fullWidth
                 InputProps={{
@@ -503,7 +503,7 @@ export default function Update() {
                     ageforbuild: e.target.value,
                   })
                 }
-                required
+                
                 placeholder="عمر العقار (سنوات)"
                 fullWidth
                 InputProps={{
@@ -633,7 +633,7 @@ export default function Update() {
                 onChange={(e) =>
                   setUpdatedProperty({ ...updatedProperty, wifi: e.target.value })
                 }
-                required
+                
                 placeholder="تغطية الإنترنت"
                 fullWidth
                 InputProps={{
@@ -722,7 +722,7 @@ export default function Update() {
                     floor: e.target.value,
                   })
                 }
-                required
+                
                 placeholder="الدور"
                 fullWidth
                 InputProps={{

@@ -87,7 +87,7 @@ export default function PropertyDetailsPhotos({ property }) {
             style={{ borderRadius: "16px", objectFit: "cover" }}
           />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {property.images?.map((img) => {
+            {property.images?.slice(0,3).map((img) => {
               return (
                 <img
                   src={img}
@@ -96,6 +96,7 @@ export default function PropertyDetailsPhotos({ property }) {
                   height={90}
                   style={{ borderRadius: "16px", objectFit: "cover" }}
                 />
+                
               );
             })}
             {/* <img

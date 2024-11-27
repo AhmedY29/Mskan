@@ -38,20 +38,20 @@ import BorderAllOutlinedIcon from "@mui/icons-material/BorderAllOutlined";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 
   const services = [
-    { id: "mosque", label: "مسجد قريب", icon: <MosqueIcon /> },
-    { id: "park", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
-    { id: "restaurants", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
-    { id: "maidRoom", label: "غرفة خادمة", icon: <Woman2Icon /> },
-    { id: "school", label: "مدرسة قريبة", icon: <BusinessIcon /> },
-    { id: "privateEntrance", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
-    { id: "privateParking", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
-    { id: "securityCameras", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
-    { id: "elevator", label: "مصعد", icon: <ElevatorIcon /> },
-    { id: "hospital", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
-    { id: "grocery", label: "تموينات قريب", icon: <StoreIcon /> },
-    { id: "shoppingCenter", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
-    { id: "maintenance", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
-    { id: "cleaning", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
+    { id: "مسجد قريب", label: "مسجد قريب", icon: <MosqueIcon /> },
+    { id: "حديقة قريبة", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
+    { id: "مطاعم قريبة", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
+    { id: "غرفة خادمة", label: "غرفة خادمة", icon: <Woman2Icon /> },
+    { id: "مدرسة قريبة", label: "مدرسة قريبة", icon: <BusinessIcon /> },
+    { id: "مدخل خاص", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
+    { id: "موقف خاص", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
+    { id: "كاميرات مراقبة", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
+    { id: "مصعد", label: "مصعد", icon: <ElevatorIcon /> },
+    { id: "مستشفى قريب", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
+    { id: "تموينات قريب", label: "تموينات قريب", icon: <StoreIcon /> },
+    { id: "مركز تسوق قريب", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
+    { id: "خدمات صيانة", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
+    { id: "خدمات تنظيف", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
   ];
 
 
@@ -63,6 +63,18 @@ export default function PropertyDetailsText({property}) {
       </Grid>
     );
   }
+  const dateString = property.createdAt;
+const date = new Date(dateString);
+
+// استخراج السنة، الشهر، واليوم
+const year = date.getFullYear();
+const month = date.toLocaleString("ar", { month: "long" }); // اسم الشهر بالعربية
+const day = date.getDate();
+
+// تجميع النتيجة
+const formattedDate = `${day} ${month} ${year}`;
+console.log(property.createdAt); // 2024 نوفمبر 27
+console.log(formattedDate); // 2024 نوفمبر 27
   const price = new Intl.NumberFormat().format(property.price);
   const matchedServices = services.filter(service => property.nearbyServices.includes(service.id));
   return (
@@ -120,6 +132,7 @@ export default function PropertyDetailsText({property}) {
                 {property.bathrooms}
                  دورات مياة
               </Typography>
+              { property.garages > 0 ?
               <Typography
                 sx={{
                   display: "flex",
@@ -132,7 +145,8 @@ export default function PropertyDetailsText({property}) {
                 <GarageOutlinedIcon />
                 {property.garages}
                 مدخل سيارة
-              </Typography>
+              </Typography> :''
+              }
               <Typography
                 sx={{
                   display: "flex",
@@ -150,6 +164,7 @@ export default function PropertyDetailsText({property}) {
           </CardContent>
         </Card>
         {/* For Description */}
+       {property.description &&
         <Card
           sx={{
             minWidth: 275,
@@ -165,9 +180,12 @@ export default function PropertyDetailsText({property}) {
               {property.description}
             </Typography>
           </CardContent>
-        </Card>
+        </Card>}
         {/* For Future and Serves */}
-        <Card
+        {
+          
+          matchedServices.length > 0 ? 
+          <Card
           sx={{
             minWidth: 275,
             backgroundColor: "#F6F6F6",
@@ -194,33 +212,12 @@ export default function PropertyDetailsText({property}) {
           <span>{service.label}</span>
         </Grid>
               ))}
-              {/* <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <Woman2Icon />
-                غرفة خادمة
-              </Grid>
-              <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <SensorDoorOutlinedIcon />
-                مدخل خاص
-              </Grid>
-              <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <MosqueIcon />
-                مسجد قريب
-              </Grid>
-              <Grid  sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <RestaurantMenuIcon />
-                مطاعم قريبة
-              </Grid>
-              <Grid sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <BusinessIcon />
-                مدارس قريبة
-              </Grid>
-              <Grid  sx={{display:'flex'}} size={{ xs: 2, sm: 4, md: 4 }}>
-                <LocalParkingOutlinedIcon />
-                مواقف سيارات 5
-              </Grid> */}
             </Grid>
           </CardContent>
         </Card>
+        :''
+        }
+
         {/* For Details  */}
         <Card
           sx={{
@@ -242,10 +239,10 @@ export default function PropertyDetailsText({property}) {
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العقار : فيلا</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>حالة البناء: جاهز</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>التأثيث: مفروش</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العرض: بيع</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>عمر العقار: جديد</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                تاريخ العرض: 8 اكتوبر 2024
+              <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العرض: {property.type}</Grid>
+              <Grid size={{ xs: 2, sm: 4, md: 4 }}>عمر العقار: {property.ageforbuild == 1 ? 'جديد' : property.ageforbuild}</Grid>
+              <Grid sx={{fontSize:'15px'}} size={{ xs: 2, sm: 4, md: 4 }}>
+                تاريخ العرض: {formattedDate}
               </Grid>
             </Grid>
           </CardContent>

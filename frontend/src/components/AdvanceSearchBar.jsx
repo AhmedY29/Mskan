@@ -152,7 +152,6 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           label="الموقع"
           variant="outlined"
           value={query.location}
-          autoFocus
           onChange={(e) => handleChange("location", e.target.value)}
           sx={{ width: "150px" }}
         />

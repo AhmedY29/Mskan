@@ -43,20 +43,20 @@ const steps = ['إضافة الرخص', 'إضافة المعلومات للعق�
 
 export default function AddProperty({open , handleClose1} ){
   const services = [
-    { id: "mosque", label: "مسجد قريب", icon: <MosqueIcon /> },
-    { id: "park", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
-    { id: "restaurants", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
-    { id: "maidRoom", label: "غرفة خادمة", icon: <Woman2Icon /> },
-    { id: "school", label: "مدرسة قريبة", icon: <BusinessIcon /> },
-    { id: "privateEntrance", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
-    { id: "privateParking", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
-    { id: "securityCameras", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
-    { id: "elevator", label: "مصعد", icon: <ElevatorIcon /> },
-    { id: "hospital", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
-    { id: "grocery", label: "تموينات قريب", icon: <StoreIcon /> },
-    { id: "shoppingCenter", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
-    { id: "maintenance", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
-    { id: "cleaning", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
+    { id: "مسجد قريب", label: "مسجد قريب", icon: <MosqueIcon /> },
+    { id: "حديقة قريبة", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
+    { id: "مطاعم قريبة", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
+    { id: "غرفة خادمة", label: "غرفة خادمة", icon: <Woman2Icon /> },
+    { id: "مدرسة قريبة", label: "مدرسة قريبة", icon: <BusinessIcon /> },
+    { id: "مدخل خاص", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
+    { id: "موقف خاص", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
+    { id: "كاميرات مراقبة", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
+    { id: "مصعد", label: "مصعد", icon: <ElevatorIcon /> },
+    { id: "مستشفى قريب", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
+    { id: "تموينات قريب", label: "تموينات قريب", icon: <StoreIcon /> },
+    { id: "مركز تسوق قريب", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
+    { id: "خدمات صيانة", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
+    { id: "خدمات تنظيف", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
   ];
 
     const handleClose = ()=> {
@@ -323,8 +323,8 @@ export default function AddProperty({open , handleClose1} ){
         </React.Fragment>
       ) : activeStep === 0 ? (
         <React.Fragment>
-        <form onSubmit={handleNext} style={{display:'flex' , alignItems:'center' , justifyContent:'center'}}>
-        <Typography variant="h6" sx={{ mt: 2 }}>
+          <div style={{display:'flex' , flexDirection:'column' , alignItems:'center' , direction:'rtl' }}>
+        <Typography variant="h6" sx={{ mt: 2 , mb: 2 }}>
             إضافة معلومات الرخصة
           </Typography>
           <Grid container spacing={2}>
@@ -363,7 +363,7 @@ export default function AddProperty({open , handleClose1} ){
               />
             </Grid>
           </Grid>
-          </form>
+          </div>
           
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
@@ -376,7 +376,8 @@ export default function AddProperty({open , handleClose1} ){
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={() => {
-              if(property.adLicense){handleNext()}else{toast.error('الرجاء ادخال الرخصة')}
+              if(property.adLicense){
+                if(property.adLicense <= 0){toast.error('رقم الرخصة يجب أن تكون أكبر من الصفر')}else{handleNext()}}else{toast.error('الرجاء ادخال الرخصة')}
             }}>
             التالي
             </Button>
@@ -420,6 +421,8 @@ export default function AddProperty({open , handleClose1} ){
             الوصف
           </Typography>
               <TextField
+              multiline
+              maxRows={5}
                 value={property.description}
                 onChange={(e) =>
                   setProperty({
@@ -895,16 +898,34 @@ export default function AddProperty({open , handleClose1} ){
         <Button onClick={() => {
           if(!property.title){
             toast.error('الرجاء ادخال عنوان العقار')
-            if(!property.price){
+            }else if(!property.price ){
               toast.error('الرجاء ادخال سعر العقار')
-              if(!property.location){
-                toast.error('الرجاء ادخال موقع العقار')
-              }
-              if(!property.type){
-                toast.error('الرجاء ادخال نوع العقار')
-              }
-            }
-          }else{handleNext()}
+          }else if(property.price < 0 ){
+            toast.error('الرجاء ادخال رقمًا موحبًا لسعر العقار ')
+          }else if(!property.location){
+            toast.error('الرجاء ادخال موقع العقار')
+          }else if(!property.type){
+            toast.error('الرجاء ادخال نوع العقار')
+          }else if(property.rooms < 0){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(property.bathrooms < 0){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(property.livingrooms < 0 ){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(property.garage < 0 ){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(property.size < 0){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(property.floor < 0){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if( property.latitude < 0 ){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if( property.longitude < 0 ){
+              toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else{handleNext()}
+
+            
+          
         }}>
           التالي
         </Button>
