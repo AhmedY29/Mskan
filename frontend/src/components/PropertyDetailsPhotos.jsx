@@ -29,6 +29,12 @@ import { useAuthStore } from "../store/authStore.js";
 import { useEffect } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import XIcon from '@mui/icons-material/X';
+
 export default function PropertyDetailsPhotos({ property }) {
   const { id } = useParams();
   const { isLoading, deleteProperty } = usePropertiesStore();
@@ -57,6 +63,42 @@ export default function PropertyDetailsPhotos({ property }) {
 
   const [open, setOpen] = useState(false);
   const [open3d, setOpen3d] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openshare = Boolean(anchorEl);
+  const handleClickShare = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseShare = () => {
+    setAnchorEl(null);
+  };
+
+  const websiteUrl = "https://maskn.site/propertyDetails/"+ property._id; // ضع رابط موقعك هنا
+  const message = `فرصة لا تُفوت! 
+- عنوان العقار: ${property.title} 
+- الوصف: ${property.description} 
+- لمزيد من التفاصيل، قم بزيارة الرابط: ${websiteUrl}`
+  
+  const handleShareWhatsapp = () => {
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const handleShareToX = () => {
+    
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`;
+    window.open(twitterUrl, "_blank");
+  }
+
+  const handleCopyLink = () => {
+    
+    // نسخ الرابط إلى الحافظة
+    navigator.clipboard.writeText(websiteUrl)
+      .then(() => {
+        toast.success(" تم نسخ الرابط إلى الحافظة بنجاح!")
+      })
+  };
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -99,27 +141,6 @@ export default function PropertyDetailsPhotos({ property }) {
                 
               );
             })}
-            {/* <img
-            src={"https://images.bayut.sa/thumbnails/4092407-800x600.webp"}
-            alt="Property Photo"
-            width={150}
-            height={90}
-            style={{ borderRadius: "16px" , objectFit:'cover' }}
-          />
-          <img
-            src={"https://images.bayut.sa/thumbnails/4092408-800x600.webp"}
-            alt="Property Photo"
-            width={150}
-            height={90}
-            style={{ borderRadius: "16px" , objectFit:'cover' }}
-          />
-          <img
-            src={"https://images.bayut.sa/thumbnails/4092409-800x600.webp"}
-            alt="Property Photo"
-            width={150}
-            height={90}
-            style={{ borderRadius: "16px", objectFit:'cover' }}
-          /> */}
           </div>
         </div>
         <div style={{ marginTop: "20px" }}>
@@ -136,15 +157,38 @@ export default function PropertyDetailsPhotos({ property }) {
             variant="outlined"
             color="primary"
             startIcon={<IosShareOutlinedIcon />}
+            onClick={handleClickShare}
           >
             مشاركة
           </Button>
-          <Button
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={openshare}
+            onClose={handleCloseShare}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={handleShareWhatsapp}>
+            <WhatsAppIcon style={{marginLeft:'2px'}}/>
+            مشاركة مع الوتساب
+            </MenuItem>
+            <MenuItem onClick={handleShareToX}>
+            <XIcon style={{marginLeft:'2px'}}/>
+            مشاركة مع اكس
+            </MenuItem>
+            <MenuItem onClick={handleCopyLink}>نسخ الرابط</MenuItem>
+          </Menu>
+          {
+            property.a3dimage ? <Button
             variant="outlined"
             color="primary"
             onClick={() => handleClick3d()}
             startIcon={<ThreeDRotationIcon />}
-          />
+          /> :''
+          }
+          
           {isAuther ? (
             // <Button
             // variant="outlined"

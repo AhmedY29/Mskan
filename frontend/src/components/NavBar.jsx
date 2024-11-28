@@ -10,12 +10,45 @@ import { useState } from "react";
 import AddProperty from "./AddProperty";
 import toast from "react-hot-toast";
 
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
+import { useEffect } from "react";
 
 
 export default function NavBar() {
   const {isAuthenticated , logout  , user} = useAuthStore();
   const [open, setOpen] = useState(false)
+  const [openDarwer, setOpenDarwer] = useState(false);
+  const [mobile, setMobile] = useState(false);
 
+  
+    useEffect(() => {
+      const checkWindowSize = () => {
+        if (window.innerWidth <= 748) {
+          setMobile(true);
+        } else {
+          setMobile(false);
+        }
+      };
+  
+      // فحص الحجم عند التحميل
+      checkWindowSize();
+      window.addEventListener("resize", checkWindowSize);
+  
+      // تنظيف المستمع عند إزالة المكون
+      return () => window.removeEventListener("resize", checkWindowSize);
+    }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -44,6 +77,8 @@ export default function NavBar() {
               مسكن
             </Link>
             </Typography> 
+            { mobile == false ?
+              <>
             <Typography variant="p" component="a" >
             <Button variant="text" sx={{color:'black'}}>الشركات العقارية</Button>
             </Typography>
@@ -60,9 +95,67 @@ export default function NavBar() {
             </div>
           )
         }
+        </> :''}
         {
           open &&( <AddProperty open={open} handleClose1={handleClose} />)
         }
+
+        {
+          mobile ?
+           <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => setOpenDarwer(true)}
+          sx={{ mr: 2 }}
+        >
+          <MenuIcon sx={{color:'black'}} />
+        </IconButton> :''
+        }
+                  
+
+
+
+    <Drawer open={openDarwer} onClose={()=>{setOpenDarwer(false)}}>
+    <Box sx={{ width: 250 , direction:'rtl'}} role="presentation" onClick={()=>setOpenDarwer(false)}>
+      {
+        isAuthenticated ? '': 
+         <List>
+        <ListItem disablePadding>
+          <ListItemButton onClick={()=> navigate('/auth')}>
+          <ListItemText primary={'الدخول'} />
+          </ListItemButton>
+        </ListItem>
+    </List>
+      }
+      
+      <List>
+        {[ 'المشاريع العقارية', 'الشركات العقارية'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton >
+            <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      {isAuthenticated ?
+      <>
+      <Divider />
+      <List>
+        {['اضافة اعلان','حسابي', 'العقارات المحفوضة', 'تسجيل الخروج'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate('/profile')} : text == 'اضافة اعلان' ? () => {setOpen(true)} : ''} >
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+  
+        ))}
+      </List>
+      </>
+        :''}
+    </Box>
+      </Drawer>
           </Toolbar>
         </Container>
       </AppBar>

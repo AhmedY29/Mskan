@@ -40,6 +40,28 @@ console.log('ssssssss',property)
 
     const [imagesLoaded, setImagesLoaded] = useState(false);  // حالة لمعرفة ما إذا تم تحميل الصور
     const [loadedImagesCount, setLoadedImagesCount] = useState(0);  // عدد الصور المحملة
+
+
+    const [mobile, setMobile] = useState(false);
+
+  
+    useEffect(() => {
+      const checkWindowSize = () => {
+        if (window.innerWidth <= 748) {
+          setMobile(true);
+        } else {
+          setMobile(false);
+        }
+      };
+  
+      // فحص الحجم عند التحميل
+      checkWindowSize();
+      window.addEventListener("resize", checkWindowSize);
+  
+      // تنظيف المستمع عند إزالة المكون
+      return () => window.removeEventListener("resize", checkWindowSize);
+    }, []);
+
   
     // التحقق من أن property.images موجودة
     if (!property || !property.images || property.images.length === 0) {
@@ -95,8 +117,8 @@ console.log('ssssssss',property)
 
           </Toolbar>
         </AppBar>
-        <div className="arrows" style={{display: currentImage == mergedImages.length -1  ? 'none' : 'flex' , paddingLeft:'200px'}} onClick={()=> setCurrentImage(currentImage+1)} >
-            <ArrowForwardIosIcon sx={{fontSize:'100px',  color:"black",zIndex:'1'}}/>
+        <div className="arrows" style={{display: currentImage == mergedImages.length -1  ? 'none' : 'flex' , paddingLeft: mobile ? '120px' : '200px' , zIndex:'1'}} onClick={()=> setCurrentImage(currentImage+1)} >
+            <ArrowForwardIosIcon sx={{fontSize: mobile ? '75px' : '100px',  color:"black",zIndex:'1'}}/>
         </div>
         <div style={{display:'flex', justifyContent:'center'}}>
           <img className="imgs"
@@ -105,8 +127,8 @@ console.log('ssssssss',property)
           />
           <Chip label={`${mergedImages.length}/${currentImage+1} `} sx={{marginTop:'5px', position:'absolute' , bottom:'30px'}}/>
           </div>
-                  <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight:'200px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
-                  <ArrowBackIosNewIcon sx={{fontSize:'100px' , color:"black" ,zIndex:'1' }}/>
+                  <div className="arrows" style={{left:'0px' , display: currentImage === 0 ? 'none' : 'flex' , paddingRight: mobile ? '120px' : '200px'}}  onClick={()=> setCurrentImage(currentImage-1)}> 
+                  <ArrowBackIosNewIcon sx={{fontSize: mobile ? '75px' : '100px', color:"black" ,zIndex:'1' }}/>
         </div>
         
       </Dialog>

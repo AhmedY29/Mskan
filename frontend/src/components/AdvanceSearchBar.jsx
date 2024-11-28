@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material"; // استيراد Autocomplete
+import { useEffect } from "react";
 import { useState } from "react";
 
 export default function AdvanceSearchBar({ onSearch , querya }) {
@@ -61,6 +62,27 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
     "الأفلاج",
     'القصيم',
   ];
+
+  const [mobile, setMobile] = useState(false);
+
+  
+    useEffect(() => {
+      const checkWindowSize = () => {
+        if (window.innerWidth <= 748) {
+          setMobile(true);
+        } else {
+          setMobile(false);
+        }
+      };
+  
+      // فحص الحجم عند التحميل
+      checkWindowSize();
+      window.addEventListener("resize", checkWindowSize);
+  
+      // تنظيف المستمع عند إزالة المكون
+      return () => window.removeEventListener("resize", checkWindowSize);
+    }, []);
+
 
   // تحديث حالة البحث عند تغيير المدخلات
   const handleChange = (field, value) => {
@@ -132,30 +154,21 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         >
           الكل
         </Button>
-        {/* حقل الموقع مع قائمة المدن */}
-        {/* <Autocomplete
-          freeSolo
-          options={saudiCities}
-          value={query.location}
-          onChange={(e, newValue) => handleChange("location", newValue)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="الموقع"
-              variant="outlined"
-              sx={{ width: "200px" }}
-            />
-          )}
-        /> */}
 
-<TextField
+        {
+          mobile ? <br /> :''
+        }
+        {/* حقل الموقع مع قائمة المدن */}
+
+        <TextField
           label="الموقع"
           variant="outlined"
           value={query.location}
           onChange={(e) => handleChange("location", e.target.value)}
           sx={{ width: "150px" }}
         />
-
+        { mobile == false ?
+          <>
         {/* حقل السعر الأدنى */}
         <TextField
           label="السعر الأدنى"
@@ -192,7 +205,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           )}
         />
 
-        {/* عدد الحمامات */}
+        {/* عدد دورات المياة */}
         <Autocomplete
           freeSolo
           options={["1", "2", "3", "4", "5"]}
@@ -201,12 +214,14 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="الحمامات"
+              label="دورات المياة"
               variant="outlined"
               sx={{ width: "150px" }}
             />
           )}
         />
+        </> :''
+        }
 
         {/* زر فتح الحقول الإضافية */}
         <Button variant="contained" color="primary" onClick={handleOpenDialog}>

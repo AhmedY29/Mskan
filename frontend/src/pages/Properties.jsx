@@ -83,7 +83,7 @@ export default function Properties() {
       if (window.innerWidth <= 748) {
         setTimeout(() => {
           setDisplaySwitch('list')
-        }, 800);
+        }, 500);
         setMobile(true);
       } else {
         setMobile(false);
