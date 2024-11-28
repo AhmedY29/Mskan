@@ -17,6 +17,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "../store/authStore.js";
+import toast from "react-hot-toast";
 
 export default function Auth() {
   const [displays, setDisplays] = useState("login");
@@ -110,13 +111,15 @@ export default function Auth() {
                   <Button onClick={() => navigate('/forgotPassword')} variant="text" size="small" sx={{ width: "112px" }}>
                     نسيت كلمة المرور؟
                   </Button>
-                  {error && <p style={{color:'red'}}>{error}</p>}
+                  {error && toast.error('خطا في اسم المستخدم او كلمة المرور')}
+                  {error && <p style={{color:'red'}}>خطا في اسم المستخدم او كلمة المرور</p> }
                     <Button
                     type="submit"
                       variant="contained"
                       color="primary"
                       size="large"
                       sx={{ marginTop: "20px" }}
+                      disabled={isLoading}
                     >
                       {isLoading ? <CircularProgress/> : 'تسجيل الدخول'}
                     </Button>
@@ -209,6 +212,7 @@ export default function Auth() {
                     color="primary"
                     size="large"
                     sx={{ marginTop: "20px" }}
+                    disabled={isLoading}
                   >
                     {isLoading ? <CircularProgress/> : 'التسجيل'}
 

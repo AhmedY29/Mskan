@@ -66,8 +66,41 @@
   .propertyPage{
     display: block !important;
   }
+  .text-field{
+    max-width: 150px;
+  }
 }
 @media (max-width: 530px) {
+  .text-hero h1{
+    max-width: 100% !important;
+    margin-bottom: 30px !important;
+}
+.container{
+  padding: 9px !important;
+}
+.propertyPage{
+  display: block !important;
+}
+.cards-properties{
+  width: 100% !important;
+}
+}
+@media (max-width: 540px) {
+  .text-hero h1{
+    max-width: 100% !important;
+    margin-bottom: 30px !important;
+}
+.container{
+  padding: 9px !important;
+}
+.propertyPage{
+  display: block !important;
+}
+.cards-properties{
+  width: 100% !important;
+}
+}
+@media (max-width: 599px) {
   .text-hero h1{
     max-width: 100% !important;
     margin-bottom: 30px !important;
@@ -88,6 +121,9 @@
 }
 .cards-properties{
   width: 100% !important;
+}
+.text-field{
+  max-width: 150px;
 }
 }
 @media (max-width: 400px) {

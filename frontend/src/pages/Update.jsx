@@ -912,7 +912,7 @@ export default function Update() {
           </div>
 
            <div>
-                <button type="submit">تحديث العقار</button>
+                <Button disabled={isLoading} variant="contained" type="submit">تحديث العقار</Button>
             </div>
             </form>
         </Container>

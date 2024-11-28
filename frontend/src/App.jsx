@@ -16,6 +16,7 @@ import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
 import Loading from './components/Loading.jsx';
 import Update from './pages/Update.jsx';
+import VerifyMsg from './components/VerifyMsg.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -73,6 +74,10 @@ function App() {
   return (
     <div>
       <ThemeProvider theme={theme}>
+
+        {
+          isAuthenticated == true && !user.isVerified ? <VerifyMsg/> :''
+        }
       <NavBar/>
       <Routes>
       <Route path="/" element={<Home />} />

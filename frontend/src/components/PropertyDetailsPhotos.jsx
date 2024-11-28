@@ -21,6 +21,9 @@ import {
   Avatar,
   CircularProgress,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   DialogTitle,
   IconButton,
 } from "@mui/material";
@@ -62,6 +65,7 @@ export default function PropertyDetailsPhotos({ property }) {
   }
 
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const [open3d, setOpen3d] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openshare = Boolean(anchorEl);
@@ -103,7 +107,13 @@ export default function PropertyDetailsPhotos({ property }) {
   const handleClickOpen = () => {
     setOpen(true);
   };
+  const handleClickDelete = () => {
+    setOpenDelete(true);
+  };
 
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -195,13 +205,9 @@ export default function PropertyDetailsPhotos({ property }) {
             // color="error"
             // onClick={() => handleClick3d()}
             // startIcon={<DeleteOutlineIcon />}
-            <IconButton size="large" color="error">
+            <IconButton size="large" color="error" onClick={handleClickDelete}>
               <DeleteOutlineIcon
                 fontSize="inherit"
-                onClick={() => {
-                  deleteProperty(id);
-                  return navigate("/"), toast.success("تم حذف العقار بنجاح");
-                }}
               />
             </IconButton>
           ) : (
@@ -289,6 +295,24 @@ export default function PropertyDetailsPhotos({ property }) {
           frameborder="0"
           allowfullscreen
         ></iframe>
+      </Dialog>
+      <Dialog open={openDelete} onClose={handleCloseDelete} sx={{direction:'rtl'}}>
+      <DialogTitle id="alert-dialog-title">
+          هل انت متأكد من حذف العقار؟
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ملاحظة في حال الحذف لن تتمكن من اعادة العقار مرة اخرى!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>لا</Button>
+          <Button onClick={() =>{
+                  deleteProperty(id);
+                  return navigate("/"), toast.success("تم حذف العقار بنجاح")}} >
+            نعم
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
