@@ -4,6 +4,7 @@ import routerProperties from "./routes/property.route.js";
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 import authRoutes from './routes/auth.route.js';
+import saveRoutes from './routes/saveProperty.route.js';
 import path from 'path'
 import cors from 'cors';
 
@@ -24,6 +25,7 @@ app.use('/api', routerProperties)
 
 // Authentication 
 app.use('/api/auth', authRoutes)
+app.use('/api/save', saveRoutes)
 
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static(path.join(__dirname, "/frontend/dist")));

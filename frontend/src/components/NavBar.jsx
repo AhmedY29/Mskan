@@ -24,13 +24,23 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from "react";
-
+import { Avatar, Menu } from "@mui/material";
+import MenuItem from '@mui/material/MenuItem';
 
 export default function NavBar() {
   const {isAuthenticated , logout  , user} = useAuthStore();
   const [open, setOpen] = useState(false)
   const [openDarwer, setOpenDarwer] = useState(false);
   const [mobile, setMobile] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openA = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseA = () => {
+    setAnchorEl(null);
+  };
 
   
     useEffect(() => {
@@ -88,7 +98,23 @@ export default function NavBar() {
             </Typography>
             {isAuthenticated ? (
               <div>
-            <Button onClick={handelLogout} sx={{ marginLeft:1}} variant="contained">خروج</Button>
+                <Button onClick={handleClick} variant="text" sx={{color:'black'}}><Avatar sx={{width:'30px', height:'30px' , marginLeft:'2px'}}  alt={user.name} src={user.avatar || ""}/>  مرحبا  {user.name}  </Button>
+                <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={openA}
+            onClose={handleCloseA}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <MenuItem onClick={()=> {navigate(`/profile/${user.name}`); handleCloseA()}} >
+            حسابي
+            </MenuItem>
+            <Divider/>
+            <MenuItem onClick={handelLogout}> تسجيل خروج</MenuItem>
+          </Menu>
+                
             <Button onClick={handleClickOpen} variant="outlined">اضافة اعلان</Button>
             </div>) : (<div>
             <Button sx={{ marginLeft:1}} variant="contained" onClick={()=> navigate('/auth')}>الدخول</Button>
@@ -145,7 +171,7 @@ export default function NavBar() {
       <List>
         {['اضافة اعلان','حسابي', 'العقارات المحفوضة', 'تسجيل الخروج'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate('/profile')} : text == 'اضافة اعلان' ? () => {setOpen(true)} : ''} >
+            <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate(`/profile/${user.name}`)} : text == 'اضافة اعلان' ? () => {setOpen(true)} : ''} >
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>

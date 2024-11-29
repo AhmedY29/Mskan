@@ -85,7 +85,7 @@ function App() {
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
       <Route path="/updateProperty/:propertyId" element={<Update/>} />
 
-      <Route path="/profile" element={
+      <Route path="/profile/:name" element={
       <ProtectedRoute>
       <Profile/>
         </ProtectedRoute>} />

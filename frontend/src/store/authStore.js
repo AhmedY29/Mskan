@@ -84,6 +84,16 @@ export const useAuthStore = create((set)=>({
             set({ isLoading:false, error:error.response.data.message || "Error resetting password"});
             throw error;
         }
+    },
+    getUser: async (name) => {
+        set({isLoading:true})
+        try {
+            const response = await axios.get(`${API_URL}/profile/${name}`);
+            set({isLoading:false , user:response.data.user});
+        } catch (error) {
+            set({ isLoading:false, error:error.response.data.message || "Error getting data"});
+            throw error;
+        }
     }
 
 }));

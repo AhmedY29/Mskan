@@ -75,7 +75,7 @@ const day = date.getDate();
 const formattedDate = `${day} ${month} ${year}`;
 console.log(property.createdAt); // 2024 نوفمبر 27
 console.log(formattedDate); // 2024 نوفمبر 27
-  const price = new Intl.NumberFormat().format(property.price);
+  const price = new Intl.NumberFormat('en-US').format(property.price);
   const matchedServices = services.filter(service => property.nearbyServices.includes(service.id));
   return (
     <>

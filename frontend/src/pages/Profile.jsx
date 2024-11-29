@@ -13,12 +13,18 @@ import UserProfile from "../components/UserProfile";
 import UserProperties from "../components/UserProperties";
 import UserSave from "../components/UserSave";
 import UserChat from "../components/UserChat";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import {  useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import Loading from "../components/Loading";
 
 const dsply = ['personal' , 'chat', 'save' ,'list']
 export default function Profile() {
     const [displayName, setDisplayName] =useState('personal');
+
+    const { isLoading , user } = useAuthStore();
+
+    if(isLoading){<Loading/>}
   return (
     <>
       <Container fixed>
@@ -32,12 +38,12 @@ export default function Profile() {
         >
           <Avatar
             sx={{ width: 70, height: 70 }}
-            alt="Ahmed"
-            src="/static/images/avatar/1.jpg"
+            alt={user.name}
+            src={user.avatar || ''}
           />
           <Typography variant="h6" component="div">
             {" "}
-            Ahmed
+            {user.name}
           </Typography>
           <Stack
             sx={{
@@ -70,7 +76,7 @@ export default function Profile() {
             
 
             {
-                displayName == 'list' ? <UserProperties/> : displayName == 'save' ? <UserSave/> : displayName == 'chat' ? <UserChat/> : <UserProfile/>
+                displayName == 'list' ? <UserProperties user={user}/> : displayName == 'save' ? <UserSave/> : displayName == 'chat' ? <UserChat/> : <UserProfile user={user}/>
             }
             
           </Card>

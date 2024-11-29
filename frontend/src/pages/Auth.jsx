@@ -111,7 +111,7 @@ export default function Auth() {
                   <Button onClick={() => navigate('/forgotPassword')} variant="text" size="small" sx={{ width: "112px" }}>
                     نسيت كلمة المرور؟
                   </Button>
-                  {error && toast.error('خطا في اسم المستخدم او كلمة المرور')}
+                  {}
                   {error && <p style={{color:'red'}}>خطا في اسم المستخدم او كلمة المرور</p> }
                     <Button
                     type="submit"
