@@ -5,7 +5,13 @@ export const getSavedProperties = async (req, res) => {
 
     try {
         // البحث عن جميع العقارات المحفوظة من قبل المستخدم
-        const savedProperties = await SaveProperty.find({ userId }).populate('propertyId');
+        const savedProperties = await SaveProperty.find({ userId }).populate({
+            path: 'propertyId',
+            populate: {
+              path: 'owner',
+              select: '-password',
+            },
+          });;
         
         if (savedProperties.length === 0) {
             return res.status(404).json({ success: false, message: 'لا توجد عقارات محفوظة' });

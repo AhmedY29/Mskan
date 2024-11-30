@@ -1,4 +1,4 @@
-import {  Button, Card, CardContent, Typography } from "@mui/material";
+import {  Button, Card, CardContent, CircularProgress, Typography } from "@mui/material";
 import * as React from "react";
 import { useState } from "react";
 import { useRef } from "react";
@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 export default function VerifyEmail() {
   const [code , setCode] = useState(["","","","","",""]);
   const [submit , setSubmit] = useState(true);
+  const [open , setOpen] = useState(true);
   const inputRefs = useRef([]);
   const navigate = useNavigate()
 
@@ -46,7 +47,7 @@ export default function VerifyEmail() {
     const verificationCode = code.join("");
     try {
       await verifyEmail(verificationCode)
-      navigate("/")
+      navigate("/" , {state: open})
       toast.success("تم تأكيد الحساب بنجاح")
     } catch (error) {
       console.log(error)
@@ -94,7 +95,7 @@ export default function VerifyEmail() {
           </div>
             {error && <p style={{color:'red'}}>{error}</p>}
             <Button type="submit" sx={{width:'100%'}} variant="contained" disabled={submit} >
-              تأكيد الحساب
+              {isLoading ? <CircularProgress/> :'تأكيد الحساب'}
             </Button>
             </form>
             

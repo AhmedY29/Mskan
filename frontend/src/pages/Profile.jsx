@@ -13,16 +13,24 @@ import UserProfile from "../components/UserProfile";
 import UserProperties from "../components/UserProperties";
 import UserSave from "../components/UserSave";
 import UserChat from "../components/UserChat";
-import { useParams } from "react-router-dom";
-import {  useState } from "react";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {  useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import Loading from "../components/Loading";
 
-const dsply = ['personal' , 'chat', 'save' ,'list']
 export default function Profile() {
     const [displayName, setDisplayName] =useState('personal');
-
+    const {name} = useParams()
+    const navigate = useNavigate()
+    
     const { isLoading , user } = useAuthStore();
+
+    useEffect(() => {
+      if (user.name !== name ){
+        navigate(`/profile/${user.name}`)
+      }
+    }, [user , name])
+    
 
     if(isLoading){<Loading/>}
   return (

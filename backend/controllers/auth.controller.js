@@ -3,6 +3,7 @@ import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import { generateTokenAndCookie } from "../utils/generateTokenAndSetCookie.js";
 import { sendResetEmail, sendResetEmailSuccess, sendVerificationEmail, sendWelcomeEmail } from "../mailtrap/emails.js";
+import cloudinary from "../config/cloudinary.js";
 
 export const register = async (req, res) => {
   const { name, email, password} = req.body;
@@ -11,11 +12,17 @@ export const register = async (req, res) => {
     if (!email || !name || !password) {
       throw new Error("يجب عليك ملئ جميه الحقول");
     }
-    const userExists = await User.findOne({ email });
-    if (userExists) {
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
       return res
         .status(400)
         .json({ success: false, message: "البريد الالكتروني موجود بالفعل" });
+    }
+    const userExists = await User.findOne({ name });
+    if (userExists) {
+      return res
+        .status(400)
+        .json({ success: false, message: "اسم المستخدم موجود بالفعل" });
     }
 
     const hashPassword = await bcryptjs.hash(password, 10);
@@ -183,3 +190,66 @@ export const getUser = async (req , res) =>{
     
   }
 }
+
+export const getEditUser = async (req, res) => {
+ 
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+}
+
+export const editUser = async (req, res) => {
+  const updates = req.body; // البيانات المُحدثة تأتي من الطلب
+  let avatarUrl = "";
+
+  if (updates.avatar) {
+      const avatarPhotoResult = await cloudinary.uploader.upload(updates.avatar, {
+        folder: updates.name,
+      });
+      avatarUrl = avatarPhotoResult.secure_url;
+    }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, {...updates, avatar: avatarUrl}, { new: true, runValidators: true });
+    if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+}
+
+export const changePass = async (req, res) => {
+  try {
+    const form = req.body;
+    // التحقق من صحة البيانات
+    if (!form.userId || !form.currentPassword || !form.newPassword) {
+      return res.status(400).json({ message: 'يرجى تعبئة جميع الحقول.' });
+    }
+
+    // جلب المستخدم من قاعدة البيانات
+    const user = await User.findById(form.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'المستخدم غير موجود.' });
+    }
+
+    // التحقق من كلمة المرور الحالية
+    const isMatch = await bcryptjs.compare(form.currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'كلمة المرور الحالية غير صحيحة.' });
+    }
+
+    // تحديث كلمة المرور الجديدة
+    const salt = await bcryptjs.genSalt(10);
+    user.password = await bcryptjs.hash(form.newPassword, salt);
+    await user.save();
+
+    res.status(200).json({ message: 'تم تغيير كلمة المرور بنجاح.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'حدث خطأ في الخادم.' });
+  }
+};

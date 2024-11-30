@@ -23,12 +23,17 @@ import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loading from "./Loading";
 export default function CardProperties({ displaySwitch , property }) {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const {user , isLoading} = useAuthStore();
+    if(!property){
+      return <Loading/>
+    }
     useEffect(() => {
       if (isLoading || !user) return; 
       const checkIfBookmarked = async () => {
+
           try {
               // إرسال طلب للتحقق إذا كان العقار محفوظًا
               const response = await axios.get(`/api/save/check/${property._id}`);
@@ -38,11 +43,15 @@ export default function CardProperties({ displaySwitch , property }) {
           }
       };
       checkIfBookmarked();
-  }, [property._id, user._id]);
+  }, [property._id]);
 
   // تبديل الحفظ (أو إلغاء الحفظ)
   const toggleBookmark = async () => {
       try {
+        if(!property._id || !user){
+          setIsBookmarked(false);
+          return toast.error('يجب تسجيل الدخول لـ حفظ العقارات')
+        }
           if (isBookmarked) {
               // إذا كان العقار محفوظًا، نحذفه
               await axios.delete(`/api/save/remove/${property._id}`);

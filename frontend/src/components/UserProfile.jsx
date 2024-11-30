@@ -1,12 +1,33 @@
 import {
     Button,
     CardContent,
+    Dialog,
     TextField,
     Typography,
   } from "@mui/material";
   import Grid from "@mui/material/Grid2";
+import { useState } from "react";
+import EditUser from "../pages/EditUser";
+import ChangePass from "./ChangePass";
 
 export default function UserProfile({user}){
+
+  const [openEdit, setOpenEdit] = useState(false);
+
+  const handleOpenEdit = () => {
+    setOpenEdit(true);
+  };
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+  const [openChangePass, setOpenChangePass] = useState(false);
+
+  const handleOpenChangePass = () => {
+    setOpenChangePass(true);
+  };
+  const handleCloseChangePass = () => {
+    setOpenChangePass(false);
+  };
 
     return(
         <>
@@ -65,11 +86,31 @@ export default function UserProfile({user}){
               </Grid>
               <div style={{display:'flex', justifyContent:'center', marginTop:'20px'}}>
 
-              <Button variant="contained" color="primary" size="medium"> 
-                حفظ
+              <Button onClick={handleOpenEdit} variant="contained" color="primary" size="medium"> 
+                تعديل البيانات
+              </Button>
+              <Button onClick={handleOpenChangePass} variant="contained" color="primary" size="medium"> 
+                 تغيير كلمة المرور
               </Button>
               </div>
             </CardContent>
+
+            <Dialog
+            open={openEdit}
+            onClose={handleCloseEdit}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            >
+        <EditUser close={handleCloseEdit}/>
+      </Dialog>
+            <Dialog
+            open={openChangePass}
+            onClose={handleCloseChangePass}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+            >
+        <ChangePass close={handleCloseChangePass}/>
+      </Dialog>
         </>
     );
 }
