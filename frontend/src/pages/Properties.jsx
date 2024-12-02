@@ -143,7 +143,7 @@ export default function Properties() {
           >
             <Typography variant="h5" component="h2" gutterBottom>
               {
-                Object.keys(searchQuery).length > 0 ? ' نتائج البحث '  + filteredProperties.length + ' عقار ': properties.length + ' عقار '
+                filteredProperties.length + ' عقار '
               }
             </Typography>
             

@@ -251,11 +251,11 @@ export default function PropertyDetailsPhotos({ property }) {
             </div>
             <div style={{ flex: "3" }}>
               <Typography variant="h6" component="div">
-                مكتب مسكنكم للخدمات العقارية
+              {property.owner?.name}
               </Typography>
-              <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
+              {/* <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
                 المعلن : {property.owner?.name}
-              </Typography>
+              </Typography> */}
               {/* <Typography variant="body2">
             well meaning and kindly.
             <br />
