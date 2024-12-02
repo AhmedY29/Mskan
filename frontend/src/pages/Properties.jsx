@@ -17,7 +17,6 @@ import { Button } from "@mui/material";
 export default function Properties() {
   const [displaySwitch, setDisplaySwitch] = useState("map");
   const [mobile, setMobile] = useState(false);
-  const [clean, setClean] = useState(false);
   const [searchQuery, setSearchQuery] = useState({});
   const [filteredProperties, setFilteredProperties] = useState([]);
   const { properties, getProperties, isLoading } = usePropertiesStore();

@@ -237,7 +237,7 @@ console.log(formattedDate); // 2024 نوفمبر 27
             >
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العقار : {property.title}</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>الواجهة: {property.facade}</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>الدفع: {property.payment|| ''} , {property.paymentWay|| ''}</Grid>
+              {property.payment && <Grid size={{ xs: 2, sm: 4, md: 4 }}>الدفع: {property.payment|| ''} , {property.paymentWay|| ''}</Grid>}
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العرض: {property.type}</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>عمر العقار: {property.ageforbuild == 1 ? 'جديد' : property.ageforbuild}</Grid>
               <Grid sx={{fontSize:'15px'}} size={{ xs: 2, sm: 4, md: 4 }}>

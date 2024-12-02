@@ -46,11 +46,34 @@ export default function PropertyDetailsPhotos({ property }) {
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isAuther, setIsAuther] = useState(false);
+  const [mobile, setMobile] = useState(false);
+
   useEffect(() => {
     setTimeout(() => {
       setIsAuther(user._id == property.owner._id);
     }, 1500);
   }, [user, property]);
+
+  useEffect(() => {
+    const checkWindowSize = () => {
+      if(!isLoading){
+      if (window.innerWidth <= 748) {
+        setMobile(true);
+      } else {
+        setMobile(false);
+      }}
+    };
+
+
+
+    // فحص الحجم عند التحميل
+    checkWindowSize();
+    window.addEventListener("resize", checkWindowSize);
+
+    // تنظيف المستمع عند إزالة المكون
+    return () => window.removeEventListener("resize", checkWindowSize);
+  }, []);
+
 
   function marks(isBookmarked) {
     if (isBookmarked) {
@@ -289,9 +312,9 @@ export default function PropertyDetailsPhotos({ property }) {
       <Dialog open={open3d} onClose={handleClose3d} maxWidth="md">
         <iframe
           style={{ padding: "12px" }}
-          src="https://www.zillow.com/view-3d-home/833510a2-abe4-441a-9e55-0971e16c098b?setAttribution=mls&wl=true&utm_source=dashboard"
-          height="650"
-          width="700"
+          src={property.a3dimage || ''}
+          height={mobile ? '600' :"650"}
+          width={mobile ? '330':"700"}
           frameborder="0"
           allowfullscreen
         ></iframe>
