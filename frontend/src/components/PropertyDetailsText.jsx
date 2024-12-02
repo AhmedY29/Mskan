@@ -84,11 +84,10 @@ console.log(formattedDate); // 2024 نوفمبر 27
         <Card sx={{ minWidth: 275, backgroundColor: "#F6F6F6" }}>
           <CardContent style={{ display: "flex", flexDirection: "column" }}>
             <Typography variant="h6" component="div">
-              فيلا للبيع في {property.location} 
-              {property.title}
+             {property.title} {property.type == 'بيع' ? 'للبيع' : 'للإيحار'} في {property.location}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
-              {property.location}
+              {property.location} , {property.address || ''}
             </Typography>
             <Typography
               sx={{ marginBottom: "10px" }}
@@ -236,9 +235,9 @@ console.log(formattedDate); // 2024 نوفمبر 27
               columns={{ xs: 4, sm: 8, md: 12 }}
               sx={{ marginTop: "10px" }}
             >
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العقار : فيلا</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>حالة البناء: جاهز</Grid>
-              <Grid size={{ xs: 2, sm: 4, md: 4 }}>التأثيث: مفروش</Grid>
+              <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العقار : {property.title}</Grid>
+              <Grid size={{ xs: 2, sm: 4, md: 4 }}>الواجهة: {property.facade}</Grid>
+              <Grid size={{ xs: 2, sm: 4, md: 4 }}>الدفع: {property.payment|| ''} , {property.paymentWay|| ''}</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>نوع العرض: {property.type}</Grid>
               <Grid size={{ xs: 2, sm: 4, md: 4 }}>عمر العقار: {property.ageforbuild == 1 ? 'جديد' : property.ageforbuild}</Grid>
               <Grid sx={{fontSize:'15px'}} size={{ xs: 2, sm: 4, md: 4 }}>

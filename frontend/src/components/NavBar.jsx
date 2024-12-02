@@ -157,6 +157,15 @@ export default function NavBar() {
       }
       
       <List>
+        {['الصفحة الرئيسية'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton onClick={() =>navigate('/')} >
+            <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <List>
         {[ 'المشاريع العقارية', 'الشركات العقارية'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton >
@@ -169,7 +178,7 @@ export default function NavBar() {
       <>
       <Divider />
       <List>
-        {['اضافة اعلان','حسابي', 'العقارات المحفوضة', 'تسجيل الخروج'].map((text, index) => (
+        {['اضافة اعلان','حسابي', 'تسجيل الخروج'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate(`/profile/${user.name}`)} : text == 'اضافة اعلان' ? () => {setOpen(true)} : ''} >
               <ListItemText primary={text} />

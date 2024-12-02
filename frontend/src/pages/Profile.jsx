@@ -69,7 +69,7 @@ export default function Profile() {
             <Button onClick={()=> setDisplayName('personal')}>المعلومات الشخصية</Button>
             <Button onClick={()=> setDisplayName('list')}>العقارات </Button>
             <Button onClick={()=> setDisplayName('save')}>العقارات المحفوظة</Button>
-            <Button onClick={()=> setDisplayName('chat')}>المحادثات</Button>
+            {/* <Button onClick={()=> setDisplayName('chat')}>المحادثات</Button> */}
           </Stack>
 
           <Card

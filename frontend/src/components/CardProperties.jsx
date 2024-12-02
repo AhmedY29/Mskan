@@ -93,7 +93,7 @@ export default function CardProperties({ displaySwitch , property }) {
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 <LocationOnOutlinedIcon fontSize="small" />
-                {property.location}
+                {property.location} , {property.address || ''}
               </Typography>
               <div className="Icons">
                 <Typography
@@ -125,7 +125,7 @@ export default function CardProperties({ displaySwitch , property }) {
               style={{ flex: "2", alignContent: "center", textAlign: "left" }}
             >
               <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                {new Intl.NumberFormat('en-US').format(property.price)} ريال {property.type == 'ايجار' ? '/شهري' : ''}
+                {new Intl.NumberFormat('en-US').format(property.price)} ريال {property.type == 'ايجار' ? 'شهريًا' :property.type == 'بيع' ? 'سنويًا' :''}
               </Typography>
                 <Avatar
                   sx={{ width: 60, height: 60 }}

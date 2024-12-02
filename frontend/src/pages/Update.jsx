@@ -191,7 +191,7 @@ export default function Update() {
         }
     
         try {
-          const response = await axios.get("http://localhost:5000/api/urltst", {
+          const response = await axios.get("/api/urltst", {
             params: { url },
           });
     

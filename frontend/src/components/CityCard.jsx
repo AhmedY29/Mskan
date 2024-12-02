@@ -20,9 +20,9 @@ export default function CityCard({title ,count , image}) {
         <Typography gutterBottom variant="h5" component="div">
           {title}
         </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {count} عقار
-        </Typography>
+        </Typography> */}
       </CardContent>
     </Card>
     </>

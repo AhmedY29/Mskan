@@ -12,10 +12,12 @@ import { usePropertiesStore } from "../store/propertiesStore.js";
 import Loading from "../components/Loading.jsx";
 import "../style.css";
 import { useLocation } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export default function Properties() {
   const [displaySwitch, setDisplaySwitch] = useState("map");
   const [mobile, setMobile] = useState(false);
+  const [clean, setClean] = useState(false);
   const [searchQuery, setSearchQuery] = useState({});
   const [filteredProperties, setFilteredProperties] = useState([]);
   const { properties, getProperties, isLoading } = usePropertiesStore();
@@ -80,6 +82,7 @@ export default function Properties() {
 
   useEffect(() => {
     const checkWindowSize = () => {
+      if(!isLoading){
       if (window.innerWidth <= 748) {
         setTimeout(() => {
           setDisplaySwitch('list')
@@ -87,8 +90,10 @@ export default function Properties() {
         setMobile(true);
       } else {
         setMobile(false);
-      }
+      }}
     };
+
+
 
     // فحص الحجم عند التحميل
     checkWindowSize();
@@ -137,8 +142,12 @@ export default function Properties() {
             }}
           >
             <Typography variant="h5" component="h2" gutterBottom>
-              {filteredProperties.length} عقار
+              {
+                Object.keys(searchQuery).length > 0 ? ' نتائج البحث '  + filteredProperties.length + ' عقار ': properties.length + ' عقار '
+              }
             </Typography>
+            
+            
 
             <ToggleButtonGroup
               color="primary"
@@ -165,13 +174,15 @@ export default function Properties() {
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
+                
                 {filteredProperties?.map((property) => (
                   <CardProperties
                     key={property._id}
                     displaySwitch={displaySwitch}
                     property={property}
-                  />
-                ))}
+                  /> 
+                ))
+              }
               </Grid>
             </div>
             <div

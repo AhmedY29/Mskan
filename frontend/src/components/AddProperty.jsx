@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "./Loading.jsx";
 import { useState } from "react";
 import axios from "axios";
+import ThreeDRotationIcon from "@mui/icons-material/ThreeDRotation";
 
 
 
@@ -59,6 +60,123 @@ export default function AddProperty({open , handleClose1} ){
     { id: "خدمات تنظيف", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
   ];
 
+  const city = {
+    "الرياض": [
+      "الصحافة",
+      "الياسمين",
+      "العقيق",
+      "النخيل",
+      "الملقا",
+      "حطين",
+      "الغدير",
+      "النفل",
+      "السويدي",
+      "العريجاء",
+      "البديعة",
+      "المربع",
+      "الملز",
+      "البطحاء",
+      "الديرة"
+    ],
+    "جدة": [
+      "أبحر الشمالية",
+      "المحمدية",
+      "النعيم",
+      "البساتين",
+      "الشرفية",
+      "مشرفة",
+      "الصفا",
+      "السامر",
+      "البلد",
+      "غليل",
+      "النزلة اليمانية",
+      "الكرنتينا"
+    ],
+    "مكة المكرمة": [
+      "العزيزية",
+      "الشوقية",
+      "النوارية",
+      "المسفلة",
+      "جرول",
+      "الشرائع",
+      "الكعكية",
+      "الحجون",
+      "الزاهر",
+      "الرصيفة"
+    ],
+    "المدينة المنورة": [
+      "العوالي",
+      "شوران",
+      "قباء",
+      "السيح",
+      "بني معاوية",
+      "الخالدية",
+      "الجرف",
+      "العزيزية",
+      "الفتح",
+      "الصالحية"
+    ],
+    "الدمام": [
+      "الفاخرية",
+      "الشاطئ الغربي",
+      "الروضة",
+      "الفيصلية",
+      "الخليج",
+      "النخيل",
+      "العنود",
+      "المزروعية",
+      "أحد",
+      "الراكة"
+    ],
+    "الأحساء": [
+      "الهفوف",
+      "المبرز",
+      "العيون"
+    ],
+    "الطائف": [
+      "شهار",
+      "السحيلي",
+      "الهدا",
+      "الردف",
+      "الفيصلية",
+      "العقيق",
+      "الوهيط"
+    ],
+    "تبوك": [
+      "السليمانية",
+      "الروضة",
+      "الورود",
+      "الصالحية",
+      "النهضة",
+      "الصناعية"
+    ],
+    "القصيم": [
+      "بريدة",
+      "عنيزة",
+      "الرس",
+      "الزلفي",
+    ],
+    "جازان": [
+      "الشامية",
+      "السويس",
+      "الشاطئ",
+      "الروضة",
+      "حي المطار",
+      "مخطط 5",
+      "المنطقة الصناعية"
+    ],
+    "الخبر": [
+      "العقربية",
+      "الخبر الشمالية",
+      "الخبر الجنوبية",
+      "الخزامى",
+      "الحزام الذهبي",
+      "البندرية",
+      "الخبر العليا",
+      "الدوحة الشمالية",
+      "الدوحة الجنوبية"
+    ]
+  }
     const handleClose = ()=> {
         handleClose1()
     }
@@ -75,11 +193,11 @@ export default function AddProperty({open , handleClose1} ){
         rooms: '',
         bathrooms: '',
         livingrooms: '',
-        garage: '',
+        garages: '',
         latitude: '',
         longitude: '',
         wifi: '',
-        internet: false,
+        internet: '',
         size: '',
         floor: '',
         facade: '',
@@ -87,12 +205,16 @@ export default function AddProperty({open , handleClose1} ){
         nearbyServices: [],
         video: '',
         ageforbuild: '',
+        payment: '',
+        paymentWay: '',
+        address: '',
         owner: user._id,
 
     })
     const {createProperty , isLoading} = usePropertiesStore();
     const navigate = useNavigate()
     async function handelAddProperty(){
+      if (property.payment == 'ايجار'){ setProperty({...property, paymentWay:'',})}
         await createProperty(property)
         // navigate(`/propertyDetails/${property._id}`)
         toast.success('تم اضافة العقار بنجاح')
@@ -100,7 +222,19 @@ export default function AddProperty({open , handleClose1} ){
     }
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
-  
+    const [selectedCity, setSelectedCity] = useState("");
+    const [neighborhoods, setNeighborhoods] = useState([]);
+    const [selectedNeighborhood, setSelectedNeighborhood] = useState("");
+  // التعامل مع اختيار المدينة
+  const handleCityChange = (event) => {
+    const citys = event.target.value;
+    setSelectedCity(citys);
+    setProperty({...property, location: citys})
+    setNeighborhoods(city[citys] || []); // جلب الأحياء للمدينة المحددة
+    setSelectedNeighborhood(""); // إعادة تعيين الحي
+  };
+  console.log(selectedNeighborhood)
+
 
   
     const isStepSkipped = (step) => {
@@ -139,7 +273,7 @@ export default function AddProperty({open , handleClose1} ){
       }
   
       try {
-        const response = await axios.get("http://localhost:5000/api/urltst", {
+        const response = await axios.get("/api/urltst", {
           params: { url },
         });
   
@@ -252,7 +386,7 @@ export default function AddProperty({open , handleClose1} ){
 
     <Grid item xs={12} sm={6} md={4}>
       <Typography>
-        <strong>الجراج:</strong> {property.garage}
+        <strong>الجراج:</strong> {property.garages}
       </Typography>
     </Grid>
 
@@ -317,6 +451,14 @@ export default function AddProperty({open , handleClose1} ){
     </Grid>
   </Grid>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+          <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              sx={{ mr: 1 }}
+            >
+              الرجوع
+              </Button>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button disabled={isLoading} onClick={handelAddProperty}> {isLoading ? <CircularProgress /> : ' إضافة العقار'}</Button>
           </Box>
@@ -394,27 +536,31 @@ export default function AddProperty({open , handleClose1} ){
           <Grid container spacing={2}>
             <Grid item xs={12}>
             <Typography>
-             الاسم
+             نوع العقار
           </Typography>
-              <TextField
-                value={property.title}
-                onChange={(e) =>
-                  setProperty({
-                    ...property,
-                    title: e.target.value,
-                  })
-                }
-                required
-                placeholder="الاسم"
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <ApartmentOutlinedIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+
+                            <FormControl sx={{ width: 150 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={property.title} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setProperty({
+                      ...property,
+                      title: e.target.value,
+                    })
+                  }
+                  placeholder="نوع العقار"
+                >
+                  <MenuItem value={"شقة"}>شقة</MenuItem>
+                  <MenuItem value={"بيت"}>بيت</MenuItem>
+                  <MenuItem value={"فيلا"}>فيلا</MenuItem>
+                  <MenuItem value={"دوبلوكس"}>دوبلوكس</MenuItem>
+                  <MenuItem value={"استوديو"}>استوديو</MenuItem>
+                  <MenuItem value={"استراحة"}>استراحة</MenuItem>
+                  <MenuItem value={"غرفة"}>غرفة</MenuItem>
+                  <MenuItem value={"شاليه"}>شاليه</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
             <Typography>
@@ -447,7 +593,6 @@ export default function AddProperty({open , handleClose1} ){
             نوع العرض
           </Typography>
               <FormControl sx={{ width: 100 }}>
-                <InputLabel id="demo-simple-select-label">نوع العرض</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   value={property.type} // تأكد من ربط هذه القيمة
@@ -488,6 +633,51 @@ export default function AddProperty({open , handleClose1} ){
                 }}
               />
             </Grid>
+          {  property.type == 'ايجار' ?         
+            <Grid item xs={12} sm={6}>
+                      <Typography>
+                      الدفع
+                    </Typography>
+                    <FormControl sx={{ width: 150 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={property.payment} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setProperty({
+                      ...property,
+                      payment: e.target.value,
+                    })
+                  }
+                >
+                  <MenuItem value={"سنوي"}>سنوي</MenuItem>
+                  <MenuItem value={"شهري"}>شهري</MenuItem>
+                </Select>
+              </FormControl>
+                      </Grid> :''
+                      }
+                      {  property.payment == 'سنوي' ?         
+            <Grid item xs={12} sm={6}>
+                      <Typography>
+                      الدفعات
+                    </Typography>
+                    <FormControl sx={{ width: 150 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={property.paymentWay} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setProperty({
+                      ...property,
+                      paymentWay: e.target.value,
+                    })
+                  }
+                >
+                  <MenuItem value={"دفعة واحدة"}>دفعة واحدة</MenuItem>
+                  <MenuItem value={"نصف سنوي"}>نصف سنوي</MenuItem>
+                  <MenuItem value={"ربع سنوي"}>ربع سنوي</MenuItem>
+                </Select>
+              </FormControl>
+                      </Grid> :''
+                      }
           </Grid>
 
   {/* مساحة وعدد الغرف */}
@@ -526,11 +716,11 @@ export default function AddProperty({open , handleClose1} ){
           </Typography>
               <TextField
                 type="number"
-                value={property.garage}
+                value={property.garages}
                 onChange={(e) =>
                   setProperty({
                     ...property,
-                    garage: e.target.value,
+                    garages: e.target.value,
                   })
                 }
                 required
@@ -723,9 +913,9 @@ export default function AddProperty({open , handleClose1} ){
             </Grid>
             <Grid item xs={12}>
             <Typography>
-            الموقع 
+            المدينة 
           </Typography>
-              <TextField
+              {/* <TextField
                 value={property.location}
                 onChange={(e) =>
                   setProperty({
@@ -743,7 +933,42 @@ export default function AddProperty({open , handleClose1} ){
                     </InputAdornment>
                   ),
                 }}
-              />
+              /> */}
+      <FormControl fullWidth sx={{ marginBottom: 2 , width:130 }}>
+        <Select
+          labelId="city-select-label"
+          value={selectedCity}
+          onChange={handleCityChange}
+        >
+          {Object.keys(city).map((city) => (
+            <MenuItem key={city} value={city}>
+              {city}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+            <Typography>
+            الحي 
+          </Typography>
+
+          <FormControl fullWidth disabled={!selectedCity} sx={{ width: 130 }}>
+        <Select
+          labelId="neighborhood-select-label"
+          value={selectedNeighborhood}
+          onChange={(e) => {
+            setSelectedNeighborhood(e.target.value)
+            setProperty({...property, address: e.target.value})
+          }}
+        >
+          {neighborhoods.map((neighborhood) => (
+            <MenuItem key={neighborhood} value={neighborhood}>
+              {neighborhood}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
             </Grid>
           </Grid>
 
@@ -789,11 +1014,11 @@ export default function AddProperty({open , handleClose1} ){
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={property.internet === true ? true : false} // تأكد من ربط هذه القيمة
+                  value={property.internet} // تأكد من ربط هذه القيمة
                   onChange={(e) =>
                     setProperty({
                       ...property,
-                      internet: e.target.value === "true" ? true : false,
+                      internet: e.target.value,
                     })
                   }
                 >
@@ -1056,6 +1281,25 @@ export default function AddProperty({open , handleClose1} ){
                   ></video>
                 </Box>
               )}
+            </Box>
+            <Box>
+              <Typography>نموذج ثلاثي الابعاد:</Typography>
+              <TextField
+                value={property.a3dimage}
+                onChange={(e) =>
+                  setProperty({ ...property, a3dimage: e.target.value })
+                }
+                required
+                placeholder="أدخل الرابط الخاص بالنموذج"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <ThreeDRotationIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </Box>
           </div>
 

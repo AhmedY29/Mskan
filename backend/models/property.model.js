@@ -27,6 +27,10 @@ const propertySchema = new mongoose.Schema({
         required: true
        
     },
+    address: {
+        type: String,
+       
+    },
     longitude: {
         type: Number,
         // required: true
@@ -96,8 +100,13 @@ const propertySchema = new mongoose.Schema({
     },
     ageforbuild:{
         type: Number,
-        // required: true,
-    }
+    },
+    payment:{
+        type: String,
+    },
+    paymentWay:{
+        type: String,
+    },
 
 },{
     timestamps: true
