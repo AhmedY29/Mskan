@@ -78,8 +78,8 @@ export default function Home() {
           </Link>
           </Grid>
           <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-          <Link style={{textDecoration:'none' , color:'black'}} to={'/properties'} state={query} onMouseOver={() =>{setQuery({...query , location:'بريدة'})}}>
-            <CityCard title={'بريدة'}  image={'https://i.pinimg.com/736x/b4/60/73/b46073d38525e12d8d67e70eb37939d5.jpg'} />
+          <Link style={{textDecoration:'none' , color:'black'}} to={'/properties'} state={query} onMouseOver={() =>{setQuery({...query , location:'القصيم'})}}>
+            <CityCard title={'القصيم'}  image={'https://i.pinimg.com/736x/b4/60/73/b46073d38525e12d8d67e70eb37939d5.jpg'} />
           </Link>
           </Grid>
           <Grid size={{ xs: 2, sm: 4, md: 4 }}>

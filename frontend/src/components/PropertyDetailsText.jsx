@@ -142,7 +142,7 @@ console.log(formattedDate); // 2024 نوفمبر 27
                 component="div"
               >
                 <GarageOutlinedIcon />
-                {property.garages}
+                {property.garages == 1 ? "" : property.garages}
                 مدخل سيارة
               </Typography> :''
               }

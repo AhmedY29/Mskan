@@ -30,6 +30,7 @@ export default function CardProperties({ displaySwitch , property }) {
     if(!property){
       return <Loading/>
     }
+    
     useEffect(() => {
       if (isLoading || !user) return; 
       const checkIfBookmarked = async () => {
@@ -125,7 +126,7 @@ export default function CardProperties({ displaySwitch , property }) {
               style={{ flex: "2", alignContent: "center", textAlign: "left" }}
             >
               <Typography variant="h6" sx={{ color: "text.secondary" }}>
-                {new Intl.NumberFormat('en-US').format(property.price)} ريال {property.payment || ''}
+                {new Intl.NumberFormat('en-US').format(property.price)} ريال {property.payment == 'شهري' ? 'شهريًا' : property.payment == 'سنوي' ? 'سنويًا'  : ''}
               </Typography>
                 <Avatar
                   sx={{ width: 60, height: 60 }}

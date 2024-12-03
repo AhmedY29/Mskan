@@ -33,7 +33,6 @@ router.get("/urltst", async (req, res) => {
       // توسيع الرابط المختصر باستخدام axios
       const response = await axios.get(url);
       finalUrl = response.request.res.responseUrl;
-      console.log("Expanded URL:", finalUrl); // طباعة الرابط المتوسع
     }
 
     // إنشاء كائن URL من الرابط المتوسع
@@ -55,7 +54,6 @@ router.get("/urltst", async (req, res) => {
       const lat = coordinates[0].trim().replace("+", ""); // إزالة علامة +
       const lng = coordinates[1].trim().replace("+", "");
 
-      console.log("Coordinates extracted:", { lat, lng });
       return res.status(200).json({ lat, lng }); // إرسال الإحداثيات كاستجابة JSON
     } else {
       return res.status(404).send("لم يتم العثور على الإحداثيات");

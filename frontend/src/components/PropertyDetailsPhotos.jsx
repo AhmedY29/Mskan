@@ -37,6 +37,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import XIcon from '@mui/icons-material/X';
+import axios from "axios";
 
 export default function PropertyDetailsPhotos({ property }) {
   const { id } = useParams();
@@ -149,6 +150,48 @@ export default function PropertyDetailsPhotos({ property }) {
     setOpen3d(false);
   }
 
+  
+  useEffect(() => {
+    if (isLoading || !user) return; 
+    const checkIfBookmarked = async () => {
+
+        try {
+            // إرسال طلب للتحقق إذا كان العقار محفوظًا
+            const response = await axios.get(`/api/save/check/${property._id}`);
+            setIsBookmarked(response.data.isSaved);
+        } catch (error) {
+            console.log("Error checking bookmark status", error);
+        }
+    };
+    checkIfBookmarked();
+}, [property._id]);
+
+// تبديل الحفظ (أو إلغاء الحفظ)
+const toggleBookmark = async () => {
+    try {
+      if(!property._id || !user){
+        setIsBookmarked(false);
+        return toast.error('يجب تسجيل الدخول لـ حفظ العقارات')
+      }
+        if (isBookmarked) {
+            // إذا كان العقار محفوظًا، نحذفه
+            await axios.delete(`/api/save/remove/${property._id}`);
+            toast.success('تم ازالة العقار من المحفوظات بنجاح')
+        } else {
+            // إذا لم يكن العقار محفوظًا، نضيفه
+            await axios.post(`/api/save/save/${property._id}`);
+            toast.success('تم اضافة العقار من المحفوظات بنجاح')
+        }
+        setIsBookmarked(!isBookmarked); // تحديث الحالة بعد الحفظ أو الإزالة
+    } catch (error) {
+        console.log("Error toggling bookmark", error);
+    }
+};
+
+function marks(isBookmarked) {
+    return isBookmarked ? <BookmarkAddedIcon /> : <BookmarkBorderOutlinedIcon />;
+}
+
   return (
     <>
       <div style={{ flex: "2" }}>
@@ -181,7 +224,7 @@ export default function PropertyDetailsPhotos({ property }) {
             sx={{ marginLeft: "10px" }}
             variant="outlined"
             color="primary"
-            onClick={() => setIsBookmark(isBookmarked)}
+            onClick={toggleBookmark}
             startIcon={marks(isBookmarked)}
           >
             حفظ
@@ -189,7 +232,7 @@ export default function PropertyDetailsPhotos({ property }) {
           <Button
             variant="outlined"
             color="primary"
-            startIcon={<IosShareOutlinedIcon />}
+            startIcon={<IosShareOutlinedIcon style={{marginLeft:'9px'}} />}
             onClick={handleClickShare}
           >
             مشاركة
