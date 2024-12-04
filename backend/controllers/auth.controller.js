@@ -81,6 +81,7 @@ export const verifyEmail = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  email = email.toLowerCase();
   try {
     const user = await User.findOne({ email})
     if(!user){
@@ -169,18 +170,17 @@ export const checkAuth = async (req , res) =>{
 }
 export const getUser = async (req , res) =>{
     const {name} = req.params
-    const loggedInUserId = req.userId;
   try {
     
     const user = await User.findOne({name}).select('-password');
 
-    if (loggedInUserId != user._id) {
+  //   if (loggedInUserId != user._id) {
 
-      return res.status(403).json({
-          success: false,
-          message: "غير مصرح لك بالوصول إلى بيانات هذا الحساب"
-      });
-  }
+  //     return res.status(403).json({
+  //         success: false,
+  //         message: "غير مصرح لك بالوصول إلى بيانات هذا الحساب"
+  //     });
+  // }
     if(!user){
       return res.status(401).json({success: false, message:'الحساب غير موجود'})
     }

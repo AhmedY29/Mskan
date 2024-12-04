@@ -100,7 +100,7 @@ export default function PropertyDetailsPhotos({ property }) {
     setAnchorEl(null);
   };
 
-  const websiteUrl = "https://maskn.site/propertyDetails/"+ property._id; // ضع رابط موقعك هنا
+  const websiteUrl = "https://maskn.site/propertyDetails/"+ property._id;
   const message = `فرصة لا تُفوت! 
 - عنوان العقار: ${property.title} 
 - الوصف: ${property.description} 
@@ -154,17 +154,19 @@ export default function PropertyDetailsPhotos({ property }) {
   useEffect(() => {
     if (isLoading || !user) return; 
     const checkIfBookmarked = async () => {
-
+      setTimeout( async () => {
         try {
-            // إرسال طلب للتحقق إذا كان العقار محفوظًا
-            const response = await axios.get(`/api/save/check/${property._id}`);
-            setIsBookmarked(response.data.isSaved);
-        } catch (error) {
-            console.log("Error checking bookmark status", error);
-        }
+          // إرسال طلب للتحقق إذا كان العقار محفوظًا
+          const response = await axios.get(`/api/save/check/${id}`);
+          setIsBookmarked(response.data.isSaved);
+      } catch (error) {
+          console.log("Error checking bookmark status", error);
+      }
+      }, 700);
+
     };
     checkIfBookmarked();
-}, [property._id]);
+}, [id]);
 
 // تبديل الحفظ (أو إلغاء الحفظ)
 const toggleBookmark = async () => {
@@ -265,7 +267,7 @@ function marks(isBookmarked) {
           /> :''
           }
           
-          {isAuther ? (
+          {isAuther || user.role == 'admin' ? (
             // <Button
             // variant="outlined"
             // color="error"
@@ -279,7 +281,7 @@ function marks(isBookmarked) {
           ) : (
             ""
           )}
-          {isAuther ? (
+          {isAuther || user.role == 'admin' ? (
             <IconButton size="large" color="primary">
               <Link to={`/updateProperty/${id}`}>
                 <ModeEditOutlineOutlinedIcon fontSize="inherit" />
@@ -296,7 +298,8 @@ function marks(isBookmarked) {
           )}
         </div>
         <Card sx={{ minWidth: 275 }}>
-          <CardContent style={{ display: "flex" }}>
+        <Link to={`/account/${property.owner?.name}`} style={{textDecoration:'none' , color:'black'}}>
+          <CardContent style={{ display: "flex" }} title={`الانتقال الى ملف ${property.owner?.name} الشخصي`}>
             <div style={{ flex: "2" }}>
               <Typography
                 gutterBottom
@@ -329,11 +332,16 @@ function marks(isBookmarked) {
           </Typography> */}
             </div>
           </CardContent>
+          </Link>
           <CardActions sx={{ display: "flex", justifyContent: "center" }}>
-            <Button sx={{ marginLeft: "5px" }} variant="outlined">
+            <Button onClick={()=>{property.owner?.phoneNumber == undefined ? toast.error('لايوجد رقم جوال') : window.open(`tel:${property.owner?.phoneNumber}`, "_blank");}} sx={{ marginLeft: "5px" }} variant="outlined">
               اتصال
             </Button>
-            <Button variant="outlined">مراسلة</Button>
+            <Button onClick={()=>{property.owner?.phoneNumber == undefined ? toast.error('لايوجد رقم جوال') : window.open(`https://wa.me/${property.owner?.phoneNumber}`, "_blank");}} variant="outlined">
+            <WhatsAppIcon style={{marginLeft:'2px' , color:'green'}}/>
+              مراسلة
+
+            </Button>
           </CardActions>
         </Card>
         <div

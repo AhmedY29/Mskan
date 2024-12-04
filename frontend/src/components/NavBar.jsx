@@ -112,7 +112,7 @@ export default function NavBar() {
             حسابي
             </MenuItem>
             <Divider/>
-            <MenuItem onClick={handelLogout}> تسجيل خروج</MenuItem>
+            <MenuItem onClick={() =>{handelLogout(); handleCloseA()}}> تسجيل خروج</MenuItem>
           </Menu>
                 
             <Button onClick={handleClickOpen} variant="outlined">اضافة اعلان</Button>

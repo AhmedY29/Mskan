@@ -54,20 +54,20 @@ import axios from "axios";
 
 export default function Update() {
   const services = [
-    { id: "mosque", label: "مسجد قريب", icon: <MosqueIcon /> },
-    { id: "park", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
-    { id: "restaurants", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
-    { id: "maidRoom", label: "غرفة خادمة", icon: <Woman2Icon /> },
-    { id: "school", label: "مدرسة قريبة", icon: <BusinessIcon /> },
-    { id: "privateEntrance", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
-    { id: "privateParking", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
-    { id: "securityCameras", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
-    { id: "elevator", label: "مصعد", icon: <ElevatorIcon /> },
-    { id: "hospital", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
-    { id: "grocery", label: "تموينات قريب", icon: <StoreIcon /> },
-    { id: "shoppingCenter", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
-    { id: "maintenance", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
-    { id: "cleaning", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
+    { id: "مسجد قريب", label: "مسجد قريب", icon: <MosqueIcon /> },
+    { id: "حديقة قريبة", label: "حديقة قريبة", icon: <LocalConvenienceStoreOutlinedIcon /> },
+    { id: "مطاعم قريبة", label: "مطاعم قريبة", icon: <RestaurantMenuIcon /> },
+    { id: "غرفة خادمة", label: "غرفة خادمة", icon: <Woman2Icon /> },
+    { id: "مدرسة قريبة", label: "مدرسة قريبة", icon: <BusinessIcon /> },
+    { id: "مدخل خاص", label: "مدخل خاص", icon: <SensorDoorOutlinedIcon /> },
+    { id: "موقف خاص", label: "موقف خاص", icon: <LocalParkingOutlinedIcon /> },
+    { id: "كاميرات مراقبة", label: "كاميرات مراقبة", icon: <VideocamIcon /> },
+    { id: "مصعد", label: "مصعد", icon: <ElevatorIcon /> },
+    { id: "مستشفى قريب", label: "مستشفى قريب", icon: <LocalHospitalIcon /> },
+    { id: "تموينات قريب", label: "تموينات قريب", icon: <StoreIcon /> },
+    { id: "مركز تسوق قريب", label: "مركز تسوق قريب", icon: <LocalGroceryStoreIcon /> },
+    { id: "خدمات صيانة", label: "خدمات صيانة", icon: <ManageAccountsIcon /> },
+    { id: "خدمات تنظيف", label: "خدمات تنظيف", icon: <CleaningServicesIcon /> },
   ];
   const { user } = useAuthStore();
   const { property, getProperty , isLoading , updateProperty } = usePropertiesStore();
@@ -117,7 +117,7 @@ export default function Update() {
     // delete dataToUpdate.imagesToDelete; 
     await updateProperty(propertyId, updatedProperty);
     toast.success("تم تحديث العقار بنجاح")
-    navigate(`/properties`); // إعادة التوجيه إلى صفحة العقارات بعد التحديث
+    navigate(`/propertyDetails/${propertyId}`); // إعادة التوجيه إلى صفحة العقارات بعد التحديث
 };
 
   useEffect(() => {

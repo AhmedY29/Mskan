@@ -37,6 +37,7 @@ import Loading from "./Loading.jsx";
 import { useState } from "react";
 import axios from "axios";
 import ThreeDRotationIcon from "@mui/icons-material/ThreeDRotation";
+import { useEffect } from "react";
 
 
 
@@ -212,6 +213,16 @@ export default function AddProperty({open , handleClose1} ){
 
     })
     const {createProperty , isLoading} = usePropertiesStore();
+    const [license , setLicense] = useState()
+
+    useEffect(() => {
+      if(user){
+        setLicense(user.license)
+      }
+    }, [user])
+    
+    
+    console.log(license)
     const navigate = useNavigate()
     async function handelAddProperty(){
       if (property.payment == 'ايجار'){ setProperty({...property, paymentWay:'',})}
@@ -494,14 +505,8 @@ export default function AddProperty({open , handleClose1} ){
               <TextField
                 type="number"
                 required
-                value={property.adLicense}
-                onChange={(e) =>
-                  setProperty({
-                    ...property,
-                    adLicense: e.target.value,
-                  })
-                }
-                placeholder=" رخصة فال للمعلن"
+                value={license}
+                disabled
               />
             </Grid>
           </Grid>
@@ -1147,6 +1152,12 @@ export default function AddProperty({open , handleClose1} ){
               toast.error('القيمة الرقمية يجب ان تكون موجبة')
             }else if( property.longitude < 0 ){
               toast.error('القيمة الرقمية يجب ان تكون موجبة')
+            }else if(!property.size){
+              toast.error('يرجى تحديد حجم العقار')
+            }else if(!property.ageforbuild){
+              toast.error('يرجى تحديد عمر العقار')
+            }else if(property.nearbyServices.length == 0){
+              toast.error('يرجى تحديد خدمات ومميزات العقار')
             }else{handleNext()}
 
             

@@ -19,9 +19,13 @@ export default function Properties() {
   const [mobile, setMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState({});
   const [filteredProperties, setFilteredProperties] = useState([]);
+  const [unfilteredProperties, setUnfilteredProperties] = useState([]);
   const { properties, getProperties, isLoading } = usePropertiesStore();
   const location = useLocation(); // للحصول على الكويري
   const query = location.state || {};
+
+  console.log('q url',query);
+  console.log('q search',searchQuery);
 
   // دالة لتحديث حالة البحث عند الكتابة في شريط البحث
   const handleSearch = (query) => {
@@ -70,8 +74,9 @@ export default function Properties() {
         return true;
       });
     };
-
-    setFilteredProperties(filterProperties());
+    const filtered = filterProperties();
+    setFilteredProperties(filtered);
+    setUnfilteredProperties(properties.filter(property => !filtered.includes(property)));
   }, [searchQuery, properties]);
 
   // التأكد من عرض العقارات بعد الجلب
@@ -168,6 +173,7 @@ export default function Properties() {
                 display: mobile && displaySwitch === "map" ? "none" : "block",
               }}
             >
+            
               <Grid
                 container
                 spacing={{ xs: 2, md: 3 }}
@@ -183,6 +189,28 @@ export default function Properties() {
                 ))
               }
               </Grid>
+              {searchQuery.location &&    <div style={{marginTop:'25px'}}>
+                <Divider />
+                <Typography sx={{marginBottom:'10px'}} variant="h5" component="h2">
+                نتائج في مدن اخرى
+              </Typography>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                
+                {unfilteredProperties?.map((property) => (
+                  <CardProperties
+                    key={property._id}
+                    displaySwitch={displaySwitch}
+                    property={property}
+                  /> 
+                ))
+              }
+              </Grid>
+              </div>
+              }
             </div>
             <div
               style={{
@@ -193,7 +221,7 @@ export default function Properties() {
                 top: "0px",
               }}
             >
-              <Maps />
+              <Maps city={searchQuery.location} />
             </div>
           </div>
         </Container>

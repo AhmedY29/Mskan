@@ -18,6 +18,7 @@ import Loading from './components/Loading.jsx';
 import Update from './pages/Update.jsx';
 import VerifyMsg from './components/VerifyMsg.jsx';
 import EditUser from './pages/EditUser.jsx';
+import Accounts from './pages/Accounts.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -88,6 +89,7 @@ function App() {
       <Route path="/edituser/:id" element={<EditUser />} />
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
       <Route path="/updateProperty/:propertyId" element={<Update/>} />
+      <Route path="/account/:name" element={<Accounts/>} />
 
       <Route path="/profile/:name" element={
       <ProtectedRoute>
