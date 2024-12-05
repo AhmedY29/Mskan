@@ -29,7 +29,8 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     agent_Id:{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Agent'
     },
     role:{
         type: String,

@@ -1,6 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/db.js";
-import routerProperties from "./routes/property.route.js";
+import propertiesRoutes from "./routes/property.route.js";
+import agentsRoutes from "./routes/agent.router.js";
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 import authRoutes from './routes/auth.route.js';
@@ -20,7 +21,8 @@ if (process.env.NODE_ENV !== 'production'){
 }
   // Enable cors for all requests
 
-app.use('/api', routerProperties)
+app.use('/api', propertiesRoutes)
+app.use('/api/agent', agentsRoutes)
 
 
 // Authentication 

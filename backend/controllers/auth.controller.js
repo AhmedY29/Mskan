@@ -81,7 +81,6 @@ export const verifyEmail = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  email = email.toLowerCase();
   try {
     const user = await User.findOne({ email})
     if(!user){
@@ -157,7 +156,7 @@ export const resetPassword = async (req, res) => {
 
 export const checkAuth = async (req , res) =>{
   try {
-    const user = await User.findById(req.userId).select('-password');
+    const user = await User.findById(req.userId).populate('agent_Id').select('-password');
     if(!user){
       return res.status(401).json({success: false, message:'User not found'})
     }

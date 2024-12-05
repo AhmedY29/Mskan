@@ -19,6 +19,7 @@ import Update from './pages/Update.jsx';
 import VerifyMsg from './components/VerifyMsg.jsx';
 import EditUser from './pages/EditUser.jsx';
 import Accounts from './pages/Accounts.jsx';
+import ProfileAgent from './pages/ProfileAgent.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -95,6 +96,7 @@ function App() {
       <ProtectedRoute>
       <Profile/>
         </ProtectedRoute>} />
+      <Route path="/profile/agent/:name" element={<ProfileAgent/> }/>
 
       <Route path="/auth" element={
         <RedirectAuth>

@@ -131,7 +131,7 @@ export default function CardProperties({ displaySwitch , property }) {
                 <Avatar
                   sx={{ width: 60, height: 60 }}
                   alt={property.owner?.name}
-                  src={property.owner?.avatar}
+                  src={property.owner?.agent_Id ? property.owner?.agent_Id.avatar : property.owner?.avatar}
                 />
             </div>
           </div>

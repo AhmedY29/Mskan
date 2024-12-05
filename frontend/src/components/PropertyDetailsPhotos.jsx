@@ -47,11 +47,15 @@ export default function PropertyDetailsPhotos({ property }) {
 
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isAuther, setIsAuther] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAgentAdmin, setIsAgentAdmin] = useState(false);
   const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
       setIsAuther(user._id == property.owner._id);
+      setIsAdmin(user.role =="admin");
+      setIsAgentAdmin(user.agent_Id.role == 'admin');
     }, 1500);
   }, [user, property]);
 
@@ -267,7 +271,7 @@ function marks(isBookmarked) {
           /> :''
           }
           
-          {isAuther || user.role == 'admin' ? (
+          {isAuther || isAgentAdmin || isAdmin ? (
             // <Button
             // variant="outlined"
             // color="error"
@@ -281,7 +285,7 @@ function marks(isBookmarked) {
           ) : (
             ""
           )}
-          {isAuther || user.role == 'admin' ? (
+          {isAuther ||isAgentAdmin || isAdmin ? (
             <IconButton size="large" color="primary">
               <Link to={`/updateProperty/${id}`}>
                 <ModeEditOutlineOutlinedIcon fontSize="inherit" />
@@ -298,8 +302,8 @@ function marks(isBookmarked) {
           )}
         </div>
         <Card sx={{ minWidth: 275 }}>
-        <Link to={`/account/${property.owner?.name}`} style={{textDecoration:'none' , color:'black'}}>
-          <CardContent style={{ display: "flex" }} title={`الانتقال الى ملف ${property.owner?.name} الشخصي`}>
+        <Link to={`/account/${property.owner?.agent_Id ? property.owner?.agent_Id?.name :property.owner?.name}`} style={{textDecoration:'none' , color:'black'}}>
+          <CardContent style={{ display: "flex" }} title={`الانتقال الى ملف ${property.owner?.agent_Id ? property.owner?.agent_Id?.name :property.owner?.name} الشخصي`}>
             <div style={{ flex: "2" }}>
               <Typography
                 gutterBottom
@@ -308,7 +312,7 @@ function marks(isBookmarked) {
                 <Avatar
                   sx={{ width: 70, height: 70 }}
                   alt={property.owner?.name}
-                  src={property.owner?.avatar}
+                  src={property.owner?.agent_Id ? property.owner?.agent_Id?.avatar : property.owner?.avatar}
                 />
                 {/* <img
                   src={property.owner.avatar}
@@ -320,11 +324,15 @@ function marks(isBookmarked) {
             </div>
             <div style={{ flex: "3" }}>
               <Typography variant="h6" component="div">
-              {property.owner?.name}
+              {property.owner?.agent_Id ? property.owner?.agent_Id?.name : property.owner?.name}
               </Typography>
-              {/* <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
+              {property.owner?.agent_Id &&
+        <Link title={`الانتقال الى ملف ${property.owner?.name}`} to={`/account/${property.owner?.name}`} style={{color:'black'}}>
+              <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
                 المعلن : {property.owner?.name}
-              </Typography> */}
+              </Typography>
+              </Link>
+              }
               {/* <Typography variant="body2">
             well meaning and kindly.
             <br />

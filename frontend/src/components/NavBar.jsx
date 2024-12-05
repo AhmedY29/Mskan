@@ -111,6 +111,12 @@ export default function NavBar() {
             <MenuItem onClick={()=> {navigate(`/profile/${user.name}`); handleCloseA()}} >
             حسابي
             </MenuItem>
+
+            {user.agent_Id &&
+              <MenuItem onClick={()=> {navigate(`/profile/agent/${user.agent_Id?.name}`); handleCloseA()}} >
+            الملف الشخصي للشركة
+            </MenuItem>}
+
             <Divider/>
             <MenuItem onClick={() =>{handelLogout(); handleCloseA()}}> تسجيل خروج</MenuItem>
           </Menu>

@@ -31,7 +31,7 @@ export default function Auth() {
     e.preventDefault();
     
     try {
-      await register( email, password , name);
+      await register( email.toLowerCase(), password , name);
       navigate("/verifyEmail");
     } catch (error) {
       console.log(error);
@@ -41,7 +41,7 @@ export default function Auth() {
 
   async function handleLogin(e){
     e.preventDefault();
-      await login(email, password)
+      await login(email.toLowerCase(), password)
     if(!user.isVerified) {
       navigate("/verifyEmail");
     }

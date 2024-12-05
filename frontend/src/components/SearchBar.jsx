@@ -66,7 +66,7 @@ export default function SearchBar() {
           }}
         >
           <CardContent>
-            <div>
+            <form onSubmit={handleSearch}>
               <TextField
                 className="text-field"
                 sx={{ textAlign: "right", direction: "rtl" }}
@@ -96,11 +96,11 @@ export default function SearchBar() {
                   fontSize: "20px",
                   marginRight: "10px",
                 }}
-                onClick={handleSearch}
+                type="submit"
               >
                 بحث
               </Button>
-            </div>
+            </form>
           </CardContent>
         </Card>
       </Container>

@@ -8,6 +8,13 @@ export const getProperties = async (req, res) => {
     try {
         const properties = await Property.find({})
         .populate('owner')
+        .populate({
+            path: 'owner',
+            populate: {
+              path: 'agent_Id',
+              select: '-employees',
+            },
+          })
         res.status(200).json({success: true, data: properties});
     } catch (error) {
         console.error('Error in get properties', error.message || error);
@@ -244,6 +251,13 @@ export const getProperty = async (req, res) => {
     try {
         const property = await Property.findById(propertyId)
         .populate("owner")
+        .populate({
+            path: 'owner',
+            populate: {
+              path: 'agent_Id',
+              select: '-employees',
+            },
+          })
         res.status(200).json({ success: true, data: property});
     } catch (error) {
         res.status(404).json({ success: false, msg: "Error Property not found" });
