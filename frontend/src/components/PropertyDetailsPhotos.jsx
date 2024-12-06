@@ -345,7 +345,7 @@ function marks(isBookmarked) {
             <Button onClick={()=>{property.owner?.phoneNumber == undefined ? toast.error('لايوجد رقم جوال') : window.open(`tel:${property.owner?.phoneNumber}`, "_blank");}} sx={{ marginLeft: "5px" }} variant="outlined">
               اتصال
             </Button>
-            <Button onClick={()=>{property.owner?.phoneNumber == undefined ? toast.error('لايوجد رقم جوال') : window.open(`https://wa.me/${property.owner?.phoneNumber}`, "_blank");}} variant="outlined">
+            <Button onClick={()=>{property.owner?.phoneNumber == undefined ? toast.error('لايوجد رقم جوال') : window.open(`https://wa.me/${property.owner?.phoneNumber}`);}} variant="outlined">
             <WhatsAppIcon style={{marginLeft:'2px' , color:'green'}}/>
               مراسلة
 
