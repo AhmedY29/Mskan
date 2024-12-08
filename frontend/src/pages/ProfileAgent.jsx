@@ -26,6 +26,7 @@ import toast from "react-hot-toast";
 import AgentProfile from "../components/AgentProfile";
 import AgentEmp from "../components/AgentEmp";
 import { useAgentStore } from "../store/agentStore";
+import AgentProperties from "../components/AgentProperties";
 
 export default function ProfileAgent() {
     const [displayName, setDisplayName] =useState('personal');
@@ -45,13 +46,6 @@ export default function ProfileAgent() {
     const { getAgent , agent , isLoading} = useAgentStore();
 
 
-  
-    // التعامل مع تغيير البيانات
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({ ...formData, [name]: value });
-    };
-
     useEffect(() => {
 
       const fetchAgentData = async () => {
@@ -64,6 +58,7 @@ export default function ProfileAgent() {
           }
           // جلب بيانات الوكيل
           getAgent(name);
+
           // تحديث الحالات
           setUsers(agent.employees);
           setAgents(agent);
@@ -90,7 +85,9 @@ export default function ProfileAgent() {
     
       console.log(user, '0');
 
-      if (agent.name == '') {
+      if (!agent.name) {
+        getAgent(name);
+        console.log(agent ,'Agent')
         return; 
       }
     
@@ -99,8 +96,10 @@ export default function ProfileAgent() {
         return navigate('/');
       }
 
-    
-      if (user.agent_Id?.name != agent.name) {
+    console.log(user.agent_Id?.name != agent?.name)
+    console.log('agent name:',agent?.name)
+    console.log('agent name from user:',user.agent_Id?.name)
+      if (user.agent_Id?.name != agent?.name) {
         console.log('un' , user.agent_Id.name , 'an' ,agent)
         toast.error('لست في هذه الشركة العقارية');
         console.log(user, '1');
@@ -112,7 +111,7 @@ export default function ProfileAgent() {
       }
     
       console.log(user, '3');
-    }, [user])
+    }, [user , getAgent , isLoading])
     
     const navigate = useNavigate()
     
@@ -170,7 +169,7 @@ export default function ProfileAgent() {
             
 
             {
-                displayName == 'emp' ? <AgentEmp users={users}/> : displayName == 'save' ? <UserSave/> : <AgentProfile agent={agent}/>
+                displayName == 'emp' ? <AgentEmp users={users}/> : displayName == 'list' ? <AgentProperties/> : <AgentProfile agent={agent}/>
             }
             
           </Card>

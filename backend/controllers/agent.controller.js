@@ -103,8 +103,6 @@ export const addEmpToAgent = async (req, res) => {
       }
       
       const username = await User.findOne({name})
-      console.log('Names',username)
-      console.log('Name',name)
       if (!username) {
         return res.status(404).json({ message: "User not found" });
       }

@@ -62,6 +62,7 @@ export default function AgentEmp({}) {
   // لإغلاق الديالوج
   const handleCloseDelete = () => {
     setOpenDelete(false);
+    getAgent(name)
     setSelectedEmployeeId(null); // إعادة تعيين القيمة بعد الإغلاق
   };
   const handleSubmit = async (e) => {
@@ -71,6 +72,17 @@ export default function AgentEmp({}) {
       await addEmpToAgent(agent._id , nameEmp);
       toast.success(`تم اضافة الموظف ${nameEmp} بنجاح`);
       setOpenAdd(false)
+      await getAgent(name)
+    } catch (err) {
+      toast.error(err, error)
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      await deleteEmpFromAgent(user.agent_Id._id, selectedEmployeeId);
+      toast.success('تم حذف الموظف بنجاح');
+      handleCloseDelete();
+      await getAgent(name)
     } catch (err) {
       toast.error(err, error)
     }
@@ -104,7 +116,7 @@ export default function AgentEmp({}) {
           }
         </Grid> */}
         {
-            agent.employees.map((usera) =>{
+            agent.employees?.map((usera) =>{
                 return (
                      <Card key={usera._id} sx={{ display: 'flex' ,marginTop:'10px' , marginBottom:'10px', justifyContent:'space-between' }}>
                       <CardMedia
@@ -151,10 +163,7 @@ export default function AgentEmp({}) {
 
         <DialogActions>
           <Button onClick={handleCloseDelete}>لا</Button>
-          <Button disabled={isLoading} onClick={() =>{
-                  deleteEmpFromAgent(user.agent_Id._id, selectedEmployeeId); // تمرير selectedEmployeeId للحذف
-                  toast.success('تم حذف الموظف بنجاح');
-                  handleCloseDelete();}} >
+          <Button disabled={isLoading} onClick={handleDelete} >
             نعم
           </Button>
         </DialogActions>

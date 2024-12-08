@@ -74,7 +74,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
         }, [user._id, properties]);
 
       console.log('usersa',user)
-      if(isLoading){<Loading/>}
+      if(isLoading){return<Loading/>}
     return (
       <>
         <Container fixed>

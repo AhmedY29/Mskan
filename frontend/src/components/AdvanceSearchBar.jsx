@@ -99,6 +99,20 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
+  const handleRestQuery = () => {
+    const resetQuery = {
+      location: '',
+      minPrice: '',
+      maxPrice: '',
+      rooms: '',
+      bathrooms: '',
+      minArea: '',
+      maxArea: '',
+      type: '',
+    };
+    setQuery(resetQuery);
+    onSearch(resetQuery);
+  };
 
   // إغلاق الـ Dialog
   const handleCloseDialog = () => {
@@ -132,6 +146,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           flexWrap: "wrap",
         }}
       >
+        <div style={{display:'flex' , flexDirection:'column'}}>
         
         <Button
           variant={query.type === "ايجار" ? "contained" : "outlined"}
@@ -154,6 +169,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         >
           الكل
         </Button>
+        </div>
 
         {
           mobile ? <br /> :''
@@ -224,9 +240,14 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         }
 
         {/* زر فتح الحقول الإضافية */}
+        <div style={{display:'flex' , flexDirection:'column'}}>
         <Button variant="contained" color="primary" onClick={handleOpenDialog}>
           جميع الفلاتر
         </Button>
+        <Button sx={{marginTop:'7px'}} variant="outlined" color="primary" onClick={handleRestQuery}>
+           اعادة تعيين
+        </Button>
+        </div>
       </div>
 
       {/* Dialog للخيارات الإضافية */}

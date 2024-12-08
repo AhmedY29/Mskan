@@ -1,6 +1,10 @@
 import {
     Button,
+    Card,
+    CardActions,
     CardContent,
+    CardMedia,
+    Divider,
     TextField,
   } from "@mui/material";
 import * as React from 'react';
@@ -88,116 +92,32 @@ export default function UserProperties({user}){
 <React.Fragment>
       
           {filteredProperties.map((property) => (
-            <React.Fragment key={property._id}>
-              <TableRow
-                sx={{
-                  "& > *": { borderBottom: "unset" },
-                  backgroundColor: "white",
-                }}
-              >
-                <TableCell>
-                  <IconButton
-                    aria-label="expand row"
-                    size="small"
-                    onClick={() => setOpen(!open)}
-                  >
-                    {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                  </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <img
-                    src={property.mainPhoto}
-                    alt=""
-                    height={"70px"}
-                    width={"70px"}
-                    style={{ borderRadius: "10px" }}
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {property.title}
-                </TableCell>
-                <TableCell align="right">{property.type}</TableCell>
-                <TableCell align="right">{property.address}</TableCell>
-                <TableCell align="right">{
-                           price = new Intl.NumberFormat('en-US').format(property.price)
-                  }</TableCell>
-                <TableCell align="right">{property.ageforbuild}</TableCell>
-                <TableCell align="right">{
-                                 formattedDate = new Date(property.createdAt).toLocaleDateString('ar-EG', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                })
-                            }</TableCell>
-                <TableCell align="right">
-                  <Button>تعديل</Button>
-                </TableCell>
-                <TableCell align="right">
-                  <Button color="red">حذف</Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell
-                  style={{ paddingBottom: 0, paddingTop: 0 }}
-                  colSpan={6}
-                >
-                  <Collapse in={open} timeout="auto" unmountOnExit>
-                    <Box sx={{ margin: 1 }}>
-                      <Typography
-                        sx={{ textAlign: "right" }}
-                        variant="h6"
-                        gutterBottom
-                        component="div"
-                      >
-                        التفاصيل
-                      </Typography>
-                      <Table
-                        size="small"
-                        aria-label="purchases"
-                        sx={{ backgroundColor: "white" }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>نوع العقار</TableCell>
-                            <TableCell>نوع العرض</TableCell>
-                            <TableCell align="right">المدينة</TableCell>
-                            <TableCell align="right">السعر</TableCell>
-                            <TableCell align="right">تاريخ العرض</TableCell>
-                            <TableCell align="right">عدد المشاهدات</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell component="th" scope="row">
-                              {property.title}
-                            </TableCell>
-                            <TableCell>{property.type}</TableCell>
-                            <TableCell align="right">
-                              {property.location}
-                            </TableCell>
-                            <TableCell align="right">
-                              {price = new Intl.NumberFormat('en-US').format(property.price)}
-                            </TableCell>
-                            <TableCell align="right">
-                              {
-                                 formattedDate = new Date(property.createdAt).toLocaleDateString('ar-EG', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                })
-                            }
-                            </TableCell>
-                            <TableCell align="right">
-                              {property.views}
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-            </React.Fragment>
+            <Card key={property._id} sx={{ display: 'flex' ,marginTop:'10px' , marginBottom:'10px', justifyContent:'space-between', alignItems:'center' }}>
+            <CardMedia
+             component="img"
+             sx={{ width: 70 , height: 72}}
+             image={property.mainPhoto}
+             alt={property.title}
+           />
+           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
+             <CardContent sx={{ flex: '1 0 auto' }}>
+               <Typography component="div" variant="h5">
+               {property.title}
+               </Typography>
+
+             </CardContent>
+           </Box>
+           <CardActions>
+            <Button variant="text" color="primary">
+              تعديل
+            </Button>
+            <Button variant="text" color="error">
+              حذف
+            </Button>
+           </CardActions>
+        <Divider sx={{marginTop:'20px' , marginBottom:'20px'}} />
+         </Card>
           ))
           
          

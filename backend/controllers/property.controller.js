@@ -12,7 +12,6 @@ export const getProperties = async (req, res) => {
             path: 'owner',
             populate: {
               path: 'agent_Id',
-              select: '-employees',
             },
           })
         res.status(200).json({success: true, data: properties});
