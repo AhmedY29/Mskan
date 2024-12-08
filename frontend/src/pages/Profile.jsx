@@ -23,11 +23,13 @@ import { useAuthStore } from "../store/authStore";
 import Loading from "../components/Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAgentStore } from "../store/agentStore";
 
 export default function Profile() {
     const [displayName, setDisplayName] =useState('personal');
     const [open, setOpen] =useState(false);
     const [loading, setLoading] =useState(false);
+    const {addAgent} =useAgentStore();
     const [formData, setFormData] = useState({
       name: "",
       address: "",
@@ -43,11 +45,11 @@ export default function Profile() {
     };
   
     // التعامل مع الإرسال
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
       e.preventDefault();
       try {
         setLoading(true);
-        await axios.post(`/api/agent/agents`, formData);
+        addAgent(formData);
         toast.success(`تم انشاء شركة عقارية بـ اسم ${formData.name}`)
       } catch (error) {
         console.error('Error updating user:', error);

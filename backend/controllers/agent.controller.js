@@ -96,20 +96,30 @@ export const deleteAgent = async (req, res) => {
 export const addEmpToAgent = async (req, res) => {
     try {
       const { id } = req.params;
-      const { userId, role } = req.body;
-  
+      const { name, role } = req.body;
       const agent = await Agent.findById(id);
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
       }
-      const userInAgent = await User.findOne({agent_Id: id}) 
-      if(userInAgent){
+      
+      const username = await User.findOne({name})
+      console.log('Names',username)
+      console.log('Name',name)
+      if (!username) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const userId = username._id
+      const userInAgent = await User.findById(userId) 
+      console.log(userInAgent)
+      console.log(userInAgent.agent_Id)
+      if(!(userInAgent.agent_Id == undefined || userInAgent.agent_Id == '')){
         return res
         .status(400)
         .json({ success: false, message: "المستخدم موجود في شركة بالفعل" });
       }
   
       agent.employees.push({ userId, role });
+      await User.findByIdAndUpdate(userId, { agent_Id: agent._id },{ new: true });
       await agent.save();
   
       res.status(201).json({ message: "Employee added successfully", agent });
@@ -144,13 +154,23 @@ export const editEmpInAgent = async (req, res) => {
 export const removeEmpFromAgent = async (req, res) => {
     try {
       const { agentId, employeeId } = req.params;
+
   
       const agent = await Agent.findById(agentId);
       if (!agent) {
         return res.status(404).json({ message: "Agent not found" });
       }
+          // العثور على الموظف في قائمة الموظفين
+    const employee = agent.employees.find(emp => emp._id.toString() === employeeId);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // استخراج userId من الموظف
+    const userId = employee.userId;
   
       agent.employees.pull({ _id: employeeId });
+      await User.findByIdAndUpdate(userId, {agent_Id: null}, { new: true, runValidators: true });
       await agent.save();
   
       res.status(200).json({ message: "Employee removed successfully", agent });

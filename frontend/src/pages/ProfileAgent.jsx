@@ -25,21 +25,26 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import AgentProfile from "../components/AgentProfile";
 import AgentEmp from "../components/AgentEmp";
+import { useAgentStore } from "../store/agentStore";
 
 export default function ProfileAgent() {
     const [displayName, setDisplayName] =useState('personal');
     const [open, setOpen] =useState(false);
-    const [loading, setLoading] =useState(false);
+    const [loading, setLoading] =useState(true);
     const [users, setUsers] =useState(false);
-    const [agent, setAgent] = useState({
+    const [agents, setAgents] = useState({
       name: "",
       address: "",
       description: "",
       license: "",
       avatar:'',
-      employees: "",
+      employees:[],
     });
     const {name} = useParams()
+    const { user} = useAuthStore();
+    const { getAgent , agent , isLoading} = useAgentStore();
+
+
   
     // التعامل مع تغيير البيانات
     const handleChange = (e) => {
@@ -48,38 +53,69 @@ export default function ProfileAgent() {
     };
 
     useEffect(() => {
+
       const fetchAgentData = async () => {
         try {
-          setLoading(true);
     
           // التأكد من أن `name` موجود قبل إجراء الطلب
           if (!name) {
             console.error('Name is not defined');
             return;
           }
-    
           // جلب بيانات الوكيل
-          const response = await axios.get(`/api/agent/agent/${name}`);
-          console.log(response.data.agent.employees);
-    
+          getAgent(name);
           // تحديث الحالات
-          setUsers(response.data.agent.employees);
-          setAgent(response.data.agent);
+          setUsers(agent.employees);
+          setAgents(agent);
+          
+
+          
         } catch (error) {
           console.error('Error fetching agent data:', error);
           toast.error('حدث خطأ أثناء جلب البيانات. حاول لاحقًا.');
         } finally {
-          setLoading(false);
+
+          
           setOpen(false);
         }
       };
-    
+      
       fetchAgentData();
     },[name])
-  
+    
+    useEffect(() => {
+      if (!user) {
+        return; 
+      }
+    
+      console.log(user, '0');
+
+      if (agent.name == '') {
+        return; 
+      }
+    
+      if (!user.agent_Id) {
+        toast.error('لا يوجد لديك شركة عقارية');
+        return navigate('/');
+      }
+
+    
+      if (user.agent_Id?.name != agent.name) {
+        console.log('un' , user.agent_Id.name , 'an' ,agent)
+        toast.error('لست في هذه الشركة العقارية');
+        console.log(user, '1');
+        return navigate('/'); // قم بإعادة التوجيه إذا لم يكن اسم الوكيل يطابق
+      } else {
+        toast.success('تم التأكد من هويتك');
+        console.log(user, '2');
+        setLoading(false); // إنهاء التحميل
+      }
+    
+      console.log(user, '3');
+    }, [user])
+    
     const navigate = useNavigate()
     
-
     if(loading){return <Loading/>}
   return (
     <>
@@ -119,7 +155,7 @@ export default function ProfileAgent() {
           >
             <Button onClick={()=> setDisplayName('personal')}>المعلومات العامة</Button>
             <Button onClick={()=> setDisplayName('list')}>العقارات </Button>
-            <Button onClick={()=> setDisplayName('save')}>الموظفين</Button>
+            <Button onClick={()=> setDisplayName('emp')}>الموظفين</Button>
             {/* <Button onClick={()=> setDisplayName('chat')}>المحادثات</Button> */}
           </Stack>
           <Card
@@ -134,7 +170,7 @@ export default function ProfileAgent() {
             
 
             {
-                displayName == 'list' ? <AgentEmp users={users}/> : displayName == 'save' ? <UserSave/> : <AgentProfile agent={agent}/>
+                displayName == 'emp' ? <AgentEmp users={users}/> : displayName == 'save' ? <UserSave/> : <AgentProfile agent={agent}/>
             }
             
           </Card>
