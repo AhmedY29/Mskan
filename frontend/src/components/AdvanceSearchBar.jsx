@@ -101,6 +101,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
   };
   const handleRestQuery = () => {
     const resetQuery = {
+      title: '',
       location: '',
       minPrice: '',
       maxPrice: '',
@@ -146,7 +147,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           flexWrap: "wrap",
         }}
       >
-        <div style={{display:'flex' , flexDirection:'column'}}>
+        {/* <div style={{display:'flex' , flexDirection:'column'}}> */}
         
         <Button
           variant={query.type === "ايجار" ? "contained" : "outlined"}
@@ -169,7 +170,7 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         >
           الكل
         </Button>
-        </div>
+        {/* </div> */}
 
         {
           mobile ? <br /> :''
@@ -185,6 +186,13 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         />
         { mobile == false ?
           <>
+          <TextField
+          label="نوع العقار"
+          variant="outlined"
+          value={query.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          sx={{ width: "150px" }}
+        />
         {/* حقل السعر الأدنى */}
         <TextField
           label="السعر الأدنى"
@@ -205,36 +213,14 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
           sx={{ width: "150px" }}
         />
 
-        {/* عدد الغرف */}
-        <Autocomplete
-          freeSolo
-          options={["1", "2", "3", "4", "5"]}
-          value={query.rooms}
-          onChange={(e, newValue) => handleChange("rooms", newValue)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="الغرف"
-              variant="outlined"
-              sx={{ width: "150px" }}
-            />
-          )}
-        />
 
-        {/* عدد دورات المياة */}
-        <Autocomplete
-          freeSolo
-          options={["1", "2", "3", "4", "5"]}
-          value={query.bathrooms}
-          onChange={(e, newValue) => handleChange("bathrooms", newValue)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="دورات المياة"
-              variant="outlined"
-              sx={{ width: "150px" }}
-            />
-          )}
+        <TextField
+          label="الغرف"
+          variant="outlined"
+          type="number"
+          value={query.rooms}
+          onChange={(e) => handleChange("rooms", e.target.value)}
+          sx={{ width: "150px" }}
         />
         </> :''
         }

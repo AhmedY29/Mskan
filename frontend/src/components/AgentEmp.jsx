@@ -69,16 +69,21 @@ export default function AgentEmp({}) {
     e.preventDefault();
     try {
       console.log('name', nameEmp);
-      await addEmpToAgent(agent._id , nameEmp);
-      toast.success(`تم اضافة الموظف ${nameEmp} بنجاح`);
+      const agent_Id = agent._id;
+      const data = {
+        agent_Id,
+        name:nameEmp
+      }
+      await axios.post(`/api/reqAgent`, data)
+      toast.success(`تم اضافة طلب للموظف ${nameEmp} بنجاح`);
       setOpenAdd(false)
-      await getAgent(name)
     } catch (err) {
       toast.error(err, error)
     }
   };
   const handleDelete = async () => {
     try {
+      await axios.post(`/api/reqAgent`, data)
       await deleteEmpFromAgent(user.agent_Id._id, selectedEmployeeId);
       toast.success('تم حذف الموظف بنجاح');
       handleCloseDelete();
@@ -139,13 +144,16 @@ export default function AgentEmp({}) {
                            component="div"
                            sx={{ color: 'text.secondary' , display: 'flex' , alignItems: 'center' }}
                          >
-                           {usera.role == 'owner' ? 'المالك' : user.role == 'employee' ? 'موظف' : ''}
+                           {usera.role == 'owner' ? 'المالك' : usera.role == 'employee' ? 'موظف' : ''}
                          </Typography>
                      <CardActions>
                       <Button variant="text" color="primary" onClick={handleOpenEdit}>
                         تعديل
                       </Button>
-                      <Button variant="text" color="error" onClick={() => {handleOpenDelete(usera._id)}}>
+                      <Button variant="text" color="error" onClick={() => {
+                        if(usera.role == 'owner' && usera.role == 'admin') {
+                        handleOpenDelete(usera._id)}else(toast.error('لا توجد صلاحية'))
+                        }}>
                         حذف
                       </Button>
                      </CardActions>

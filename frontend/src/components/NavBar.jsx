@@ -24,8 +24,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from "react";
-import { Avatar, Menu } from "@mui/material";
+import { Avatar, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, Menu } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
+import axios from "axios";
 
 export default function NavBar() {
   const {isAuthenticated , logout  , user} = useAuthStore();
@@ -33,7 +34,12 @@ export default function NavBar() {
   const [openDarwer, setOpenDarwer] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openReq, setOpenReq] = useState(false);
   const openA = Boolean(anchorEl);
+  const [reqAgents, setReqAgents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [urReq, setUrReq] = useState([]);
+  const [confirma, setConfirma] = useState();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,6 +47,67 @@ export default function NavBar() {
   const handleCloseA = () => {
     setAnchorEl(null);
   };
+  const handleCloseReq = () => {
+    setOpenReq(false);
+  };
+  const handleOpenReq = () => {
+    setOpenReq(true);
+  };
+  const handleClickFalse = (id) => {
+    setConfirma(false);
+    handleConfirm(id, false)
+  };
+  const handleClickTrue = (id) => {
+    setConfirma(true);
+    handleConfirm(id , true)
+  };
+
+  const handleConfirm = async (id , confirm) => {
+    console.log('before',confirm)
+    await axios.put(`/api/reqAgent/${id}` , { confirm } )
+    console.log('after',confirm)
+    confirm ? toast.success('تم قبول الطلب بنجاح') : toast.success('تم رفض الطلب بنجاح');
+    setOpenReq(false)
+  };
+
+  console.log(confirma)
+
+
+
+  useEffect(() => {
+    // دالة لجلب بيانات reqAgents عند تحميل المكون
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/reqAgent"); // استدعاء GET API
+        setReqAgents(response.data.data); // تخزين البيانات المسترجعة في الحالة
+        setLoading(false); // تغيير حالة التحميل
+      } catch (err) {
+        setError("Error fetching data."); // في حالة حدوث خطأ
+        setLoading(false); // تغيير حالة التحميل
+        console.error(err);
+      }
+    };
+
+    fetchData(); // استدعاء الدالة عند تحميل المكون
+  }, []); 
+
+
+  useEffect(() => {
+    // دالة لجلب بيانات reqAgents عند تحميل المكون
+    const filterReqs = async () => {
+    if(!user){return}
+      if(reqAgents){
+        const userReq = reqAgents.filter(req => req.userId == user._id);
+        setUrReq(userReq);
+      }
+    };
+
+    filterReqs(); // استدعاء الدالة عند تحميل المكون
+  }, [reqAgents , user]); 
+  
+  console.log("Filter" , urReq)
+  console.log("nn" , reqAgents)
+
 
   
     useEffect(() => {
@@ -115,6 +182,10 @@ export default function NavBar() {
             {user.agent_Id &&
               <MenuItem onClick={()=> {navigate(`/profile/agent/${user.agent_Id?.name}`); handleCloseA()}} >
             الملف الشخصي للشركة
+            </MenuItem>}
+            {urReq.length > 0 &&
+              <MenuItem onClick={handleOpenReq} >
+              الطلبات
             </MenuItem>}
 
             <Divider/>
@@ -200,6 +271,45 @@ export default function NavBar() {
           </Toolbar>
         </Container>
       </AppBar>
+      <Dialog open={openReq} onClose={handleCloseReq} sx={{direction:'rtl'}}>
+      <DialogTitle id="alert-dialog-title">
+          طلبات الانضمام الى الشركات العقارية
+        </DialogTitle>
+          {
+            urReq && urReq.map((req)=>(
+              <Card key={req._id} sx={{ display: 'flex' ,marginTop:'10px' , marginBottom:'10px', justifyContent:'space-between' }}>
+                      <CardMedia
+                       component="img"
+                       sx={{ width: 70 }}
+                       image={req.agent_Id.avatar}
+                       alt={req.agent_Id.name}
+                     />
+                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
+                       <CardContent sx={{ flex: '1 0 auto' }}>
+                         <Typography component="div" variant="h5">
+                         {req.agent_Id.name}
+                         </Typography>
+
+                       </CardContent>
+                     </Box>
+                     <CardActions>
+                      <Button variant="text" color="primary" onClick={() => handleClickTrue(req._id)}>
+                        قبول
+                      </Button>
+                      <Button variant="text" color="error" onClick={() => handleClickFalse(req._id)} >
+                        رفض
+                      </Button>
+                     </CardActions>
+                  <Divider sx={{marginTop:'20px' , marginBottom:'20px'}} />
+                   </Card>
+            ))
+          }
+        <DialogActions>
+          <Button onClick={handleCloseReq} >اغلاق</Button>
+        </DialogActions>
+      </Dialog>
     </div>
+    
   );
 }

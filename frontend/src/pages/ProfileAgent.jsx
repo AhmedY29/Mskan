@@ -43,7 +43,7 @@ export default function ProfileAgent() {
     });
     const {name} = useParams()
     const { user} = useAuthStore();
-    const { getAgent , agent , isLoading} = useAgentStore();
+    const { getAgent , agent , isLoading , deleteEmpFromAgent} = useAgentStore();
 
 
     useEffect(() => {
@@ -77,7 +77,6 @@ export default function ProfileAgent() {
       
       fetchAgentData();
     },[name])
-    
     useEffect(() => {
       if (!user) {
         return; 
@@ -95,9 +94,10 @@ export default function ProfileAgent() {
         toast.error('لا يوجد لديك شركة عقارية');
         return navigate('/');
       }
-
+    
     console.log(user.agent_Id?.name != agent?.name)
     console.log('agent name:',agent?.name)
+    console.log('agent emp:',agent.employees.map(emp => emp).filter(emp => emp.userId._id == user._id).map(emp => emp._id))
     console.log('agent name from user:',user.agent_Id?.name)
       if (user.agent_Id?.name != agent?.name) {
         console.log('un' , user.agent_Id.name , 'an' ,agent)
@@ -105,7 +105,7 @@ export default function ProfileAgent() {
         console.log(user, '1');
         return navigate('/'); // قم بإعادة التوجيه إذا لم يكن اسم الوكيل يطابق
       } else {
-        toast.success('تم التأكد من هويتك');
+        // toast.success('تم التأكد من هويتك');
         console.log(user, '2');
         setLoading(false); // إنهاء التحميل
       }
@@ -116,6 +116,9 @@ export default function ProfileAgent() {
     const navigate = useNavigate()
     
     if(loading){return <Loading/>}
+    const idEmp = agent.employees.map(emp => emp).filter(emp => emp.userId._id == user._id).map(emp => emp._id)
+    console.log(idEmp)
+
   return (
     <>
       <Container fixed>
@@ -139,6 +142,10 @@ export default function ProfileAgent() {
           <Typography variant="p" component="div">
             شركة عقارية
           </Typography>
+          <Button onClick={() => {
+            deleteEmpFromAgent(agent._id , idEmp)
+            navigate(`/`)
+          }} variant="outlined" color="error">مغادرة الشركة</Button>
           <Stack
             sx={{
               marginTop: "30px",
@@ -169,7 +176,7 @@ export default function ProfileAgent() {
             
 
             {
-                displayName == 'emp' ? <AgentEmp users={users}/> : displayName == 'list' ? <AgentProperties/> : <AgentProfile agent={agent}/>
+                displayName == 'emp' ? <AgentEmp/> : displayName == 'list' ? <AgentProperties/> : <AgentProfile agent={agent}/>
             }
             
           </Card>

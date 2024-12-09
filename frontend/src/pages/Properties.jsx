@@ -46,6 +46,9 @@ export default function Properties() {
         if (searchQuery.location && !property.location.includes(searchQuery.location)) {
           return false;
         }
+        if (searchQuery.title && !property.title.includes(searchQuery.title)) {
+          return false;
+        }
 
         // التصفية حسب السعر الأدنى
         if (searchQuery.minPrice && property.price < searchQuery.minPrice) {
@@ -78,6 +81,8 @@ export default function Properties() {
     setFilteredProperties(filtered);
     setUnfilteredProperties(properties.filter(property => !filtered.includes(property)));
   }, [searchQuery, properties]);
+
+  console.log(`Filtered properties`, unfilteredProperties)
 
   // التأكد من عرض العقارات بعد الجلب
   useEffect(() => {
@@ -189,10 +194,10 @@ export default function Properties() {
                 ))
               }
               </Grid>
-              {searchQuery.location &&    <div style={{marginTop:'25px'}}>
+              {unfilteredProperties.length > 0 &&    <div style={{marginTop:'25px'}}>
                 <Divider />
                 <Typography sx={{marginBottom:'10px'}} variant="h5" component="h2">
-                نتائج في مدن اخرى
+                نتائج اخرى
               </Typography>
               <Grid
                 container

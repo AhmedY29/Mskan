@@ -20,6 +20,7 @@ export default function Home() {
 
   const [query, setQuery] = useState({
     type: "الكل",
+    title: '',
     location: "",
     minPrice: "",
     maxPrice: "",
