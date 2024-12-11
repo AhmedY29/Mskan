@@ -189,6 +189,20 @@ export const getUser = async (req , res) =>{
     
   }
 }
+export const getUsers = async (req , res) =>{
+  try {
+    
+    const user = await User.find().select('-password');
+
+    if(!user){
+      return res.status(401).json({success: false, message:'الحساب غير موجود'})
+    }
+    res.status(200).json({success: true, user })
+  } catch (error) {
+    res.status(400).json({success: false, message: error.message});
+    
+  }
+}
 
 export const getEditUser = async (req, res) => {
  

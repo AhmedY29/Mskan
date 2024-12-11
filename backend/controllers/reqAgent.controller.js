@@ -11,7 +11,7 @@ export const getAllReq = async (req , res)=>{
 }
 export const addReq = async (req, res) => {
     try {
-      const { agent_Id, name } = req.body;
+      const { agent_Id, name } = req.body.data;
       const user = await User.findOne({name});
       const userId = user._id
       if (user.agent_Id) {

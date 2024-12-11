@@ -41,47 +41,55 @@ export default function UserProfile({user}){
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField id="outlined-basic" label="الاسم" value={user.name} variant="outlined" size="small" />
-
+                  <Typography variant="p" component="div" >
+                 الاسم:
+                </Typography>
+                  <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {user.name}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="الايميل"
-                variant="outlined"
-                value={user.email}
-              />
+                  <Typography variant="p" component="div">
+                 رقم الجوال:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {user.phoneNumber || ""}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="رقم الجوال"
-                value={user.phoneNumber || ""}
-                variant="outlined"
-              />
+                <Typography variant="p" component="div" >
+                 الايميل:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {user.email}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="العنوان"
-                value={user.address || ""}
-                variant="outlined"
-              />
+              <Typography sx={{marginRight:'20px'}} variant="p" component="div">
+                 العنوان:
+                </Typography>
+              <Typography variant="p" component="div" sx={{marginBottom:'40px' , marginRight:'20px'}}>
+                 {user.address || ""}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="كلمة المرور"
-                variant="outlined"
-              />
+                <Typography variant="p" component="div" >
+                 رخصة فال:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {user.license || ""}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="رقم رخصة فال"
-                value={user.license || ""}
-                variant="outlined"
-              />
+                <Typography variant="p" component="div" >
+                  تاريخ الانضمام:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {new Date(user.createdAt).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",}) || ""}
+                </Typography>
                   </Grid>
               </Grid>
               <div style={{display:'flex', justifyContent:'center', marginTop:'20px'}}>
@@ -89,7 +97,7 @@ export default function UserProfile({user}){
               <Button onClick={handleOpenEdit} variant="contained" color="primary" size="medium"> 
                 تعديل البيانات
               </Button>
-              <Button onClick={handleOpenChangePass} variant="contained" color="primary" size="medium"> 
+              <Button sx={{marginRight:'10px'}} onClick={handleOpenChangePass} variant="contained" color="primary" size="medium"> 
                  تغيير كلمة المرور
               </Button>
               </div>

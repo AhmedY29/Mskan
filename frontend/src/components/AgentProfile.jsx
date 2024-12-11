@@ -14,11 +14,14 @@ import { useState } from "react";
 import EditUser from "../pages/EditUser";
 import ChangePass from "./ChangePass";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function AgentProfile({agent}){
 
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const navigate = useNavigate()
 
   const handleOpenEdit = () => {
     setOpenEdit(true);
@@ -35,7 +38,7 @@ export default function AgentProfile({agent}){
   const [openChangePass, setOpenChangePass] = useState(false);
 
   const handleRemoveAgent = async () => {
-    await axios.delete(`/api/agent/agents/${id}`);
+    await axios.delete(`/api/agent/agents/${agent._id}`);
   };
   const handleCloseChangePass = () => {
     setOpenChangePass(false);
@@ -43,7 +46,7 @@ export default function AgentProfile({agent}){
 
     return(
         <>
-                        <CardContent style={{ display: "flex", flexDirection: "column" }}>
+            <CardContent style={{ display: "flex", flexDirection: "column" }}>
               <Typography variant="h6" component="div" sx={{marginBottom:'40px'}}>
                 المعلومات الشخصية
               </Typography>
@@ -53,33 +56,55 @@ export default function AgentProfile({agent}){
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField id="outlined-basic" label="الاسم" value={agent.name} variant="outlined" size="small" />
-
+                  <Typography variant="p" component="div" >
+                 الاسم:
+                </Typography>
+                  <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {agent.name}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="العنوان"
-                value={agent.address || ""}
-                variant="outlined"
-              />
-                  </Grid>
-                 
-                  <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="رقم رخصة فال"
-                value={agent.license || ""}
-                variant="outlined"
-              />
+                <Typography variant="p" component="div" >
+                 رخصة فال:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {agent.license}
+                </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
-                  <TextField
-                id="outlined-basic"
-                label="نبذة عن الشركة"
-                value={agent.description || ""}
-                variant="outlined"
-              />
+              <Typography sx={{marginRight:'20px'}} variant="p" component="div">
+                 مناطق العمل:
+                </Typography>
+              <Typography variant="p" component="div" sx={{marginBottom:'40px' , marginRight:'20px'}}>
+                 {agent.location.map(location => `${location},`) || ""}
+                </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 2, sm: 4, md: 4 }}>
+                <Typography variant="p" component="div" >
+                 رخصة فال:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {agent.license || ""}
+                </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 2, sm: 4, md: 4 }}>
+                <Typography variant="p" component="div" >
+                  نبذة عن الشركة:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {agent.description || ""}
+                </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 2, sm: 4, md: 4 }}>
+                <Typography variant="p" component="div" >
+                  تاريخ الانضمام:
+                </Typography>
+                <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
+                 {new Date(agent.createdAt).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",}) || ""}
+                </Typography>
                   </Grid>
               </Grid>
               <div style={{display:'flex', justifyContent:'center', marginTop:'20px'}}>

@@ -114,12 +114,14 @@ export default function PropertyDetailsPhotos({ property }) {
 
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
+    setAnchorEl(null)
   };
 
   const handleShareToX = () => {
     
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`;
     window.open(twitterUrl, "_blank");
+    setAnchorEl(null)
   }
 
   const handleCopyLink = () => {
@@ -129,6 +131,7 @@ export default function PropertyDetailsPhotos({ property }) {
       .then(() => {
         toast.success(" تم نسخ الرابط إلى الحافظة بنجاح!")
       })
+      setAnchorEl(null)
   };
 
 

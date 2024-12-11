@@ -105,6 +105,8 @@ export default function Update() {
     nearbyServices: [property.nearbyServices],
     video: property.video,
     ageforbuild: property.ageforbuild,
+    payment: property.payment,
+    paymentWay: property.paymentWay,
     imagesToDelete: []
   });
 
@@ -268,7 +270,7 @@ export default function Update() {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-            <Typography>
+            {/* <Typography>
              الاسم
           </Typography>
               <TextField
@@ -289,7 +291,33 @@ export default function Update() {
                     </InputAdornment>
                   ),
                 }}
-              />
+              /> */}
+                          <Typography>
+             نوع العقار
+          </Typography>
+
+                            <FormControl sx={{ width: 150 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={updatedProperty.title} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setUpdatedProperty({
+                      ...updatedProperty,
+                      title: e.target.value,
+                    })
+                  }
+                  placeholder="نوع العقار"
+                >
+                  <MenuItem value={"شقة"}>شقة</MenuItem>
+                  <MenuItem value={"بيت"}>بيت</MenuItem>
+                  <MenuItem value={"فيلا"}>فيلا</MenuItem>
+                  <MenuItem value={"دوبلوكس"}>دوبلوكس</MenuItem>
+                  <MenuItem value={"استوديو"}>استوديو</MenuItem>
+                  <MenuItem value={"استراحة"}>استراحة</MenuItem>
+                  <MenuItem value={"غرفة"}>غرفة</MenuItem>
+                  <MenuItem value={"شاليه"}>شاليه</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
             <Typography>
@@ -320,7 +348,6 @@ export default function Update() {
              نوع العرض
           </Typography>
               <FormControl sx={{ width: 100 }} required>
-                <InputLabel id="demo-simple-select-label">نوع العرض</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   value={updatedProperty.type} // تأكد من ربط هذه القيمة
@@ -336,6 +363,51 @@ export default function Update() {
                 </Select>
               </FormControl>
             </Grid>
+            { updatedProperty.type == 'ايجار' &&
+            <Grid item xs={12}>
+            <Typography>
+            الدفع 
+          </Typography>
+              <FormControl sx={{ width: 100 }} required>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={updatedProperty.payment} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setUpdatedProperty({
+                      ...updatedProperty,
+                      payment: e.target.value,
+                    })
+                  }
+                >
+                  <MenuItem value={"شهري"}>شهري</MenuItem>
+                  <MenuItem value={"سنوي"}>سنوي</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+              }
+            { updatedProperty.payment == 'سنوي' &&
+            <Grid item xs={12}>
+            <Typography>
+            الدفعات 
+          </Typography>
+              <FormControl sx={{ width: 100 }} required>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={updatedProperty.paymentWay} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>
+                    setUpdatedProperty({
+                      ...updatedProperty,
+                      paymentWay: e.target.value,
+                    })
+                  }
+                >
+                  <MenuItem value={"دفعة واحدة"}>دفعة واحدة</MenuItem>
+                  <MenuItem value={"نصف سنوي"}>نصف سنوي</MenuItem>
+                  <MenuItem value={"ربع سنوي"}>ربع سنوي</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+              }
             <Grid item xs={12} sm={6}>
             <Typography>
              السعر

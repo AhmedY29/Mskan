@@ -20,6 +20,7 @@ import VerifyMsg from './components/VerifyMsg.jsx';
 import EditUser from './pages/EditUser.jsx';
 import Accounts from './pages/Accounts.jsx';
 import ProfileAgent from './pages/ProfileAgent.jsx';
+import AgentAccounts from './pages/AgentAccounts.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -91,6 +92,7 @@ function App() {
       <Route path="/propertyDetails/:id" element={<PropertyDetails />} />
       <Route path="/updateProperty/:propertyId" element={<Update/>} />
       <Route path="/account/:name" element={<Accounts/>} />
+      <Route path="/account/agent/:name" element={<AgentAccounts/>} />
 
       <Route path="/profile/:name" element={
       <ProtectedRoute>

@@ -4,6 +4,11 @@ import {
     CardActions,
     CardContent,
     CardMedia,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Divider,
     TextField,
   } from "@mui/material";
@@ -30,21 +35,23 @@ import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { usePropertiesStore } from "../store/propertiesStore";
 import { useEffect } from "react";
 import Loading from "./Loading";
+import toast from "react-hot-toast";
 
 export default function UserProperties({user}){
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [propertyId, setPropertyId] = useState("");
   const [filteredProperties, setFilteredProperties] = useState([]);
-  const {getProperties , isLoading , properties} = usePropertiesStore();
+  const {getProperties , isLoading , properties , deleteProperty} = usePropertiesStore();
     const [searchQuery, setSearchQuery] = useState({
       owner: user._id
     });
-    var formattedDate;
-    var price;
 
+    const navigate = useNavigate()
     useEffect(() => {
       getProperties();
     }, [getProperties]);
@@ -75,7 +82,21 @@ export default function UserProperties({user}){
     function setIsBookmark(isBookmarked) {
         setIsBookmarked(!isBookmarked);
     }
-    const [open, setOpen] = React.useState(false);
+    function handleOpenDelete(id) {
+        setOpenDelete(true);
+        setPropertyId(id)
+      console.log('IN FUNC',propertyId)
+
+
+    }
+    function handleCloseDelete() {
+        setOpenDelete(false);
+    }
+    console.log(propertyId)
+    async function handleDelete() {
+        await  deleteProperty(propertyId);
+        return navigate("/"), toast.success("تم حذف العقار بنجاح")
+    }
 
     if(isLoading){
       return <Loading/>
@@ -106,13 +127,23 @@ export default function UserProperties({user}){
                {property.title}
                </Typography>
 
+
              </CardContent>
            </Box>
+               <Typography component="div" variant="p" color="text.secondary">
+               {property.type}
+               </Typography>
+           <Typography component="div" variant="p" color="text.secondary">
+               {new Date(property.createdAt).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",})}
+               </Typography>
            <CardActions>
-            <Button variant="text" color="primary">
+            <Button variant="text" color="primary" onClick={() => navigate(`/updateProperty/${property._id}`)}>
               تعديل
             </Button>
-            <Button variant="text" color="error">
+            <Button variant="text" color="error" onClick={()=>handleOpenDelete(property._id)}>
               حذف
             </Button>
            </CardActions>
@@ -126,6 +157,22 @@ export default function UserProperties({user}){
           
 
             </CardContent>
+            <Dialog open={openDelete} onClose={handleCloseDelete} sx={{direction:'rtl'}}>
+      <DialogTitle id="alert-dialog-title">
+          هل انت متأكد من حذف العقار؟
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ملاحظة في حال الحذف لن تتمكن من اعادة العقار مرة اخرى!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>لا</Button>
+          <Button onClick={handleDelete} >
+            نعم
+          </Button>
+        </DialogActions>
+      </Dialog>
         </>
     );
 }

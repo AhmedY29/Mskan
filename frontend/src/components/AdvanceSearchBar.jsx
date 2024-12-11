@@ -5,6 +5,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material"; // استيراد Autocomplete
 import { useEffect } from "react";
@@ -186,13 +190,24 @@ export default function AdvanceSearchBar({ onSearch , querya }) {
         />
         { mobile == false ?
           <>
-          <TextField
-          label="نوع العقار"
-          variant="outlined"
-          value={query.title}
-          onChange={(e) => handleChange("title", e.target.value)}
-          sx={{ width: "150px" }}
-        />
+            <FormControl sx={{ width: 150 }}>
+              <InputLabel>نوع العقار</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  value={query.title} // تأكد من ربط هذه القيمة
+                  onChange={(e) =>handleChange("title", e.target.value)}
+                  placeholder="نوع العقار"
+                >
+                  <MenuItem value={"شقة"}>شقة</MenuItem>
+                  <MenuItem value={"بيت"}>بيت</MenuItem>
+                  <MenuItem value={"فيلا"}>فيلا</MenuItem>
+                  <MenuItem value={"دوبلوكس"}>دوبلوكس</MenuItem>
+                  <MenuItem value={"استوديو"}>استوديو</MenuItem>
+                  <MenuItem value={"استراحة"}>استراحة</MenuItem>
+                  <MenuItem value={"غرفة"}>غرفة</MenuItem>
+                  <MenuItem value={"شاليه"}>شاليه</MenuItem>
+                </Select>
+              </FormControl>
         {/* حقل السعر الأدنى */}
         <TextField
           label="السعر الأدنى"

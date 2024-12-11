@@ -37,7 +37,7 @@ export default function Profile() {
     const {addAgent} =useAgentStore();
     const [formData, setFormData] = useState({
       name: "",
-      address: "",
+      location: "",
       description: "",
       license: "",
       avatar:'',
@@ -103,7 +103,7 @@ export default function Profile() {
     };
     
     useEffect(() => {
-      setFormData({...formData , address: selectedRegions})
+      setFormData({...formData , location: selectedRegions})
     }, [selectedRegions])
     
     console.log(selectedRegions)

@@ -140,6 +140,8 @@ export const updateProperty = async (req, res) => {
     const newMainPhotoBase64 = req.body.mainPhoto; 
     const imagesToDelete = req.body.imagesToDelete || [];  
 
+    console.log(updatedData)
+
     try {
         const property = await Property.findById(propertyId);
 
@@ -147,7 +149,7 @@ export const updateProperty = async (req, res) => {
             return res.status(404).json({ success: false, msg: "Property not found" });
         }
 
-        const folderName = property.title + property.type + property.price + property.location + property.nearbyServices + property.adLicense + property.ageforbuild + property.size;
+        const folderName = updatedData.title + updatedData.type + updatedData.price + updatedData.location + updatedData.nearbyServices + updatedData.adLicense + updatedData.ageforbuild + updatedData.size;
         let updatedImages = property.images || []; 
 
         if (imagesToDelete.length > 0) {
@@ -178,8 +180,9 @@ export const updateProperty = async (req, res) => {
         }
 
         // **رفع الصور الجديدة (Base64) إلى Cloudinary**
-        if (newImagesBase64 && newImagesBase64.length > 0) {
+        if (newImagesBase64 && newImagesBase64.length > 0 || property.title != updatedData.title || property.type != updatedData.type || property.price != updatedData.price || property.location != updatedData.location || property.nearbyServices != updatedData.nearbyServices || property.adLicense != updatedData.adLicense || property.ageforbuild != updatedData.ageforbuild || property.size != updatedData.size ) {
             try {
+                console.log("Inner if")
                 for (let base64Image of newImagesBase64) {
                     const uploadResult = await cloudinary.uploader.upload(base64Image, {
                         folder: folderName,  // تحديد المجلد في Cloudinary

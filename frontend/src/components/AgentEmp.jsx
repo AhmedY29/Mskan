@@ -27,9 +27,11 @@ export default function AgentEmp({}) {
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [nameEmp, setNameEmp] = useState('');
+  const [error, setError] = useState('');
+  const [nameEmpa, setNameEmpa] = useState('');
   const [openAdd, setOpenAdd] = useState(false);
-  const {deleteEmpFromAgent , editEmpOnAgent , isLoading , agent , error , addEmpToAgent , getAgent } =useAgentStore();
-  const {user} =useAuthStore();
+  const {deleteEmpFromAgent , editEmpOnAgent , isLoading , agent , addEmpToAgent , getAgent } =useAgentStore();
+  const {users , getUsers} =useAuthStore();
   const {name} = useParams()
 
   const handleOpenAdd = () =>{
@@ -49,6 +51,13 @@ export default function AgentEmp({}) {
   useEffect(() => {
     getAgent(name)
   }, [getAgent])
+  useEffect(() => {
+    getUsers()
+  }, [])
+
+  console.log('users' , users)
+
+  
   
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); // لتخزين قيمة usera._id
@@ -65,16 +74,34 @@ export default function AgentEmp({}) {
     getAgent(name)
     setSelectedEmployeeId(null); // إعادة تعيين القيمة بعد الإغلاق
   };
+  useEffect(() => {
+    const usersa =  users?.map(user => user).filter(user => {return user.name == nameEmp })
+    setNameEmpa(usersa)
+    console.log('usersa', usersa)
+  },[nameEmp])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('')
     try {
       console.log('name', nameEmp);
+      console.log('nameش', nameEmpa);
+      console.log('nameشسسش', nameEmpa.map(user => user.agent_Id));
+
+      if(nameEmpa.length == 0){
+        setError(`${nameEmp} غير موجود`)
+        return toast.error(`${nameEmp} غير موجود`)
+      }
+      if(nameEmpa.map(user => user.agent_Id)){
+        setError(`${nameEmp}  لديه شركة`)
+        return toast.error(`${nameEmp}  لديه شركة`)
+      }
       const agent_Id = agent._id;
       const data = {
         agent_Id,
         name:nameEmp
       }
-      await axios.post(`/api/reqAgent`, data)
+      // await axios.post(`/api/reqAgent`, data)
       toast.success(`تم اضافة طلب للموظف ${nameEmp} بنجاح`);
       setOpenAdd(false)
     } catch (err) {
@@ -83,8 +110,8 @@ export default function AgentEmp({}) {
   };
   const handleDelete = async () => {
     try {
-      await axios.post(`/api/reqAgent`, data)
-      await deleteEmpFromAgent(user.agent_Id._id, selectedEmployeeId);
+      // await axios.post(`/api/reqAgent`, data)
+      await deleteEmpFromAgent(agent._id, selectedEmployeeId);
       toast.success('تم حذف الموظف بنجاح');
       handleCloseDelete();
       await getAgent(name)
@@ -199,6 +226,8 @@ export default function AgentEmp({}) {
                       fullWidth
                       value={nameEmp}
                       onChange={(e) => setNameEmp(e.target.value)}
+                      error={!!error}
+                      helperText={error}
                       required
                     />
                   </Grid>

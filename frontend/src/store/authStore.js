@@ -6,6 +6,7 @@ import axios from 'axios';
  axios.defaults.withCredentials = true; 
 export const useAuthStore = create((set)=>({
     user:null,
+    users:null,
     isAuthenticated:false,
     error:null,
     isLoading:false,
@@ -90,6 +91,16 @@ export const useAuthStore = create((set)=>({
         try {
             const response = await axios.get(`${API_URL}/profile/${name}`);
             set({isLoading:false , user:response.data.user});
+        } catch (error) {
+            set({ isLoading:false, error:error.response.data.message || "Error getting data"});
+            throw error;
+        }
+    },
+    getUsers: async () => {
+        set({isLoading:true})
+        try {
+            const response = await axios.get(`${API_URL}/users`);
+            set({isLoading:false , users:response.data.user});
         } catch (error) {
             set({ isLoading:false, error:error.response.data.message || "Error getting data"});
             throw error;
