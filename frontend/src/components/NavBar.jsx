@@ -157,7 +157,7 @@ export default function NavBar() {
             { mobile == false ?
               <>
             <Typography variant="p" component="a" >
-            <Button variant="text" sx={{color:'black'}}>الشركات العقارية</Button>
+            <Button variant="text" sx={{color:'black'}} onClick={() => {navigate('/agents')}}>الشركات العقارية</Button>
             </Typography>
             <Typography variant="p" component="a" >
             <Button variant="text" sx={{color:'black'}}>المشاريع العقارية</Button>

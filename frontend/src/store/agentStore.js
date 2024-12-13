@@ -5,7 +5,7 @@ import axios from 'axios';
 
  axios.defaults.withCredentials = true; 
 export const useAgentStore = create((set)=>({
-    agents:null,
+    agents:[],
     agent:[],
     error:null,
     isLoading:false,
@@ -15,7 +15,8 @@ export const useAgentStore = create((set)=>({
         set({isLoading:true, error:null})
         try {
             const response = await axios.get(`${API_URL}/agents`)
-            set({agents:response.data.agent , isLoading:false})
+            console.log(response.data.agents)
+            set({agents:response.data.agents , isLoading:false})
         } catch (error) {
             set({error:error.response.data.message || "Error in  Getting agent ", isLoading:false})
             throw error
@@ -52,10 +53,10 @@ export const useAgentStore = create((set)=>({
             throw error
         }
     },
-    editEmpOnAgent: async (id,userId , data) => {
+    editEmpOnAgent: async (id,userId , role) => {
         set({isLoading:true, error:null})
         try {
-            const response = await axios.put(`${API_URL}/agents/${id}/employees/${userId}`,data )
+            const response = await axios.put(`${API_URL}/agents/${id}/employees/${userId}`,{role} )
             set({agent: response.data.agent, isLoading:false})
         } catch (error) {
             set({error:error.response.data.message || "Error in  Getting agent ", isLoading:false})

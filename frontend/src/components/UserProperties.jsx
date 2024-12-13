@@ -113,7 +113,8 @@ export default function UserProperties({user}){
 <React.Fragment>
       
           {filteredProperties.map((property) => (
-            <Card key={property._id} sx={{ display: 'flex' ,marginTop:'10px' , marginBottom:'10px', justifyContent:'space-between', alignItems:'center' }}>
+            <Link key={property._id} style={{textDecoration:'none' , color:"black"}} to={`/propertyDetails/${property._id}`} >
+            <Card title={'الانتقال الى صفحة العقار'} sx={{ display: 'flex' ,marginTop:'10px' , marginBottom:'10px', justifyContent:'space-between', alignItems:'center' }}>
             <CardMedia
              component="img"
              sx={{ width: 70 , height: 72}}
@@ -149,6 +150,7 @@ export default function UserProperties({user}){
            </CardActions>
         <Divider sx={{marginTop:'20px' , marginBottom:'20px'}} />
          </Card>
+         </Link>
           ))
           
          

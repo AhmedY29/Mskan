@@ -16,21 +16,38 @@ import ChangePass from "./ChangePass";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAgentStore } from "../store/agentStore";
+import Loading from "./Loading";
+import { useAuthStore } from "../store/authStore";
+import EditAgent from "./EditAgent";
 
 export default function AgentProfile({agent}){
 
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const { getAgent ,deleteAgent ,isLoading} = useAgentStore()
+  const { user } = useAuthStore()
   const navigate = useNavigate()
 
   const handleOpenEdit = () => {
-    setOpenEdit(true);
+    const role = agent.employees.map(emp => emp).filter(emp => emp.userId._id == user._id).map(emp => emp.role)
+    if(role == 'admin' || role == 'owner') {
+
+      setOpenEdit(true);
+    }else{
+      toast.error('لاتوجد صلاحية')
+    }
   };
   const handleCloseEdit = () => {
     setOpenEdit(false);
   };
   const handleOpenDelete = () => {
+    const role = agent.employees.map(emp => emp).filter(emp => emp.userId._id == user._id).map(emp => emp.role)
+    if(role == 'owner') {
     setOpenDelete(true);
+     }else{
+    toast.error('لا توجد صلاحية')
+     }
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
@@ -38,11 +55,15 @@ export default function AgentProfile({agent}){
   const [openChangePass, setOpenChangePass] = useState(false);
 
   const handleRemoveAgent = async () => {
-    await axios.delete(`/api/agent/agents/${agent._id}`);
+    
+    deleteAgent(agent._id)
+    // await axios.delete(`/api/agent/agents/${agent._id}`);
   };
   const handleCloseChangePass = () => {
     setOpenChangePass(false);
   };
+
+  if (isLoading) return <Loading />
 
     return(
         <>
@@ -81,10 +102,10 @@ export default function AgentProfile({agent}){
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
                 <Typography variant="p" component="div" >
-                 رخصة فال:
+                  عدد الموظفين:
                 </Typography>
                 <Typography variant="p" component="div" sx={{marginBottom:'40px'}}>
-                 {agent.license || ""}
+                 {agent.employees.length || ""}
                 </Typography>
                   </Grid>
                   <Grid size={{ xs: 2, sm: 4, md: 4 }}>
@@ -124,7 +145,7 @@ export default function AgentProfile({agent}){
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             >
-        <EditUser close={handleCloseEdit}/>
+        <EditAgent close={handleCloseEdit}/>
       </Dialog>
       <Dialog open={openDelete} onClose={handleCloseDelete} sx={{direction:'rtl'}}>
       <DialogTitle id="alert-dialog-title">

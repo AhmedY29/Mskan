@@ -134,7 +134,10 @@ export default function Profile() {
           <Typography variant="p" component="div">
             {user.agent_Id ? 'عضو في شركة' : 'مسوق فرد'}
           </Typography>
-          <Button onClick={() => setOpen(true)} variant="text">التحويل الى حساب منشأة</Button>
+          {
+            user.agent_Id == null && <Button onClick={() => setOpen(true)} variant="text">التحويل الى حساب منشأة</Button>
+          }
+          
           <Stack
             sx={{
               marginTop: "30px",

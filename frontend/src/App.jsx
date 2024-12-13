@@ -21,6 +21,7 @@ import EditUser from './pages/EditUser.jsx';
 import Accounts from './pages/Accounts.jsx';
 import ProfileAgent from './pages/ProfileAgent.jsx';
 import AgentAccounts from './pages/AgentAccounts.jsx';
+import Agents from './pages/Agents.jsx';
 const theme = createTheme({
   typography:{
     fontFamily:['Rubik']
@@ -93,6 +94,7 @@ function App() {
       <Route path="/updateProperty/:propertyId" element={<Update/>} />
       <Route path="/account/:name" element={<Accounts/>} />
       <Route path="/account/agent/:name" element={<AgentAccounts/>} />
+      <Route path="/agents/" element={<Agents/>} />
 
       <Route path="/profile/:name" element={
       <ProtectedRoute>

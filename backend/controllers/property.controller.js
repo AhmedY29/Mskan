@@ -32,15 +32,22 @@ export const createProperty = async (req, res) => {
     //     cloudinaryResponse = await cloudinary.uploader.upload(images , {folder: "properties"})
     // }
     // const newProperty = new Property({...property , images: cloudinaryResponse?.secure_url ? cloudinaryResponse.secure_url: ''});
-
     let uploadedImages = [];
     let mainPhotoUrl = "";
+    let videoUrl = "";
 
     if (property.mainPhoto) {
         const mainPhotoResult = await cloudinary.uploader.upload(property.mainPhoto, {
           folder: property.title + property.type + property.price + property.location + property.nearbyServices + property.adLicense + property.ageforbuild + property.size,
         });
         mainPhotoUrl = mainPhotoResult.secure_url;
+      }
+    if (property.video) {
+        const videoResult = await cloudinary.uploader.upload(property.video, {
+          folder: property.title + property.type + property.price + property.location + property.nearbyServices + property.adLicense + property.ageforbuild + property.size,
+          resource_type: 'video',
+        });
+        videoUrl = videoResult.secure_url;
       }
 
     if (property.images && Array.isArray(property.images)) {
@@ -56,6 +63,7 @@ export const createProperty = async (req, res) => {
       ...property,
       mainPhoto: mainPhotoUrl,
       images: uploadedImages,
+      video: videoUrl,
     });
 
     try {
@@ -115,21 +123,6 @@ export const deleteProperty = async (req, res) => {
     }
 };
 
-// export const updateProperties = async (req, res) => {
-//     const {propertyId} = req.params
-//     const property = req.body
-
-//     if(!mongoose.Types.ObjectId.isValid(propertyId)){
-//         return res.status(404).json({ success: false, msg: "Invalid Id" });
-//     }
-
-//     try {
-//        const updatedProperty = await Property.findByIdAndUpdate(propertyId , property ,{new: true})
-//         res.status(200).json({ success: true, data: updatedProperty });
-//     } catch (error) {
-//         res.status(500).json({ success: false, msg: "Server Error" });
-//     }
-// };
 
 
 
@@ -138,6 +131,7 @@ export const updateProperty = async (req, res) => {
     const updatedData = req.body;  
     const newImagesBase64 = req.body.images;   
     const newMainPhotoBase64 = req.body.mainPhoto; 
+    const newVideoBase64 = req.body.video; 
     const imagesToDelete = req.body.imagesToDelete || [];  
 
     console.log(updatedData)
@@ -221,6 +215,23 @@ export const updateProperty = async (req, res) => {
                     return res.status(400).json({
                         success: false,
                         msg: "Invalid path for new main photo",
+                    });
+                }
+                
+                if (newVideoBase64) {
+                    const uploadResult = await cloudinary.uploader.upload(newVideoBase64, {
+                        folder: folderName,
+                        use_filename: true,
+                        unique_filename: false,
+                    });
+        
+                    // تحديث الصورة الرئيسية في قاعدة البيانات
+                    updatedData.video = uploadResult.secure_url;
+                } else {
+                    console.error('No valid path for new video');
+                    return res.status(400).json({
+                        success: false,
+                        msg: "Invalid path for new video",
                     });
                 }
             } catch (uploadError) {

@@ -130,6 +130,10 @@ export const editEmpInAgent = async (req, res) => {
     try {
       const { agentId, employeeId } = req.params;
       const { role } = req.body;
+      console.log('body: ' + req.body)
+      console.log('params: ' + req.params)
+      console.log('role: ' + role)
+      console.log('ids: ' + agentId ,',d' , employeeId)
   
       const agent = await Agent.findById(agentId);
       if (!agent) {

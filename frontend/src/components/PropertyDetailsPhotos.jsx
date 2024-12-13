@@ -14,6 +14,7 @@ import IosShareOutlinedIcon from "@mui/icons-material/IosShareOutlined";
 import ThreeDRotationIcon from "@mui/icons-material/ThreeDRotation";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import SlowMotionVideoIcon from '@mui/icons-material/SlowMotionVideo';
 
 import PhotoDialog from "./PhotoDialog";
 import MapDetails from "./MapDetails.jsx";
@@ -95,6 +96,7 @@ export default function PropertyDetailsPhotos({ property }) {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [open3d, setOpen3d] = useState(false);
+  const [openVideo, setOpenVideo] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openshare = Boolean(anchorEl);
   const handleClickShare = (event) => {
@@ -155,6 +157,13 @@ export default function PropertyDetailsPhotos({ property }) {
 
   function handleClose3d() {
     setOpen3d(false);
+  }
+  function handleClickVideo() {
+    setOpenVideo(true);
+  }
+
+  function handleCloseVideo() {
+    setOpenVideo(false);
   }
 
   
@@ -273,6 +282,14 @@ function marks(isBookmarked) {
             startIcon={<ThreeDRotationIcon />}
           /> :''
           }
+          {
+            property.video ? <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => handleClickVideo()}
+            startIcon={<SlowMotionVideoIcon />}
+          /> :''
+          }
           
           {isAuther || isAgentAdmin || isAdmin ? (
             // <Button
@@ -380,6 +397,15 @@ function marks(isBookmarked) {
           frameborder="0"
           allowfullscreen
         ></iframe>
+      </Dialog>
+      <Dialog open={openVideo} onClose={handleCloseVideo} maxWidth="md">
+        <video
+          style={{ padding: "12px" }}
+          src={property.video || ''}
+          height={mobile ? '600' :"650"}
+          width={mobile ? '330':"700"}
+          controls
+        ></video>
       </Dialog>
       <Dialog open={openDelete} onClose={handleCloseDelete} sx={{direction:'rtl'}}>
       <DialogTitle id="alert-dialog-title">

@@ -5,6 +5,11 @@ import {
     CardActions,
     CardContent,
     CardMedia,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Divider,
     TextField,
   } from "@mui/material";
@@ -31,16 +36,21 @@ import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { usePropertiesStore } from "../store/propertiesStore";
 import { useEffect } from "react";
 import Loading from "./Loading";
 import { useAgentStore } from "../store/agentStore";
+import toast from "react-hot-toast";
+import { useAuthStore } from "../store/authStore";
 
 export default function AgentProperties(){
     const [filteredProperties, setFilteredProperties] = useState([]);
     const { getProperties, isLoading, properties } = usePropertiesStore();
+    const { user } = useAuthStore();
     const { getAgent, agent } = useAgentStore();
+    const [openDelete, setOpenDelete] = useState(false);
+    const [propertyId, setPropertyId] = useState("");
     const [open, setOpen] = useState(false);
   
 
@@ -81,6 +91,37 @@ export default function AgentProperties(){
     };
 
     console.log(filteredProperties)
+
+    function handleOpenDelete(id) {
+      if(user.agent_Id.employees.map(emp => emp.role) == 'admin' || user.agent_Id.employees.map(emp => emp.role) == 'owner') {
+        setOpenDelete(true);
+        setPropertyId(id)
+      }
+        else {
+        toast.error('لاتوجد صلاحية');
+      }
+ 
+    console.log('IN FUNC',propertyId)
+
+
+  }
+  const navigate = useNavigate()
+  function handleCloseDelete() {
+      setOpenDelete(false);
+  }
+
+    async function handleDelete() {
+      await  deleteProperty(propertyId);
+      return navigate("/"), toast.success("تم حذف العقار بنجاح")
+  }
+  console.log(user.agent_Id.employees.map(emp => emp.role) , 'ok or not')
+
+  function editProperty(propertyId) {
+    if(user.agent_Id.employees.map(emp => emp.role) == 'admin' || user.agent_Id.employees.map(emp => emp.role) == 'owner') {
+    navigate(`/updateProperty/${propertyId}`)} 
+    else {
+    toast.error('لاتوجد صلاحية');
+  }}
   
     // عرض حالة التحميل
     if (isLoading) {
@@ -127,10 +168,13 @@ export default function AgentProperties(){
                                       المعلن {property.owner.name}
                                     </Typography>
                                 <CardActions>
-                                 <Button variant="text" color="primary">
+                                 <Button variant="text" color="primary" onClick={() => {navigate(`/propertyDetails/${property._id}`)}}>
+                                   تفاصيل العقار
+                                 </Button>
+                                 <Button variant="text" color="primary" onClick={() => editProperty(property._id)}>
                                    تعديل
                                  </Button>
-                                 <Button variant="text" color="error">
+                                 <Button variant="text" color="error" onClick={handleOpenDelete}>
                                    حذف
                                  </Button>
                                 </CardActions>
@@ -144,6 +188,22 @@ export default function AgentProperties(){
           
 
             </CardContent>
+            <Dialog open={openDelete} onClose={handleCloseDelete} sx={{direction:'rtl'}}>
+      <DialogTitle id="alert-dialog-title">
+          هل انت متأكد من حذف العقار؟
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ملاحظة في حال الحذف لن تتمكن من اعادة العقار مرة اخرى!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete}>لا</Button>
+          <Button onClick={handleDelete} >
+            نعم
+          </Button>
+        </DialogActions>
+      </Dialog>
         </>
     );
 }

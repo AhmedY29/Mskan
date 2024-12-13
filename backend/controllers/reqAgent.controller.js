@@ -11,13 +11,10 @@ export const getAllReq = async (req , res)=>{
 }
 export const addReq = async (req, res) => {
     try {
-      const { agent_Id, name } = req.body.data;
+      const { agent_Id, name } = req.body;
       const user = await User.findOne({name});
       const userId = user._id
-      if (user.agent_Id) {
-        return res.status(404).json({ message: "المستخدم لديه شركة" });
-      }
-  
+      
       const newReqAgent = new ReqAgent({
         agent_Id,
         userId,
@@ -60,7 +57,7 @@ export const putReq = async (req, res) => {
       }
 
       agent.employees.push({
-        userId: user._id
+        userId: user._id,
       });
       user.agent_Id = reqAgent.agent_Id;
       await user.save();

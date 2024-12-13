@@ -1,4 +1,4 @@
-import { Box, Button, CardActions, CardContent, Dialog, DialogActions, DialogTitle, TextField, Typography } from "@mui/material";
+import { Box, Button, CardActions, CardContent, Dialog, DialogActions, DialogTitle, Menu, MenuItem, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import * as React from "react";
 import Card from "@mui/material/Card";
@@ -31,9 +31,48 @@ export default function AgentEmp({}) {
   const [nameEmpa, setNameEmpa] = useState('');
   const [openAdd, setOpenAdd] = useState(false);
   const {deleteEmpFromAgent , editEmpOnAgent , isLoading , agent , addEmpToAgent , getAgent } =useAgentStore();
-  const {users , getUsers} =useAuthStore();
+  const {users , getUsers , user} =useAuthStore();
   const {name} = useParams()
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openedit = Boolean(anchorEl);
+  const handleClickEdit = (event , id) => {
+    const roles = user.agent_Id.employees.map(emp => emp).filter(emp =>emp.userId == user._id).map(emp => emp.role == 'admin' || emp.role == 'owner')
+    if(roles[0] != false){
+      console.log(event , event.currentTarget)
+      setSelectedEmployeeId(id)
+      setAnchorEl(event.currentTarget);
+    }else{
+      toast.error('لاتوجد صلاحية')
 
+    }
+    console.log(roles)
+
+  };
+  const handleCloseEdit = () => {
+    setAnchorEl(null);
+  };
+
+  const handelEditRole = async (roleUpdated) => {
+    let roles
+    console.log('handelEditRole', roleUpdated  , 'selected', selectedEmployeeId);
+    const role = agent.employees.map(emp => emp).filter(emp => emp._id == selectedEmployeeId).map(emp =>emp.role)
+    if(role == 'owner'){
+      toast.error('لا توجد صلاحية');
+      return;
+    }else{
+      if(roleUpdated == 'مشرف' )roles = 'admin';
+      if(roleUpdated == 'موظف' )roles = 'employee';
+      await editEmpOnAgent(agent._id , selectedEmployeeId , roles)
+      await getAgent(name)
+      toast.success('تم تعديل الصلاحية بنجاح');
+      console.log('================================================================')
+    }
+    console.log('handelEditRole', role)
+  }
+  const handelId = (id) => {
+    setSelectedEmployeeId(id);
+    console.log('handelEditRole', selectedEmployeeId);
+  }
   const handleOpenAdd = () =>{
     setOpenAdd(true);
   }
@@ -60,20 +99,26 @@ export default function AgentEmp({}) {
   
   
 
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); // لتخزين قيمة usera._id
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null); 
 
   // لفتح الديالوج وتخزين usera._id
   const handleOpenDelete = (employeeId) => {
     setSelectedEmployeeId(employeeId);
+    console.log('emp' , employeeId)
+    const role = agent.employees.map(emp => emp).filter(emp => emp.userId._id == user._id).map(emp => emp.role)
+    if(role == 'employee') {
+     toast.error('لا توجد صلاحية')}else{
     setOpenDelete(true);
+     }
   };
 
   // لإغلاق الديالوج
   const handleCloseDelete = () => {
     setOpenDelete(false);
     getAgent(name)
-    setSelectedEmployeeId(null); // إعادة تعيين القيمة بعد الإغلاق
+    setSelectedEmployeeId(null);
   };
+
   useEffect(() => {
     const usersa =  users?.map(user => user).filter(user => {return user.name == nameEmp })
     setNameEmpa(usersa)
@@ -86,13 +131,17 @@ export default function AgentEmp({}) {
     try {
       console.log('name', nameEmp);
       console.log('nameش', nameEmpa);
-      console.log('nameشسسش', nameEmpa.map(user => user.agent_Id));
+      console.log('nameشسسش', nameEmpa.map(user => user.agent_Id) == [undefined]);
+      console.log('كم فيها', nameEmpa.map(user => user.agent_Id).length);
+      console.log(' gggكم فيها', nameEmpa.map(user => user.agent_Id));
+      console.log('شنو النتيجة ', nameEmpa.map(user => user.agent_Id)[0] != undefined);
 
       if(nameEmpa.length == 0){
         setError(`${nameEmp} غير موجود`)
         return toast.error(`${nameEmp} غير موجود`)
       }
-      if(nameEmpa.map(user => user.agent_Id)){
+      const isInAgent = nameEmpa.map(user => user.agent_Id)[0]
+      if(isInAgent != undefined || isInAgent != null){
         setError(`${nameEmp}  لديه شركة`)
         return toast.error(`${nameEmp}  لديه شركة`)
       }
@@ -101,7 +150,8 @@ export default function AgentEmp({}) {
         agent_Id,
         name:nameEmp
       }
-      // await axios.post(`/api/reqAgent`, data)
+      console.log(data)
+      await axios.post(`/api/reqAgent`, data)
       toast.success(`تم اضافة طلب للموظف ${nameEmp} بنجاح`);
       setOpenAdd(false)
     } catch (err) {
@@ -110,7 +160,6 @@ export default function AgentEmp({}) {
   };
   const handleDelete = async () => {
     try {
-      // await axios.post(`/api/reqAgent`, data)
       await deleteEmpFromAgent(agent._id, selectedEmployeeId);
       toast.success('تم حذف الموظف بنجاح');
       handleCloseDelete();
@@ -171,16 +220,32 @@ export default function AgentEmp({}) {
                            component="div"
                            sx={{ color: 'text.secondary' , display: 'flex' , alignItems: 'center' }}
                          >
-                           {usera.role == 'owner' ? 'المالك' : usera.role == 'employee' ? 'موظف' : ''}
+                           {usera.role == 'owner' ? 'المالك' : usera.role == 'admin' ? 'مشرف' : 'موظف'}
                          </Typography>
                      <CardActions>
-                      <Button variant="text" color="primary" onClick={handleOpenEdit}>
+                      <Button variant="text" color="primary" onClick={(e)=>{
+
+                          handleClickEdit(e , usera._id)}
+                        }>
                         تعديل
                       </Button>
-                      <Button variant="text" color="error" onClick={() => {
-                        if(usera.role == 'owner' && usera.role == 'admin') {
-                        handleOpenDelete(usera._id)}else(toast.error('لا توجد صلاحية'))
-                        }}>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={openedit}
+                          onClose={handleCloseEdit}
+                          MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                          }}
+                        >
+                          <MenuItem value={'مشرف'} onClick={()=>handelEditRole('مشرف')} >
+                           مشرف
+                          </MenuItem>
+                          <MenuItem value={'موظف'} onClick={()=>handelEditRole('موظف')} >
+                          موظف
+                          </MenuItem>
+                        </Menu>
+                      <Button variant="text" color="error" onClick={() => {handleOpenDelete(usera._id)}}>
                         حذف
                       </Button>
                      </CardActions>
