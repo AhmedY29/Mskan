@@ -24,7 +24,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from "react";
-import { Avatar, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogTitle, Menu } from "@mui/material";
+import { Avatar, Card, CardActions, CardContent, CardMedia, CircularProgress, Dialog, DialogActions, DialogTitle, Menu } from "@mui/material";
 import MenuItem from '@mui/material/MenuItem';
 import axios from "axios";
 
@@ -64,7 +64,9 @@ export default function NavBar() {
 
   const handleConfirm = async (id , confirm) => {
     console.log('before',confirm)
+    setLoading(true);
     await axios.put(`/api/reqAgent/${id}` , { confirm } )
+    setLoading(false); 
     console.log('after',confirm)
     confirm ? toast.success('تم قبول الطلب بنجاح') : toast.success('تم رفض الطلب بنجاح');
     setOpenReq(false)
@@ -233,7 +235,7 @@ export default function NavBar() {
     </List>
       }
       
-      <List>
+      {/* <List>
         {['الصفحة الرئيسية'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() =>navigate('/')} >
@@ -241,28 +243,58 @@ export default function NavBar() {
             </ListItemButton>
           </ListItem>
         ))}
-      </List>
+      </List> */}
       <List>
-        {[ 'المشاريع العقارية', 'الشركات العقارية'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton >
-            <ListItemText primary={text} />
+          <ListItem disablePadding>
+            <ListItemButton onClick={() =>navigate('/')} >
+            <ListItemText primary={'الصفحة الرئيسية'} />
             </ListItemButton>
           </ListItem>
-        ))}
+          <ListItem disablePadding>
+            <ListItemButton onClick={() =>navigate('/agents')} >
+            <ListItemText primary={'الشركات العقارية'} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() =>navigate('/agents')} >
+            <ListItemText primary={'المشاريع العقارية'} />
+            </ListItemButton>
+          </ListItem>
       </List>
-      {isAuthenticated ?
+      {isAuthenticated && urReq.length > 0 ?
       <>
-      <Divider />
       <List>
-        {['اضافة اعلان','حسابي', 'تسجيل الخروج'].map((text, index) => (
+        {['الطلبات'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate(`/profile/${user.name}`)} : text == 'اضافة اعلان' ? () => {setOpen(true)} : ''} >
+            <ListItemButton onClick={text == 'الطلبات' ? () => {handleOpenReq()} :''} >
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
   
         ))}
+      </List>
+      </>
+        :''}
+      {isAuthenticated ?
+      <>
+      <Divider />
+      <List>
+      {user.agent_Id &&
+            <ListItem disablePadding>
+            <ListItemButton onClick={ ()=>{navigate(`/profile/agent/${user.agent_Id.name}`)}} >
+              <ListItemText primary={'الملف الشخصي للشركة'} />
+            </ListItemButton>
+          </ListItem>}
+
+        {['اضافة اعلان','حسابي','تسجيل الخروج'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton onClick={text == 'تسجيل الخروج' ? () => {handelLogout()} : text == 'حسابي' ? ()=>{navigate(`/profile/${user.name}`)} : text == 'اضافة اعلان' ? () => {setOpen(true)} :''} >
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+  
+        ))}
+
       </List>
       </>
         :''}
@@ -295,10 +327,10 @@ export default function NavBar() {
                      </Box>
                      <CardActions>
                       <Button variant="text" color="primary" onClick={() => handleClickTrue(req._id)}>
-                        قبول
+                        {loading ? <CircularProgress/> :'قبول'}
                       </Button>
                       <Button variant="text" color="error" onClick={() => handleClickFalse(req._id)} >
-                        رفض
+                      {loading ? <CircularProgress/> :'رفض'}
                       </Button>
                      </CardActions>
                   <Divider sx={{marginTop:'20px' , marginBottom:'20px'}} />

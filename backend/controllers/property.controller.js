@@ -210,6 +210,7 @@ export const updateProperty = async (req, res) => {
         
                     // تحديث الصورة الرئيسية في قاعدة البيانات
                     updatedData.mainPhoto = uploadResult.secure_url;
+
                 } else {
                     console.error('No valid path for new main photo');
                     return res.status(400).json({
@@ -217,23 +218,7 @@ export const updateProperty = async (req, res) => {
                         msg: "Invalid path for new main photo",
                     });
                 }
-                
-                if (newVideoBase64) {
-                    const uploadResult = await cloudinary.uploader.upload(newVideoBase64, {
-                        folder: folderName,
-                        use_filename: true,
-                        unique_filename: false,
-                    });
-        
-                    // تحديث الصورة الرئيسية في قاعدة البيانات
-                    updatedData.video = uploadResult.secure_url;
-                } else {
-                    console.error('No valid path for new video');
-                    return res.status(400).json({
-                        success: false,
-                        msg: "Invalid path for new video",
-                    });
-                }
+
             } catch (uploadError) {
                 console.error('Error uploading new main photo to Cloudinary:', uploadError);
                 return res.status(500).json({ 
@@ -242,7 +227,36 @@ export const updateProperty = async (req, res) => {
                     error: uploadError.message 
                 });
             }
+            try {
+                
+                if (newVideoBase64) {
+                    const uploadResult = await cloudinary.uploader.upload(newVideoBase64, {
+                        folder: folderName,
+                        use_filename: true,
+                        unique_filename: false,
+                        resource_type: 'video',
+                    });
+        
+                    // تحديث الصورة الرئيسية في قاعدة البيانات
+                    updatedData.video = uploadResult.secure_url;
+
+                } else {
+                    console.error('No valid path for new video');
+                    return res.status(400).json({
+                        success: false,
+                        msg: "Invalid path for new video",
+                    });
+                }
+            } catch (uploadError) {
+                console.error('Error uploading new video to Cloudinary:', uploadError);
+                return res.status(500).json({ 
+                    success: false, 
+                    msg: "Error uploading new video to Cloudinary", 
+                    error: uploadError.message 
+                });
+            }
         }
+
 
         const updatedProperty = await Property.findByIdAndUpdate(propertyId, {
             ...updatedData,
