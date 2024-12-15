@@ -77,6 +77,23 @@ export default function Update() {
    getProperty(propertyId);
   }, [ propertyId,getProperty]);
 
+  useEffect(() => {
+    if(isLoading || !user) return 
+    console.log(user.role != 'admin')
+    // console.log('rolees',property.owner.agent_Id._id == user.agent_Id._id , 'role', property.owner.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role == 'employee' )[0])
+    // console.log('agent id',property.owner?.agent_Id._id == user.agent_Id._id)
+    if(user.role != 'admin') {
+      if( property.owner._id != user._id){
+        
+    if(property?.owner?.agent_Id == undefined || property?.owner?.agent_Id == null ){toast.error('لاتوجد صلاحية لهذه الصفحة'); return navigate('/')}
+    if(property.owner.agent_Id._id == user.agent_Id._id && property.owner.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role == 'employee' )[0]){
+      toast.error('لاتوجد صلاحية لهذه الصفحة')
+      navigate('/')
+    }
+
+   }}
+  }, [ user , isLoading]);
+
 
 
 
@@ -973,7 +990,7 @@ export default function Update() {
         style={{ width: "100%", maxWidth: 300, borderRadius: 8 }}
       ></video>
       <Button
-        onClick={() => setUpdatedProperty({ ...updatedProperty, video: null })}
+        onClick={() => setUpdatedProperty({ ...updatedProperty, video: "" })}
         sx={{ mt: 1, bgcolor: "red", color: "white" }}
       >
         إزالة الفيديو

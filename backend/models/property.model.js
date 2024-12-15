@@ -70,7 +70,7 @@ const propertySchema = new mongoose.Schema({
         type: String,
     },
     video:{
-        type: [String],
+        type: String,
     },
     nearbyServices:{
         type: [String]

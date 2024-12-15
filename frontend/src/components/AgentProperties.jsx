@@ -93,7 +93,7 @@ export default function AgentProperties(){
     console.log(filteredProperties)
 
     function handleOpenDelete(id) {
-      if(user.agent_Id.employees.map(emp => emp.role) == 'admin' || user.agent_Id.employees.map(emp => emp.role) == 'owner') {
+      if(user.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role) == 'admin' ||user.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role) == 'owner') {
         setOpenDelete(true);
         setPropertyId(id)
       }
@@ -114,10 +114,10 @@ export default function AgentProperties(){
       await  deleteProperty(propertyId);
       return navigate("/"), toast.success("تم حذف العقار بنجاح")
   }
-  console.log(user.agent_Id.employees.map(emp => emp.role) , 'ok or not')
+  console.log(user.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role)[0] , 'ok or not')
 
   function editProperty(propertyId) {
-    if(user.agent_Id.employees.map(emp => emp.role) == 'admin' || user.agent_Id.employees.map(emp => emp.role) == 'owner') {
+    if(user.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role)[0] == 'admin' || user.agent_Id.employees.map(emp => emp).filter(emp => emp.userId == user._id).map(emp => emp.role)[0] == 'owner') {
     navigate(`/updateProperty/${propertyId}`)} 
     else {
     toast.error('لاتوجد صلاحية');

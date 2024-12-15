@@ -105,10 +105,10 @@ export const deleteProperty = async (req, res) => {
         const folderName = property.title + property.type + property.price + property.location + property.nearbyServices + property.adLicense + property.ageforbuild + property.size;
 
 
-        await cloudinary.api.delete_resources_by_prefix(folderName, { invalidate: true });
+        // await cloudinary.api.delete_resources_by_prefix(folderName, { invalidate: true });
         
-        // حذف المجلد من Cloudinary
-        await cloudinary.api.delete_folder(folderName, { invalidate: true });
+        // // حذف المجلد من Cloudinary
+        // await cloudinary.api.delete_folder(folderName, { invalidate: true });
 
         // حذف العقار من قاعدة البيانات
         await Property.findByIdAndDelete(propertyId);
@@ -240,6 +240,8 @@ export const updateProperty = async (req, res) => {
                     // تحديث الصورة الرئيسية في قاعدة البيانات
                     updatedData.video = uploadResult.secure_url;
 
+                } else if (newVideoBase64 ==""){
+                    console.log('yes it empty')
                 } else {
                     console.error('No valid path for new video');
                     return res.status(400).json({
@@ -282,7 +284,6 @@ export const getProperty = async (req, res) => {
             path: 'owner',
             populate: {
               path: 'agent_Id',
-              select: '-employees',
             },
           })
         res.status(200).json({ success: true, data: property});
