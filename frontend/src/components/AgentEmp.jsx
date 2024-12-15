@@ -184,7 +184,8 @@ export default function AgentEmp({}) {
           العقارات المحفوظة
         </Typography>
 
-        <Button variant="text" onClick={handleOpenAdd}  >اضافة موظف جديد</Button>
+        {user.agent_Id.employees.map(emp => emp).filter(emp =>emp.userId == user._id).map(emp => emp.role == 'admin' || emp.role == 'owner')[0] &&
+          <Button variant="text" onClick={handleOpenAdd}  >اضافة موظف جديد</Button>}
         {/* <Typography  component="div" sx={{ marginBottom: "40px" }}>
           {savedProperties.length} عقار
         </Typography>
