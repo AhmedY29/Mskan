@@ -115,7 +115,6 @@ export default function AgentEmp({}) {
   // لإغلاق الديالوج
   const handleCloseDelete = () => {
     setOpenDelete(false);
-    getAgent(name)
     setSelectedEmployeeId(null);
   };
 
@@ -281,7 +280,7 @@ export default function AgentEmp({}) {
               }}
             >
               <Typography variant="h5" align="center" gutterBottom>
-                التحويل إلى حساب منشأة
+                   اضافة موظف جديد
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
