@@ -502,7 +502,7 @@ export default function AddProperty({open , handleClose1} ){
             <Typography>
             رخصة فال للمعلن
           </Typography>
-          { license == undefined &&
+          { license == undefined || license == "" &&
           <Link style={{textDecoration:'none' , color:'none'}} to={`/profile/${user.name}`} >
           <Typography onClick={handleClose}  color="primary">
               أضف
