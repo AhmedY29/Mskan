@@ -322,7 +322,7 @@ function marks(isBookmarked) {
           )}
         </div>
         <Card sx={{ minWidth: 275 }}>
-        <Link to={`/account/${property.owner?.agent_Id ? property.owner?.agent_Id?.name :property.owner?.name}`} style={{textDecoration:'none' , color:'black'}}>
+        <Link to={`/account/${property.owner?.agent_Id ? 'agent/'+property.owner?.agent_Id?.name :property.owner?.name}`} style={{textDecoration:'none' , color:'black'}}>
           <CardContent style={{ display: "flex" }} title={`الانتقال الى ملف ${property.owner?.agent_Id ? property.owner?.agent_Id?.name :property.owner?.name} الشخصي`}>
             <div style={{ flex: "2" }}>
               <Typography

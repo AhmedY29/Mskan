@@ -32,7 +32,7 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "./Loading.jsx";
 import { useState } from "react";
 import axios from "axios";
@@ -222,7 +222,7 @@ export default function AddProperty({open , handleClose1} ){
     }, [user])
     
     
-    console.log(license)
+    console.log('license',license)
     const navigate = useNavigate()
     async function handelAddProperty(){
       if (property.payment == 'ايجار'){ setProperty({...property, paymentWay:'',})}
@@ -502,6 +502,14 @@ export default function AddProperty({open , handleClose1} ){
             <Typography>
             رخصة فال للمعلن
           </Typography>
+          { license == undefined &&
+          <Link style={{textDecoration:'none' , color:'none'}} to={`/profile/${user.name}`} >
+          <Typography onClick={handleClose}  color="primary">
+              أضف
+            </Typography>
+            </Link>
+              
+            }
               <TextField
                 type="number"
                 required
